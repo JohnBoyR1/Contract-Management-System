@@ -1,0 +1,6 @@
+@ContractDevApi_HostAddress = http://localhost:5183
+
+GET {{ContractDevApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

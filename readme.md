@@ -10,3 +10,9 @@ NCI BSHCIFSC2A - Team Project
 - Aaron: Database and Data & Communication and Documentation
 - Moise: Quality Assurance & DevOps and Deployment
 
+#### Requirements
+
+ASP.NET API
+- .NET 10.0
+- ASP.NET Core Runetime 10.0
+- Packages: Entity Framework Core-Design-Tools, NPGSQL, Swashbuckle
