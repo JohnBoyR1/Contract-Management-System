@@ -3,15 +3,35 @@
   "WorkspaceRootPath": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|c:\\users\\moare\\documents\\course_documents\\team_project\\team_10_group_project\\contractdevapi\\contractdevapi\\contractdevapi.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|solutionrelative:contractdevapi\\contractdevapi.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|c:\\users\\moare\\documents\\course_documents\\team_project\\team_10_group_project\\contractdevapi\\contractdevapi\\models\\contractdevcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|solutionrelative:contractdevapi\\models\\contractdevcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|c:\\users\\moare\\documents\\course_documents\\team_project\\team_10_group_project\\contractdevapi\\contractdevapi\\models\\useraccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|solutionrelative:contractdevapi\\models\\useraccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moare\\AppData\\Roaming\\Microsoft\\UserSecrets\\ad9ab596-29d9-4515-829b-cf819c83793a\\secrets.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|c:\\users\\moare\\documents\\course_documents\\team_project\\team_10_group_project\\contractdevapi\\contractdevapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|solutionrelative:contractdevapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moare\\AppData\\Roaming\\Microsoft\\UserSecrets\\ad9ab596-29d9-4515-829b-cf819c83793a\\secrets.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|c:\\users\\moare\\documents\\course_documents\\team_project\\team_10_group_project\\contractdevapi\\contractdevapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|solutionrelative:contractdevapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|c:\\users\\moare\\documents\\course_documents\\team_project\\team_10_group_project\\contractdevapi\\contractdevapi\\contractdevapi.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|solutionrelative:contractdevapi\\contractdevapi.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|c:\\users\\moare\\documents\\course_documents\\team_project\\team_10_group_project\\contractdevapi\\contractdevapi\\controllers\\useraccountscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|solutionrelative:contractdevapi\\controllers\\useraccountscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|c:\\users\\moare\\documents\\course_documents\\team_project\\team_10_group_project\\contractdevapi\\contractdevapi\\dtos\\userregistrationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0BB401D1-0E92-F405-799A-63262D096376}|ContractDevApi\\ContractDevApi.csproj|solutionrelative:contractdevapi\\dtos\\userregistrationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -21,11 +41,76 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "secrets.json",
+              "DocumentMoniker": "C:\\Users\\moare\\AppData\\Roaming\\Microsoft\\UserSecrets\\ad9ab596-29d9-4515-829b-cf819c83793a\\secrets.json",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\AppData\\Roaming\\Microsoft\\UserSecrets\\ad9ab596-29d9-4515-829b-cf819c83793a\\secrets.json",
+              "ToolTip": "C:\\Users\\moare\\AppData\\Roaming\\Microsoft\\UserSecrets\\ad9ab596-29d9-4515-829b-cf819c83793a\\secrets.json",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\AppData\\Roaming\\Microsoft\\UserSecrets\\ad9ab596-29d9-4515-829b-cf819c83793a\\secrets.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAACFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-10T08:14:24.172Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserAccount.cs",
+              "DocumentMoniker": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\Models\\UserAccount.cs",
+              "RelativeDocumentMoniker": "ContractDevApi\\Models\\UserAccount.cs",
+              "ToolTip": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\Models\\UserAccount.cs",
+              "RelativeToolTip": "ContractDevApi\\Models\\UserAccount.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAowCgAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-10T11:33:11.648Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "ContractDevContext.cs",
+              "DocumentMoniker": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\Models\\ContractDevContext.cs",
+              "RelativeDocumentMoniker": "ContractDevApi\\Models\\ContractDevContext.cs",
+              "ToolTip": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\Models\\ContractDevContext.cs",
+              "RelativeToolTip": "ContractDevApi\\Models\\ContractDevContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-10T11:31:35.107Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\appsettings.json",
+              "RelativeDocumentMoniker": "ContractDevApi\\appsettings.json",
+              "ToolTip": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\appsettings.json",
+              "RelativeToolTip": "ContractDevApi\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-10T08:12:01.116Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\Program.cs",
+              "RelativeDocumentMoniker": "ContractDevApi\\Program.cs",
+              "ToolTip": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\Program.cs",
+              "RelativeToolTip": "ContractDevApi\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAACBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-10T11:27:36.129Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "ContractDevApi.csproj",
               "DocumentMoniker": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
               "RelativeDocumentMoniker": "ContractDevApi\\ContractDevApi.csproj",
@@ -38,27 +123,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "secrets.json",
-              "DocumentMoniker": "C:\\Users\\moare\\AppData\\Roaming\\Microsoft\\UserSecrets\\ad9ab596-29d9-4515-829b-cf819c83793a\\secrets.json",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\AppData\\Roaming\\Microsoft\\UserSecrets\\ad9ab596-29d9-4515-829b-cf819c83793a\\secrets.json",
-              "ToolTip": "C:\\Users\\moare\\AppData\\Roaming\\Microsoft\\UserSecrets\\ad9ab596-29d9-4515-829b-cf819c83793a\\secrets.json",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\AppData\\Roaming\\Microsoft\\UserSecrets\\ad9ab596-29d9-4515-829b-cf819c83793a\\secrets.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAB9AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-02-10T08:14:24.172Z"
+              "DocumentIndex": 6,
+              "Title": "UserAccountsController.cs",
+              "DocumentMoniker": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\Controllers\\UserAccountsController.cs",
+              "RelativeDocumentMoniker": "ContractDevApi\\Controllers\\UserAccountsController.cs",
+              "ToolTip": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\Controllers\\UserAccountsController.cs",
+              "RelativeToolTip": "ContractDevApi\\Controllers\\UserAccountsController.cs",
+              "ViewState": "AgIAADoAAAAAAAAAAAAQwEYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-10T12:24:36.598Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\appsettings.json",
-              "RelativeDocumentMoniker": "ContractDevApi\\appsettings.json",
-              "ToolTip": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\appsettings.json",
-              "RelativeToolTip": "ContractDevApi\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-02-10T08:12:01.116Z",
+              "DocumentIndex": 7,
+              "Title": "UserRegistrationDto.cs",
+              "DocumentMoniker": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\DTOs\\UserRegistrationDto.cs",
+              "RelativeDocumentMoniker": "ContractDevApi\\DTOs\\UserRegistrationDto.cs",
+              "ToolTip": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\DTOs\\UserRegistrationDto.cs",
+              "RelativeToolTip": "ContractDevApi\\DTOs\\UserRegistrationDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-10T11:49:58.242Z",
               "EditorCaption": ""
             }
           ]
