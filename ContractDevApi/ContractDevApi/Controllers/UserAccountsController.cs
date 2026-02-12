@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Security.Claims;
+using ContractDevApi.DTOs;
+using ContractDevApi.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ContractDevApi.Models;
-using ContractDevApi.DTOs;
 
 namespace ContractDevApi.Controllers
 {
@@ -28,25 +26,39 @@ namespace ContractDevApi.Controllers
             return await _context.UserAccounts.ToListAsync();
         }
 
-        // GET: api/UserAccounts/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserAccount>> GetUserAccount(int id)
+        // GET: api/UserAccounts/Username
+        [HttpGet("{Username}")]
+        public async Task<ActionResult<UserAccount>> GetUserAccount(string username)
         {
-            var userAccount = await _context.UserAccounts.FindAsync(id);
+            //Check if user with email exists
+            var user = await _context.UserAccounts.FirstOrDefaultAsync(x => x.Username.ToLower() == username.ToLower());
 
-            if (userAccount == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return userAccount;
+            var response = new UserResponseDto
+            {
+                Id = user.UserAccountId,
+                Email = user.Email,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+            };
+
+            return Ok(new
+            {
+                Message = $"Data for {username}",
+                Data = response
+            });
         }
         
         
         // POST: api/UserAccounts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<UserAccount>> PostUserAccount(UserRegistrationDto dto)
+        [HttpPost("Account/Register")]
+        public async Task<ActionResult<UserAccount>> RegisterUserAccount(UserRegistrationDto dto)
         {
             if (!ModelState.IsValid) return BadRequest("Passwords do not match");
 
@@ -67,10 +79,90 @@ namespace ContractDevApi.Controllers
             };
 
             _context.UserAccounts.Add(user);
-            await _context.SaveChangesAsync();
+            int result = await _context.SaveChangesAsync();
 
-            return Ok("User Created");
+            if (result <= 0) return Problem("System error occured. User Registration Failed.");
+
+            var response = new UserResponseDto
+            {
+                Id = user.UserAccountId,
+                Email = user.Email,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+            };
+
+            return Ok(new
+            {
+                Message = "User Registration Successful",
+                data = response
+            });
             
+        }
+
+        [HttpPost("Account/Login")]
+        public async Task<IActionResult> Login(UserLoginDto dto)
+        {
+            //Determine if user is currently logged into an account, if so log them out
+            if (HttpContext.User.Identity?.IsAuthenticated == true) await Logout();
+
+            //Check if user with email exists
+            var user = await _context.UserAccounts.FirstOrDefaultAsync(x => x.Email!.ToLower() == dto.Email!.ToLower());
+
+            //If email does not exist in UserAccounts table, return error
+            if (user == null) return Unauthorized(new { Message = "Invalid email or password" });
+
+            //Check if password matches hashed password via BCrypt verification
+            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
+
+            //If password does not pass verification, return error
+            if (!validatePassword) return Unauthorized(new { Message = "Invalid email or password" });
+
+            //Construct response entity
+            var response = new UserResponseDto
+            {
+                Id = user.UserAccountId,
+                Username = user.Username,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            };
+
+            //Generate authentication cookie with a claim for the user
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserAccountId.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}")
+            };
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            //Assign cookie to session - cookie authentication expires in 1 hour (range can vary)
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            //Valid login, return response enttiy
+            return Ok(new
+            {
+                Message = "Login Successful",
+                Data = response
+            });
+        }
+
+        [HttpPost("Account/Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            if (HttpContext.User.Identity?.IsAuthenticated == false) return BadRequest(new { Message = "No user is logged in" });
+
+            //Remove cookie from session
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            //Return Status 200 OK
+            //NOTE: can send redirect post to return user to home page: return Redirect("~/");
+            return Ok(new
+            {
+                Message = "User logged out"
+            });
         }
 
         //TODO

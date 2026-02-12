@@ -21,15 +21,15 @@
   },
   {
     "ContainingType": "ContractDevApi.Controllers.UserAccountsController",
-    "Method": "PostUserAccount",
-    "RelativePath": "api/UserAccounts",
-    "HttpMethod": "POST",
+    "Method": "GetUserAccount",
+    "RelativePath": "api/UserAccounts/{Username}",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "dto",
-        "Type": "ContractDevApi.DTOs.UserRegistrationDto",
+        "Name": "username",
+        "Type": "System.String",
         "IsRequired": true
       }
     ],
@@ -47,15 +47,41 @@
   },
   {
     "ContainingType": "ContractDevApi.Controllers.UserAccountsController",
-    "Method": "GetUserAccount",
-    "RelativePath": "api/UserAccounts/{id}",
-    "HttpMethod": "GET",
+    "Method": "Login",
+    "RelativePath": "api/UserAccounts/Account/Login",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "id",
-        "Type": "System.Int32",
+        "Name": "dto",
+        "Type": "ContractDevApi.DTOs.UserLoginDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ContractDevApi.Controllers.UserAccountsController",
+    "Method": "Logout",
+    "RelativePath": "api/UserAccounts/Account/Logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ContractDevApi.Controllers.UserAccountsController",
+    "Method": "RegisterUserAccount",
+    "RelativePath": "api/UserAccounts/Account/Register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "ContractDevApi.DTOs.UserRegistrationDto",
         "IsRequired": true
       }
     ],
