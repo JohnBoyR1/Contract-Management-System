@@ -21,6 +21,22 @@
   },
   {
     "ContainingType": "ContractDevApi.Controllers.UserAccountsController",
+    "Method": "Update",
+    "RelativePath": "api/UserAccounts/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ContractDevApi.Controllers.UserAccountsController",
     "Method": "Login",
     "RelativePath": "api/UserAccounts/Account/Login",
     "HttpMethod": "POST",

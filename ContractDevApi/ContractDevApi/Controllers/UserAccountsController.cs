@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.ComponentModel;
+using System.Security.Claims;
 using ContractDevApi.DTOs;
 using ContractDevApi.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -53,8 +54,8 @@ namespace ContractDevApi.Controllers
                 Data = response
             });
         }
-        
-        
+
+
         // POST: api/UserAccounts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("Account/Register")]
@@ -97,14 +98,14 @@ namespace ContractDevApi.Controllers
                 Message = "User Registration Successful",
                 data = response
             });
-            
+
         }
 
         [HttpPost("Account/Login")]
         public async Task<IActionResult> Login(UserLoginDto dto)
         {
             //Determine if user is currently logged into an account, if so log them out
-            if (HttpContext.User.Identity?.IsAuthenticated == true) await Logout();
+            if (IsAuthenticated()) await Logout();
 
             //Check if user with email exists
             var user = await _context.UserAccounts.FirstOrDefaultAsync(x => x.Email!.ToLower() == dto.Email!.ToLower());
@@ -152,7 +153,9 @@ namespace ContractDevApi.Controllers
         [HttpPost("Account/Logout")]
         public async Task<IActionResult> Logout()
         {
-            if (HttpContext.User.Identity?.IsAuthenticated == false) return BadRequest(new { Message = "No user is logged in" });
+            //if (HttpContext.User.Identity?.IsAuthenticated == false) return BadRequest(new { Message = "No user is logged in" });
+
+            if (!IsAuthenticated()) return BadRequest(new { Message = "No user is logged in" });
 
             //Remove cookie from session
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -167,6 +170,19 @@ namespace ContractDevApi.Controllers
 
         //TODO
         // PUT: api/UserAccounts/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id)
+        {
+
+
+            return Ok();
+        }
+
+
+        private bool IsAuthenticated()
+        {
+            return HttpContext.User.Identity?.IsAuthenticated == true;
+        }
 
         //TODO
         // DELETE: api/UserAccounts/5
