@@ -43,7 +43,7 @@
         }
       }
     },
-    "/api/UserAccounts/{Username}": {
+    "/api/UserAccounts/User/{username}": {
       "get": {
         "tags": [
           "UserAccounts"

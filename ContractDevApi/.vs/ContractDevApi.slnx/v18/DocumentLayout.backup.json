@@ -46,8 +46,7 @@
               "RelativeToolTip": "ContractDevApi\\Models\\UserAccount.cs",
               "ViewState": "AgIAAA0AAAAAAAAAAAAQwA4AAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-12T13:13:02.086Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T13:13:02.086Z"
             },
             {
               "$type": "Document",
@@ -59,8 +58,7 @@
               "RelativeToolTip": "ContractDevApi\\Program.cs",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAABEAAABQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-12T12:56:47.365Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T12:56:47.365Z"
             },
             {
               "$type": "Document",
@@ -72,8 +70,7 @@
               "RelativeToolTip": "ContractDevApi\\DTOs\\UserLoginDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-12T12:53:50.685Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T12:53:50.685Z"
             },
             {
               "$type": "Document",
@@ -85,8 +82,7 @@
               "RelativeToolTip": "ContractDevApi\\DTOs\\UserResponseDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-12T12:39:34.771Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T12:39:34.771Z"
             },
             {
               "$type": "Document",
@@ -96,7 +92,7 @@
               "RelativeDocumentMoniker": "ContractDevApi\\Controllers\\UserAccountsController.cs",
               "ToolTip": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\Controllers\\UserAccountsController.cs",
               "RelativeToolTip": "ContractDevApi\\Controllers\\UserAccountsController.cs",
-              "ViewState": "AgIAAJYAAAAAAAAAAAAowAkAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAABMAAAAAAAAAAAAuwB0AAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-10T12:24:36.598Z",
               "EditorCaption": ""

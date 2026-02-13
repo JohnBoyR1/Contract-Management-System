@@ -27,11 +27,11 @@ namespace ContractDevApi.Controllers
         }
 
         // GET: api/UserAccounts/Username
-        [HttpGet("{Username}")]
+        [HttpGet("User/{username}")]
         public async Task<ActionResult<UserAccount>> GetUserAccount(string username)
         {
             //Check if user with email exists
-            var user = await _context.UserAccounts.FirstOrDefaultAsync(x => x.Username.ToLower() == username.ToLower());
+            var user = await _context.UserAccounts.FirstOrDefaultAsync(x => x.Username.Trim().ToLower() == username.Trim().ToLower());
 
             if (user == null)
             {
