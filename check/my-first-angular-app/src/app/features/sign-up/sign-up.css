@@ -1,0 +1,27 @@
+.content {
+    padding-top: 50px;
+}
+
+.card-registration {
+    border-radius: 20px;
+    background-color: rgb(163, 223, 241);
+    box-shadow: 20px 20px 20px rgb(0, 0, 0, 0.5) !important;
+}
+
+
+
+.reg-pic {
+    padding-top: 10%;
+    padding-left: 5%;
+   
+}
+
+.submit {
+    background-color: rgb(183, 113, 248);
+    color:beige;
+}
+
+.submit:hover {
+    transform: scale(1.02);
+    background-color: blueviolet;
+}

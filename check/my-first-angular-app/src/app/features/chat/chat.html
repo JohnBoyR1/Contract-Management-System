@@ -1,0 +1,35 @@
+
+<div class="chat-overlay" >
+  <div class="chat-container chat-container" (click)="$event.stopPropagation()">
+    
+    <div class="chat-header">
+      <h4 class="chat-heading">Chat</h4>
+      <button class="close-btn" (click)="closeChat()">×</button>
+    </div>
+
+    <div class="chat-body">
+      <app-message-list [messages]="store.messages()"></app-message-list>
+      <a class="clear-chat-btn" (click)="store.clearHistory()"><i>Clear Chat</i></a>
+    </div>
+
+    <div class="chat-footer">
+      <app-message-input (send)="handleSend($event)"></app-message-input>
+    </div>
+  </div>
+</div>
+
+<!--
+<div class="chat-popup-container">
+  <div class="chat-header">
+    <h3>Support Chat</h3>
+    <button mat-icon-button mat-dialog-close>X</button>
+  </div>
+
+  <div class="chat-body">
+    <app-message-list></app-message-list>
+  </div>
+
+  <div class="chat-footer">
+    <app-message-input></app-message-input>
+  </div>
+</div>-->

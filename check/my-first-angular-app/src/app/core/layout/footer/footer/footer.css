@@ -1,0 +1,12 @@
+.copyright {
+    background-color: rgb(201, 244, 253) !important;
+}
+
+.container {
+    background-color: transparent;
+}
+
+/*when url == 'login', the social icons in the footer are hidden*/
+.hidden {
+    display: none !important;
+}

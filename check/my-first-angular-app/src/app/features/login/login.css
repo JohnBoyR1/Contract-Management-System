@@ -1,0 +1,43 @@
+.cascading-right {
+      margin-right: -50px;
+    }
+
+    @media (max-width: 991.98px) {
+      .cascading-right {
+        margin-right: 0;
+      }
+    }
+
+.card, #login-img {
+    backdrop-filter: blur(30px);
+    border-radius: 20px;  
+}
+/*image behind and to right of the log in form*/
+.login-img {
+    border-radius: 20px;
+    box-shadow: 20px 20px 20px rgb(0, 0, 0, 0.5) !important;
+}
+
+.card {
+    box-shadow: 20px 20px 20px rgb(0, 0, 0, 0.5) !important;
+}
+
+.entire {
+    margin-top: 90px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.login-btn {
+    background-color: rgb(183, 113, 248);
+}
+
+.login-btn:hover {
+    background-color: blueviolet;
+    transform: scale(1.02);
+}
+
+
+
