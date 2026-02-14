@@ -1,0 +1,44 @@
+/*global settings for nav bar*/
+.navbar {
+    color:aliceblue !important;
+    
+    background-color: rgb(201, 244, 253, 0.1) !important;
+    backdrop-filter: blur(5px) !important;
+    box-shadow: 0 4px 20px rgb(0, 0, 0, 0.2) !important;
+   
+}
+/*Highlights the page ones on*/
+.nav-link.active {
+    font-weight: bolder;
+    color:  rgb(183, 113, 248);
+}
+/*Highlights when mouse pointer is hovering over anchor*/
+.nav-link:hover {
+    color: blue;
+}
+
+.search {
+    background-color: rgb(183, 113, 248);
+    color: white;
+    font-weight: 600;
+}
+
+.search:hover {
+    background-color: blueviolet;
+    transform: scale(1.02);
+}
+
+.img {
+    border-radius: 10px;
+}
+
+a {
+    color:rgb(180, 179, 184);
+    text-shadow: 
+    -1px -1px 0 rgb(132, 130, 134); 
+    
+    font-size: x-large;
+    font-weight: 600;
+    font-family:'Times New Roman', Times, serif;
+    font-style: initial;
+}

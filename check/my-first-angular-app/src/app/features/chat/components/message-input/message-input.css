@@ -1,0 +1,24 @@
+.input-row {
+
+  display: flex;
+  gap: 0.5rem;
+  color: aliceblue;
+  position: sticky;
+  bottom: 0;
+}
+
+input {
+  flex: 1;
+  padding: 0.5rem;
+  
+}
+
+.send-btn {
+    background-color: rgb(183, 113, 248);
+    color:beige;
+}
+
+.send-btn:hover {
+    transform: scale(1.02);
+    background-color: blueviolet;
+}

@@ -1,0 +1,64 @@
+/* The Full-Screen Dimmer */
+.chat-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: flex-end; 
+  align-items: flex-end;     
+  padding: 30px;             /* Space from bottom-right corner */
+  z-index: 2000;             
+  backdrop-filter: blur(4px); 
+}
+
+/* The actual chat box */
+.chat-container {
+  
+  background: rgb(238, 246, 246);
+  width: 600px;
+  height: 80vh; /* IMPORTANT: gives the chat a fixed height */
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 99999;
+}
+
+
+.chat-header {
+  display: flex;
+  justify-content: space-between; /* pushes items apart */
+  align-items: center;
+  padding: 0.5rem 1rem;
+
+}
+
+.chat-body {
+  flex: 1;               /* takes all remaining space */
+  overflow-y: auto;      /* scrolls instead of pushing footer */
+  padding: 1rem; 
+}
+
+.chat-footer {
+  padding: 0.75rem;
+  background: #d8d8d8;
+  border-top: 1px solid #ddd;
+
+}
+
+.close-btn {
+  background-color: rgb(250, 65, 48);
+  color:beige;
+}
+
+.close-btn:hover {
+    transform: scale(1.02);
+    background-color: rgb(185, 2, 2);
+}
+
+.clear-chat-btn:hover {
+  color: blue;
+}

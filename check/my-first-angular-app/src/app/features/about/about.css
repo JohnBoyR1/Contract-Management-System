@@ -1,0 +1,24 @@
+.container {
+    margin-top: 90px; 
+      
+}
+
+.ideas_img {
+    border-radius: 20px !important;
+    box-shadow: 20px 20px 20px rgb(0, 0, 0, 0.5) !important;
+    padding: 0;
+    transition: transform 0.3s ease;
+    
+}
+
+.man_city_img, .devops_manager_img {
+    max-width: 100%;
+    border-radius: 20px !important;
+    box-shadow: 20px 20px 20px rgb(0, 0, 0, 0.5) !important;
+    margin-bottom: 40px;
+    transition: transform 0.3s ease;
+}
+
+.man_city_img:hover, .devops_manager_img:hover, .ideas_img:hover {
+    transform: translate(10px) scale(1.02);
+} 
