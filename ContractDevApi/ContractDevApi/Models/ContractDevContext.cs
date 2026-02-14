@@ -14,6 +14,8 @@ namespace ContractDevApi.Models
 
         public DbSet<UserAccount> UserAccounts { get; set; }
 
+        public DbSet<UserProfile> UserProfiles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -1,5 +1,23 @@
 [
   {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_4",
+    "RelativePath": "",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "ContractDevApi.Controllers.UserAccountsController",
     "Method": "GetUserAccounts",
     "RelativePath": "api/UserAccounts",
@@ -37,8 +55,18 @@
   },
   {
     "ContainingType": "ContractDevApi.Controllers.UserAccountsController",
+    "Method": "Logout",
+    "RelativePath": "api/UserAccounts/Account/Logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ContractDevApi.Controllers.UserAccountsController",
     "Method": "Login",
-    "RelativePath": "api/UserAccounts/Account/Login",
+    "RelativePath": "api/UserAccounts/Login",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -53,18 +81,8 @@
   },
   {
     "ContainingType": "ContractDevApi.Controllers.UserAccountsController",
-    "Method": "Logout",
-    "RelativePath": "api/UserAccounts/Account/Logout",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ContractDevApi.Controllers.UserAccountsController",
     "Method": "RegisterUserAccount",
-    "RelativePath": "api/UserAccounts/Account/Register",
+    "RelativePath": "api/UserAccounts/Register",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -89,28 +107,59 @@
   },
   {
     "ContainingType": "ContractDevApi.Controllers.UserAccountsController",
-    "Method": "GetUserAccount",
-    "RelativePath": "api/UserAccounts/User/{username}",
+    "Method": "ValidateToken",
+    "RelativePath": "api/UserAccounts/Validate",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ContractDevApi.Controllers.UserProfilesController",
+    "Method": "GetAllUsers",
+    "RelativePath": "api/UserProfiles",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ContractDevApi.Controllers.UserProfilesController",
+    "Method": "UpdateProfile",
+    "RelativePath": "api/UserProfiles/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "ContractDevApi.DTOs.ProfileUpdateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ContractDevApi.Controllers.UserProfilesController",
+    "Method": "GetProfileDetails",
+    "RelativePath": "api/UserProfiles/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "username",
-        "Type": "System.String",
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ContractDevApi.Models.UserAccount",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   }
 ]

@@ -243,4 +243,12 @@ C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\Con
 C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\obj\Debug\net10.0\ref\ContractDevApi.dll
 C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\obj\Debug\net10.0\ContractDevApi.RazorAssemblyInfo.cache
 C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\obj\Debug\net10.0\ContractDevApi.RazorAssemblyInfo.cs
+C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\bin\Debug\net10.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\bin\Debug\net10.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\bin\Debug\net10.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\bin\Debug\net10.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

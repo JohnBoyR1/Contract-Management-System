@@ -6,7 +6,6 @@ import { environment } from '../../../environments/environment';
 import { jwtDecode } from 'jwt-decode';
 import { ProfileStateService } from '../shared/profile-state.service';
 
-
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   isLoggedIn = false;
@@ -24,17 +23,19 @@ export class AuthService {
   //LOGIN calls backend , receives { token }, stores it
   login(credentials: any) {
     // Replace with your actual API URL
-    return this.http.post<{token: string}>(`${environment.apiUrl}/api/users/login`, credentials).pipe(
-      tap(res => {
-        // saves token to local storage
-        localStorage.setItem(this.TOKEN_KEY, res.token);
+    return this.http
+      .post<{ token: string }>(`${environment.apiUrl}/api/UserAccounts/Login`, credentials)
+      .pipe(
+        tap((res) => {
+          // saves token to local storage
+          localStorage.setItem(this.TOKEN_KEY, res.token);
 
-        this.isLoggedIn = true;
+          this.isLoggedIn = true;
 
-        //update login state
-        this.loggedIn.next(true);
-      })
-    );
+          //update login state
+          this.loggedIn.next(true);
+        }),
+      );
   }
 
   // LOGOUT - clears token and redirects
@@ -52,18 +53,22 @@ export class AuthService {
   }
 
   // Get current userId
-  
 
   getCurrentUserId(): number | null {
     //decoding the token
     const token = localStorage.getItem(this.TOKEN_KEY);
     if (!token) return null;
-
-    const decoded: any = jwtDecode(token);
-    return Number(decoded.sub); // "sub" contains the userId
+    try {
+      const decoded: any = jwtDecode(token);
+      return Number(decoded.sub); // "sub" contains the userId
+    } catch (e) {
+      console.error('Invalid JWT in localStorage');
+      localStorage.removeItem('auth_token');
+      return null;
+    }
   }
   //this is for validation of the already given token
   validateToken() {
-    return this.http.get(`${environment.apiUrl}/api/users/validate`);
+    return this.http.get(`${environment.apiUrl}/api/UserAccounts/Validate`);
   }
 }

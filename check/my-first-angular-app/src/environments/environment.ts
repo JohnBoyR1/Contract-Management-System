@@ -1,6 +1,7 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5082' // your backend API URL
+  apiUrl: 'https://localhost:7256', // your backend API URL
+  //apiUrl: 'http://localhost:5082' //connect to jean api
 };
 
 //'http://localhost:5082/api/users';

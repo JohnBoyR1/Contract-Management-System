@@ -6,8 +6,7 @@ import { Profile } from '../models/profile.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileStateService {
-
-  constructor(private http: HttpClient){}
+  constructor(private http: HttpClient) {}
 
   //need userId
   userId = '';
@@ -34,11 +33,11 @@ export class ProfileStateService {
   //Once retrieve user's profile from backend, back end returns a profile object
   //then initialise an object and loads it into signals
   initProfile(profile: Profile | null) {
-    if (!profile){
+    if (!profile) {
       this.isProfileLoaded.set(false);
-      return;    
+      return;
     }
-    
+
     //user id //because it does not change it is not a signal
     this.userId = String(profile.userId ?? this.userId);
     //toggles
@@ -59,23 +58,17 @@ export class ProfileStateService {
     this.bio.set(profile.bio ?? '');
 
     this.isProfileLoaded.set(true);
-
   }
 
   updateProfileBackend(changes: any) {
-    return this.http.patch(`/users/${this.userId}/profile`, changes)
-      .subscribe(() => {
-
-        // After saving, force a fresh GET from backend
-        this.http.get<Profile>(`/users/${this.userId}/profile`)
-          .subscribe(fullProfile => {
-            console.log("FULL PROFILE FROM BACKEND:", fullProfile);
-            this.initProfile(fullProfile);
-          });
-
+    return this.http.patch(`/users/${this.userId}/profile`, changes).subscribe(() => {
+      // After saving, force a fresh GET from backend
+      this.http.get<Profile>(`/users/${this.userId}/profile`).subscribe((fullProfile) => {
+        console.log('FULL PROFILE FROM BACKEND:', fullProfile);
+        this.initProfile(fullProfile);
       });
+    });
   }
-
 
   clearProfile() {
     this.userId = '';
@@ -97,6 +90,4 @@ export class ProfileStateService {
   hasProfileLoaded(): boolean {
     return this.isProfileLoaded();
   }
-
-
 }

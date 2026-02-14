@@ -19,6 +19,9 @@ namespace ContractDevApi.DTOs
         public string Country { get; set; } = string.Empty;
 
         [Required]
+        public string Description { get; set; } = string.Empty;
+
+        [Required]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 

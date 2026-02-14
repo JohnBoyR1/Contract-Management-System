@@ -1,12 +1,17 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormGroup,
+  FormControl,
+  Validators,
+} from '@angular/forms';
 
 import { UserService } from '../../core/services/user.service';
 
 import { ProfileStateService } from '../../core/shared/profile-state.service';
-
-
 
 @Component({
   selector: 'app-sign-up',
@@ -21,43 +26,41 @@ export class SignUp implements OnInit {
 
   private profileState = inject(ProfileStateService);
 
+  private http = inject(HttpClient);
   //Todo validation on input(angular built in)
 
   //Defining the form structure
-  contractForm = new FormGroup({
-    firstName: new FormControl('', [Validators.required]),
-    lastName: new FormControl('', [Validators.required]),
-    username: new FormControl('', [Validators.required]),
-    country: new FormControl('', [Validators.required]),
-    description: new FormControl('', [Validators.required]),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required]),
-    confirmPassword: new FormControl('', [Validators.required])
-   
-  },
-  { validators: this.passwordMatchValidator.bind(this) }//this is now bound to the FormGroup body 
-
+  contractForm = new FormGroup(
+    {
+      firstName: new FormControl('', [Validators.required]),
+      lastName: new FormControl('', [Validators.required]),
+      username: new FormControl('', [Validators.required]),
+      country: new FormControl('', [Validators.required]),
+      description: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required]),
+      confirmPassword: new FormControl('', [Validators.required]),
+    },
+    { validators: this.passwordMatchValidator.bind(this) }, //this is now bound to the FormGroup body
   );
   isSubmitted = signal(false);
-  isLoading = signal(false); 
+  isLoading = signal(false);
 
-  //password match confirm password validation 
-  passwordMatchValidator(form: FormGroup){
+  //password match confirm password validation
+  passwordMatchValidator(form: FormGroup) {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
 
-    if(!password || !confirmPassword) {
+    if (!password || !confirmPassword) {
       return null; //if either password is no value no point evaluating them
     }
 
     return password === confirmPassword ? null : { passwordsDontMatch: true };
   }
 
-
   //handling the submission
   handleFormSubmit() {
-    if (this.contractForm.valid){
-
+    if (this.contractForm.valid) {
       this.isLoading.set(true); //start loading
 
       console.log('Form Data for Backend: ', this.contractForm.value);
@@ -72,9 +75,9 @@ export class SignUp implements OnInit {
         country: rawValue.country,
         description: rawValue.description,
         email: rawValue.email,
-        password: rawValue.password
-        //confirmPassword: rawValue.confirmPassword
-      }
+        password: rawValue.password,
+        confirmPassword: rawValue.confirmPassword,
+      };
 
       //Calling Service...
       this.userService.signup(payload).subscribe({
@@ -86,13 +89,13 @@ export class SignUp implements OnInit {
 
           this.isSubmitted.set(true);
           this.contractForm.reset();
-      },
-      error: (err) => alert('API Error: ' + err.message)
+        },
+        error: (err) => alert('API Error: ' + err.message),
       });
     } else {
       console.log('Form is invalid. Show some errors!');
       //print out of failing fields
-      Object.keys(this.contractForm.controls).forEach(key => {
+      Object.keys(this.contractForm.controls).forEach((key) => {
         const controlErrors = this.contractForm.get(key)?.errors;
         if (controlErrors) {
           console.log('Control: ' + key + ', Errors: ', controlErrors);
@@ -110,12 +113,15 @@ export class SignUp implements OnInit {
   }
 
   ngOnInit() {
-    // if you want to test GET requests: 
+    // if you want to test GET requests:
     //this.userService.signup().subscribe(...);
+    // this.http.get(`https://localhost:7256/api`).subscribe((fullProfile) => {
+    //   console.log('FULL PROFILE FROM BACKEND:', fullProfile);
+    // });
   }
+  //https://localhost:7256/api/UserAccounts
 
   selectedCountry: string = '';
-
 
   countries = [
     { code: 'AF', name: 'Afghanistan' },
@@ -310,7 +316,6 @@ export class SignUp implements OnInit {
     { code: 'VN', name: 'Vietnam' },
     { code: 'YE', name: 'Yemen' },
     { code: 'ZM', name: 'Zambia' },
-    { code: 'ZW', name: 'Zimbabwe' }
+    { code: 'ZW', name: 'Zimbabwe' },
   ];
-
 }

@@ -1,6 +1,5 @@
 /* This manages signup, login, getProfile by id, updateProfile by id and gets all profiles(to populate)*/
 
-
 // HttpClient lets Angular make HTTP requests (GET, POST, PUT, DELETE)
 // to your .NET backend API.
 import { HttpClient } from '@angular/common/http';
@@ -17,13 +16,13 @@ import { environment } from '../../../environments/environment';
 @Injectable({
   // 'root' means this service is available everywhere in the app
   // without needing to manually add it to providers[].
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-
   // This is the base URL of your .NET API.
   // All user-related endpoints start with /api/users
-  private apiUrl = `${environment.apiUrl}/api/users`
+  private apiUrl = `${environment.apiUrl}/api`;
+  //private apiUrl = `${environment.apiUrl}/api/users`
 
   // HttpClient is injected into the service so we can make HTTP calls.
   constructor(private http: HttpClient) {}
@@ -37,17 +36,16 @@ export class UserService {
   signup(data: any): Observable<any> {
     // POST sends data to the backend to create a new user.
     // Example final URL: http://localhost:5082/api/users/signup
-    return this.http.post(`${this.apiUrl}/signup`, data);
+    return this.http.post(`${this.apiUrl}/UserAccounts/Register`, data);
   }
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, { email, password });
-  } 
-
-  getProfile(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/${id}`);
+    return this.http.post(`${this.apiUrl}/UserAccounts/Login`, { email, password });
   }
 
+  getProfile(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/UserProfiles/${id}`);
+  }
 
   // -----------------------------
   // UPDATE PROFILE REQUEST
@@ -58,11 +56,11 @@ export class UserService {
   updateProfile(id: number, data: any): Observable<any> {
     // PUT sends updated data to the backend.
     // Example final URL: http://localhost:5082/api/users/1
-    return this.http.put(`${this.apiUrl}/${id}`, data);
+    return this.http.put(`${this.apiUrl}/UserProfiles/${id}`, data);
   }
 
   //for the fun part calling all the profiles
   getAllProfiles(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}`);
+    return this.http.get<any[]>(`${this.apiUrl}/UserProfiles`);
   }
 }

@@ -139,6 +139,4 @@ public async Task<IActionResult> GetAllUsers()
         return Ok(new { message = "Token valid" });
     }
 
-    
-
 }

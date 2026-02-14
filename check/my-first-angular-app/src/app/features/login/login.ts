@@ -10,7 +10,7 @@ import { AuthService } from '../../core/auth/auth.service';
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './login.html'
+  templateUrl: './login.html',
 })
 export class Login {
   private userService = inject(UserService);
@@ -24,7 +24,7 @@ export class Login {
 
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required])
+    password: new FormControl('', [Validators.required]),
   });
 
   handleLogin() {
@@ -32,40 +32,36 @@ export class Login {
 
     this.isLoading.set(true);
     this.loginError.set('');
-    
+
     //fetch profile data form the backend
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
-
         const userId = this.authService.getCurrentUserId();
-        if(!userId) {
+        if (!userId) {
           this.loginError.set('Could not decode user ID');
           this.isLoading.set(false);
           return;
         }
-
         //fetch profile and update profile signals
         this.userService.getProfile(userId).subscribe({
           next: (profile) => {
             //update the profile data
             this.profileState.initProfile(profile);
-
             //navigate to the home page
             this.isLoading.set(false);
             this.loggedIn.set(true);
             this.router.navigate(['/home']);
-            
           },
           error: () => {
             this.loginError.set('Failed to load profile');
             this.isLoading.set(false);
-          }
-        }); 
+          },
+        });
       },
       error: () => {
         this.loginError.set('Invalid email or password');
         this.isLoading.set(false);
-      }
+      },
     });
   }
 }

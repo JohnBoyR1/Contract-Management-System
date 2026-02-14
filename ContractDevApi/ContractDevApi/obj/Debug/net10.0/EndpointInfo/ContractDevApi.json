@@ -5,6 +5,25 @@
     "version": "1.0"
   },
   "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "ContractDevApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/UserAccounts": {
       "get": {
         "tags": [
@@ -43,46 +62,7 @@
         }
       }
     },
-    "/api/UserAccounts/User/{username}": {
-      "get": {
-        "tags": [
-          "UserAccounts"
-        ],
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserAccount"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserAccount"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserAccount"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/UserAccounts/Account/Register": {
+    "/api/UserAccounts/Register": {
       "post": {
         "tags": [
           "UserAccounts"
@@ -130,7 +110,7 @@
         }
       }
     },
-    "/api/UserAccounts/Account/Login": {
+    "/api/UserAccounts/Login": {
       "post": {
         "tags": [
           "UserAccounts"
@@ -195,44 +175,137 @@
           }
         }
       }
+    },
+    "/api/UserAccounts/Validate": {
+      "get": {
+        "tags": [
+          "UserAccounts"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/UserProfiles/{id}": {
+      "put": {
+        "tags": [
+          "UserProfiles"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "UserProfiles"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/UserProfiles": {
+      "get": {
+        "tags": [
+          "UserProfiles"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "ProfileUpdateDto": {
+        "type": "object",
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
+          },
+          "availableForWork": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "offeringWork": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "displayUserName": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "hidePhoneNumber": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "UserAccount": {
         "required": [
-          "country",
           "email",
-          "firstName",
-          "lastName",
-          "passwordHash",
-          "username"
+          "passwordHash"
         ],
         "type": "object",
         "properties": {
           "userAccountId": {
             "type": "integer",
             "format": "int32"
-          },
-          "username": {
-            "maxLength": 100,
-            "minLength": 1,
-            "type": "string"
-          },
-          "firstName": {
-            "maxLength": 100,
-            "minLength": 1,
-            "type": "string"
-          },
-          "lastName": {
-            "maxLength": 100,
-            "minLength": 1,
-            "type": "string"
-          },
-          "country": {
-            "maxLength": 2,
-            "minLength": 2,
-            "type": "string"
           },
           "email": {
             "maxLength": 255,
@@ -284,6 +357,7 @@
         "required": [
           "confirmPassword",
           "country",
+          "description",
           "email",
           "firstName",
           "lastName",
@@ -308,6 +382,10 @@
             "minLength": 1,
             "type": "string"
           },
+          "description": {
+            "minLength": 1,
+            "type": "string"
+          },
           "email": {
             "minLength": 1,
             "type": "string",
@@ -329,7 +407,13 @@
   },
   "tags": [
     {
+      "name": "ContractDevApi"
+    },
+    {
       "name": "UserAccounts"
+    },
+    {
+      "name": "UserProfiles"
     }
   ]
 }
