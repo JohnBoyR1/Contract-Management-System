@@ -15,6 +15,10 @@
 .collapse-horizontal {
   transition: width 0.6s ease !important; /* slower, smoother */
 }
+
+
+
+
 .box {
   width: 300px;
   height: 200px;

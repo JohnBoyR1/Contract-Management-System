@@ -29,6 +29,7 @@ export class Home implements AfterViewInit {
     
     const elements = document.querySelectorAll('.box');//All returns a node list
 
+    //The browser’s built‑in IntersectionObserver system (non-angular)
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -49,5 +50,7 @@ export class Home implements AfterViewInit {
     elements.forEach(element => observer.observe(element));
   }
 }
+
+//.classList is a native DOM mutation
 
 

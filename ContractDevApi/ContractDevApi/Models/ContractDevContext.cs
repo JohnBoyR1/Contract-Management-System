@@ -11,7 +11,7 @@ namespace ContractDevApi.Models
         protected ContractDevContext()
         {
         }
-
+        
         public DbSet<UserAccount> UserAccounts { get; set; }
 
         public DbSet<UserProfile> UserProfiles { get; set; }
