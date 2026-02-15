@@ -1,0 +1,53 @@
+## Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build results
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+
+## Rider / JetBrains
+.idea/
+*.sln.iml
+
+## Visual Studio Code
+.vscode/
+
+## ASP.NET / .NET Core
+*.dbmdl
+*.jfm
+*.pdb
+*.dll
+*.exe
+*.cache
+*.log
+
+## NuGet
+*.nupkg
+*.snupkg
+packages/
+*.nuget.props
+*.nuget.targets
+
+## Entity Framework
+Migrations/obj/
+
+## Publish output
+publish/
+out/
+
+## Temporary files
+*.tmp
+*.temp
+*.bak
+*.old
+
+## OS files
+Thumbs.db
+ehthumbs.db
+.DS_Store
