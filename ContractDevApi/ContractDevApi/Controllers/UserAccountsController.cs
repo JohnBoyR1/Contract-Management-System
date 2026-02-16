@@ -108,17 +108,17 @@ namespace ContractDevApi.Controllers
             var userProfile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == user.UserAccountId);
 
             ////Generate authentication cookie with a claim for the user
-            //var claims = new[]
-            //{
-            //    new Claim(ClaimTypes.NameIdentifier, user.UserAccountId.ToString()),
-            //    new Claim(ClaimTypes.Email, user.Email),
-            //    new Claim(ClaimTypes.Name, $"{userProfile.FirstName} {userProfile.LastName}")
-            //};
-            //var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            //var principal = new ClaimsPrincipal(identity);
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserAccountId.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, $"{userProfile.FirstName} {userProfile.LastName}")
+            };
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
 
             ////Assign cookie to session - cookie authentication expires in 1 hour (range can vary)
-            //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
             //Construct response entity
             var response = new UserResponseDto
