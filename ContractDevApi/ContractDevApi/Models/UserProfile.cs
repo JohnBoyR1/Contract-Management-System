@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContractDevApi.Models
 {
+    //-----------------------
+    //UserProfile model - if no model exists on the database, ef database update will create table via Entity Framework
+    //-----------------------
     public class UserProfile
     {
         [Key]

@@ -1,5 +1,11 @@
 ﻿namespace ContractDevApi.DTOs
 {
+    //-----------------------
+    //This ResponseDTO is responsible for sending the combined User and Profile entity to the Front-End
+    //Requires that the database context is queried via Entity Framework to create lists of both User and Profiles
+    //A Linq query is used to combine both User and Profile Lists into a single list, joining on UserId
+    //UserId is UserAccountId on the database - naming discrepency a result of naming convention not being aligned between different systems
+    //-----------------------
     public class ProfileResponseDto
     {
         public int UserId { get; set; }

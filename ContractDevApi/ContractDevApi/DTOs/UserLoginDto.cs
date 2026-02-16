@@ -2,6 +2,10 @@
 
 namespace ContractDevApi.DTOs
 {
+    //-----------------------
+    //LoginDTO used as received object from Front-End
+    //Using DataAnnotations to ensure that email received is valid email
+    //-----------------------
     public class UserLoginDto
     {
         [Required]
