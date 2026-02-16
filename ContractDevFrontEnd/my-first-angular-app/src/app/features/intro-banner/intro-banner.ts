@@ -2,15 +2,19 @@ import { Component, AfterViewInit, Input, HostBinding, OnInit, OnDestroy, Change
 
 
 @Component({
-  selector: 'app-carousel',
+  selector: 'app-intro-banner',
   imports: [],
   standalone: true,
-  templateUrl: './carousel.html',
-  styleUrl: './carousel.css',
+  templateUrl: './intro-banner.html',
+  styleUrl: './intro-banner.css',
 })
-export class Carousel  {
+export class IntroBanner  {
  
   ngAfterViewInit() {
+
+
+    
+
     
     const elements = document.querySelectorAll('.intro');//All returns a node list
 

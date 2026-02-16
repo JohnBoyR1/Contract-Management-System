@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ProfileDisplayCard } from '../profile-display-card/profile-display-card';
 import { UserService } from '../../core/services/user.service';
+import { AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-profile-gallery',
@@ -9,7 +10,7 @@ import { UserService } from '../../core/services/user.service';
   templateUrl: './profile-gallery.html',
   styleUrl: './profile-gallery.css',
 })
-export class ProfileGallery {
+export class ProfileGallery implements AfterViewInit {
   profiles: any[] = [];//need for multi
  
 
@@ -20,10 +21,17 @@ export class ProfileGallery {
     this.userService.getAllProfiles().subscribe({//and this
       next: (data) => {
         console.log("ALL PROFILES FROM BACKEND:", data);
-        this.profiles = data;
+        this.profiles = [...data];
+        this.profiles = [...this.profiles];
       },
       error: (err) => console.error('Error loading profiles', err)
     });
   }
+  
+  ngAfterViewInit() {
+    
+    
+  }
+
   
 }

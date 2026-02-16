@@ -1,12 +1,13 @@
 import { Component,ViewChild, ElementRef, AfterViewInit, ViewEncapsulation } from '@angular/core';
-import { Carousel } from "../carousel/carousel";
+import { IntroBanner } from '../intro-banner/intro-banner';
 import { signal } from '@angular/core';
+import { MarketingBanner } from "../marketing-banner/marketing-banner";
 
 
 
 @Component({
   selector: 'app-home',
-  imports: [Carousel],
+  imports: [IntroBanner, MarketingBanner],
   standalone: true,
   templateUrl: './home.html',
   styleUrl: './home.css',

@@ -1,4 +1,6 @@
 //<reference types="@angular/localize" />
+import 'ionicons'; //npm install ionicons
+
 
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';

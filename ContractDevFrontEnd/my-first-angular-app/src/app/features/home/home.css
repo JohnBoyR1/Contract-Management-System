@@ -1,5 +1,6 @@
 .main {
     margin-top: 100px;
+    padding-bottom: 50px;
 }
 
 .two, .img {
@@ -32,4 +33,10 @@
   opacity: 1;
   transform: translateY(0); /* slides into view */
   background: #eee;
+}
+
+.custom-img {
+  border-radius: 20px;
+  max-height: 500px;
+  max-width: 500px;
 }

@@ -42,3 +42,9 @@ a {
     font-family:'Times New Roman', Times, serif;
     font-style: initial;
 }
+/*icon not working*/
+.icon {
+  font-size: 40px;
+  color: white; /* or whatever your navbar uses */
+  z-index: 30;
+}
