@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Configuration;
 
 namespace ContractDevApi.Controllers
 {
@@ -18,7 +19,7 @@ namespace ContractDevApi.Controllers
     {
         private readonly ContractDevContext _context;
 
-        private readonly JwtService _jwt;   // <-- Inject JWT service
+        private readonly JwtService _jwt;
 
         public UserProfilesController(ContractDevContext context, JwtService jwt)
         {
@@ -26,6 +27,11 @@ namespace ContractDevApi.Controllers
             _jwt = jwt;
         }
 
+        //-----------------------
+        //Update Profle - Requires that logged in user is authenticated, Checks JWT and Cookie auth
+        //Recieves id of user from Front-End and updated profile fields
+        //Empty or null values are ignored for updated fields - prevents dataloss
+        //-----------------------
         [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProfile(int id, ProfileUpdateDto dto)
@@ -43,9 +49,13 @@ namespace ContractDevApi.Controllers
 
             int result = await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Profile update successfully" });
+            return Ok(new { message = "Profile updated successfully" });
         }
 
+        //-----------------------
+        //Get Profile Details - receives user id from Front-End
+        //Construct full user and profile entity from shared userid and sends that back to front-end as response
+        //-----------------------
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProfileDetails(int id)
         {
@@ -75,38 +85,41 @@ namespace ContractDevApi.Controllers
             return Ok(response);
         }
 
-
+        //-----------------------
+        //Get All Users - Used in Front-End to build gallary of user profiles
+        //Method uses linq query to construct complete list of user entities
+        //Joins both tables on shared attribute - UserAccountId
+        //Reponds to Front-End with List of Profile Response Dto, with expected naming scheme on Front-End
+        //-----------------------
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
             var profiles = await _context.UserProfiles.ToListAsync();
             var users = await _context.UserAccounts.ToListAsync();
 
-            var listOfUserProfiles = new List<ProfileResponseDto>();
-
-            for (int i = 0; i < profiles.Count; i++)
+            var result =
+            from u in users
+            join p in profiles
+                on u.UserAccountId equals p.UserAccountId
+            select new ProfileResponseDto
             {
-                var dto = new ProfileResponseDto
-                {
-                    UserId = users[i].UserAccountId,
-                    FirstName = profiles[i].FirstName,
-                    LastName = profiles[i].LastName,
-                    Username = profiles[i].Username,
-                    Email = users[i].Email,
-                    PhoneNumber = profiles[i].PhoneNumber,
-                    Country = profiles[i].Country,
-                    Description = profiles[i].Description,
-                    Bio = profiles[i].Bio,
-                    AvailableForWork = profiles[i].AvailableForWork,
-                    OfferingWork = profiles[i].OfferingWork,
-                    DisplayUserName = profiles[i].DisplayUserName,
-                    HidePhoneNumber = profiles[i].HidePhoneNumber
-                };
+                UserId = u.UserAccountId,
+                FirstName = p.FirstName,
+                LastName = p.LastName,
+                Username = p.Username,
+                Email = u.Email,
+                PhoneNumber = p.PhoneNumber,
+                Country = p.Country,
+                Description = p.Description,
+                Bio = p.Bio,
+                AvailableForWork = p.AvailableForWork,
+                OfferingWork = p.OfferingWork,
+                DisplayUserName = p.DisplayUserName,
+                HidePhoneNumber = p.HidePhoneNumber
+            };
 
-                listOfUserProfiles.Add(dto);
-            }
 
-            return Ok(listOfUserProfiles);
+            return Ok(result);
         }
     }
 }
