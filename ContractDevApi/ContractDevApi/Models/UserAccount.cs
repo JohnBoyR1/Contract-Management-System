@@ -9,26 +9,6 @@ namespace ContractDevApi.Models
         [Key]
         public int UserAccountId { get; set; }
 
-        [Required]
-        [StringLength(100, MinimumLength = 1)]
-        [Column(TypeName = "varchar(50)")]
-        public string Username { get; set; } = string.Empty;
-
-        [Required]
-        [StringLength(100, MinimumLength = 1)]
-        [Column(TypeName = "varchar(100)")]
-        public string FirstName { get; set; } = string.Empty;
-
-        [Required]
-        [StringLength(100, MinimumLength = 1)]
-        [Column(TypeName = "varchar(100)")]
-        public string LastName { get; set; } = string.Empty;
-
-        [Required]
-        [StringLength(2, MinimumLength = 2)]
-        [Column(TypeName = "varchar(2)")]
-        public string Country { get; set; } = string.Empty;
-
         //Email does not need mimimum length here as DTO will ensure email validation
         [Required]
         [StringLength(255)]

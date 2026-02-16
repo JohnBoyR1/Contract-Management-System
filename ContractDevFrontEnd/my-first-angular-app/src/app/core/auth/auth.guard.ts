@@ -1,0 +1,52 @@
+// auth.guard.ts
+import { CanActivateFn } from '@angular/router';
+import { inject } from '@angular/core';
+import { of } from 'rxjs';
+import { take, switchMap, map, catchError } from 'rxjs/operators';
+import { AuthService } from './auth.service';
+import { UserService } from '../services/user.service';
+import { ProfileStateService } from '../shared/profile-state.service';
+import { Router } from '@angular/router';
+
+export const authGuard: CanActivateFn = (route, state) => {
+  const auth = inject(AuthService);
+  const userService = inject(UserService);
+  const profileState = inject(ProfileStateService);
+  const router = inject(Router);
+
+  return auth.isLoggedIn$.pipe(
+    take(1),
+    switchMap(isLoggedIn => {
+      if (!isLoggedIn) {
+        // Not logged in -> redirect to login
+        router.navigate(['/login']);
+        return of(false);
+      }
+
+      // If profile already loaded, allow navigation immediately
+      if (typeof profileState.isProfileLoaded === 'function' && profileState.isProfileLoaded()) {
+        return of(true);
+      }
+
+      // Otherwise fetch profile, initialize signals, then allow navigation
+      const userId = auth.getCurrentUserId();
+      if (!userId) {
+        router.navigate(['/login']);
+        return of(false);
+      }
+
+      return userService.getProfile(userId).pipe(
+        take(1),
+        map(profile => {
+          if (profile) profileState.initProfile(profile);
+          return true;
+        }),
+        catchError(() => {
+          // On error (404/401/etc.) redirect to login or profile-setup
+          router.navigate(['/login']);
+          return of(false);
+        })
+      );
+    })
+  );
+};
