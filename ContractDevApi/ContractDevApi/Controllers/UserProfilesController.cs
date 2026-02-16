@@ -49,7 +49,7 @@ namespace ContractDevApi.Controllers
 
             int result = await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Profile update successfully" });
+            return Ok(new { message = "Profile updated successfully" });
         }
 
         //-----------------------

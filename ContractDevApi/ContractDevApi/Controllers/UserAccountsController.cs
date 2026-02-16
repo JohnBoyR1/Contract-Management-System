@@ -7,6 +7,7 @@ using ContractDevApi.Models;
 using ContractDevApi.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -158,7 +159,7 @@ namespace ContractDevApi.Controllers
         //Logout - Deauthorizes cookie associated to current user
         //Cannot deauthorize JWT - JWT current lifetime is 1 hour
         //-----------------------
-        [HttpPost("Account/Logout")]
+        [HttpPost("Logout")]
         public async Task<IActionResult> Logout()
         {
             //if (HttpContext.User.Identity?.IsAuthenticated == false) return BadRequest(new { Message = "No user is logged in" });
@@ -176,7 +177,46 @@ namespace ContractDevApi.Controllers
             });
         }
 
-        
+        //-----------------------
+        //Change Password - Receives id, old password, new password, and confirm new password from Front-End
+        //Ensures that both JWT and cookie are authenticated before updating user password
+        //id is used to find user, old password is verified, new password is hashed and overwrites old password
+        //-----------------------
+        [Authorize]
+        [HttpPost("ChangePassword/{id}")]
+        public async Task<IActionResult> ChangePassword(int id, UserPasswordDto dto)
+        {
+            //Checks UserPasswordDto Model to ensure that all incoming values match the Model constraints
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+            //Check that current session is authenticated via cookie, [Authorize] attribute checks JWT
+            if (!IsAuthenticated()) return BadRequest(new { Message = "User not authenticated" });
+
+            //Retrieve user details from context based on UserAccountId
+            var user = await _context.UserAccounts.FindAsync(id);
+
+            //
+            if (user == null) return NotFound($"User with id: {id} does not exist");
+
+            //Check if password matches hashed password via BCrypt verification
+            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.OldPassword, user.PasswordHash);
+
+            //If password does not pass verification, return error Status 401
+            if (!validatePassword) return Unauthorized(new { Message = "Invalid Password" });
+
+            //Hash new password
+            var newPasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            //Overrite old hashed password with new password
+            user.PasswordHash = newPasswordHash;
+
+            //Saving changes to physical database - result stores integer value of status received from database
+            int result = await _context.SaveChangesAsync();
+
+            //If result is 0 or -1 (status codes for system error) sends returns error back to Front-End
+            if (result <= 0) return Problem("System error occured. Password Update Failed.");
+
+            return Ok(new { message = "Password updated successfully" });
+        }
+
         //Placeholder validation - Front-End expects it. Actual validation of token uses [Authorize] attribute
         //Note to Front-End: Front-End should assume accounts are validated until HTTP request response returns Status 401 - UnAuthorized
         [HttpGet("Validate")]
