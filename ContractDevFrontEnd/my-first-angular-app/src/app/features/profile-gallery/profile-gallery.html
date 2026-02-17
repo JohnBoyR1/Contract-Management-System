@@ -2,7 +2,7 @@
 <div class="container mt-5">
   <div class="row g-3">
 
-    @for (u of profiles; track u.id) {
+    @for (u of profiles(); track trackByUserId) {
       <div class="col-md-6">
         <app-profile-display-card [user]="u"></app-profile-display-card>
       </div>

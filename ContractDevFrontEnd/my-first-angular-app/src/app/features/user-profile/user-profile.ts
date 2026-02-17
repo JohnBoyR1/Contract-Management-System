@@ -22,7 +22,7 @@ import { AuthService } from '../../core/auth/auth.service';
 })
 export class UserProfile {
   profileForm: FormGroup;//?
-   private apiUrl = 'http://localhost:5082/api/users';
+  
 
 
   private userService = inject(UserService);

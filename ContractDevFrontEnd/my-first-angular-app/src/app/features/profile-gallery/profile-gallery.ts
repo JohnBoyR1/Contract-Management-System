@@ -1,37 +1,39 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ProfileDisplayCard } from '../profile-display-card/profile-display-card';
 import { UserService } from '../../core/services/user.service';
-import { AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-profile-gallery',
   standalone: true,
-  imports: [ProfileDisplayCard],
+  imports: [CommonModule, ProfileDisplayCard],
   templateUrl: './profile-gallery.html',
   styleUrl: './profile-gallery.css',
 })
-export class ProfileGallery implements AfterViewInit {
-  profiles: any[] = [];//need for multi
- 
+export class ProfileGallery implements OnInit {
 
-  constructor(private userService: UserService) {}
 
-  //for when the page loads
-  ngOnInit(): void {
-    this.userService.getAllProfiles().subscribe({//and this
-      next: (data) => {
-        console.log("ALL PROFILES FROM BACKEND:", data);
-        this.profiles = [...data];
-        this.profiles = [...this.profiles];
-      },
-      error: (err) => console.error('Error loading profiles', err)
+  public profiles = signal([] as any[]);
+
+  userService = inject(UserService);
+
+  trackByUserId = (index: number, item: any) => item.userId;
+
+  ngOnInit() {
+    this.userService.getAllProfiles().subscribe(data => {
+      this.profiles.set(data);
+      console.log('All Profiles from back end: ', data);
     });
   }
-  
-  ngAfterViewInit() {
-    
-    
-  }
 
-  
+
 }
+
+
+
+
+
+
+
+

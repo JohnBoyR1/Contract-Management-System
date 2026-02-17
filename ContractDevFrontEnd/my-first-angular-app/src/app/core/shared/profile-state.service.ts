@@ -1,4 +1,65 @@
-/* manages one logged in user's profile using signals */
+import { Injectable, signal, computed } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class ProfileStateService {
+
+  // Holds the full profile object
+  private _profile = signal<any | null>(null);
+
+  // Public getter for components
+  profile = computed(() => this._profile());
+
+  // Whether profile is loaded
+  isProfileLoaded = computed(() => this._profile() !== null);
+
+  // Toggle buttons expose Boolean as its own computed signal
+  availableForWork = computed(() => this._profile()?.availableForWork ?? false);
+
+  offeringWork = computed(() => this._profile()?.offeringWork ?? false);
+
+  displayUserName = computed(() => this._profile()?.displayUserName ?? false);
+
+  hidePhoneNumber = computed(() => this._profile()?.hidePhoneNumber ?? false);
+
+  //update profile details
+  phoneNumber = computed(() => this._profile()?.phoneNumber ?? '');
+
+  firstName = computed(() => this._profile()?.firstName ?? '');
+
+  lastName = computed(() => this._profile()?.lastName ?? '');
+
+  username = computed(() => this._profile()?.username ?? '');
+
+  bio = computed(() => this._profile()?.bio ?? '');
+
+  email = computed(() => this._profile()?.email ?? '');
+
+
+
+
+
+  // Called after login or guard fetch
+  initProfile(profile: any) {
+    this._profile.set(profile);
+  }
+
+  // Called on logout
+  clearProfile() {
+    this._profile.set(null);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+/* manages one logged in user's profile using signals *
 
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -90,4 +151,4 @@ export class ProfileStateService {
   hasProfileLoaded(): boolean {
     return this.isProfileLoaded();
   }
-}
+}*/

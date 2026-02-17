@@ -1,6 +1,8 @@
 /*global settings for nav bar*/
 .navbar {
     color:aliceblue !important;
+    padding-left: 10px;
+    padding-right: 10px;
     
     background-color: rgb(201, 244, 253, 0.1) !important;
     backdrop-filter: blur(5px) !important;
@@ -9,12 +11,15 @@
 }
 /*Highlights the page ones on*/
 .nav-link.active {
+    display: inline-block;
+    transform: translateY(10px) scale(1.4);
     font-weight: bolder;
     color:  rgb(183, 113, 248);
 }
 /*Highlights when mouse pointer is hovering over anchor*/
 .nav-link:hover {
-    color: blue;
+    color: white;
+    transform: scale(1.4);
 }
 
 .search {
@@ -30,6 +35,7 @@
 
 .img {
     border-radius: 10px;
+    
 }
 
 a {
@@ -42,9 +48,12 @@ a {
     font-family:'Times New Roman', Times, serif;
     font-style: initial;
 }
-/*icon not working*/
+
 .icon {
-  font-size: 40px;
-  color: white; /* or whatever your navbar uses */
-  z-index: 30;
+    font-size: larger;
+    margin-left: 10px;
 }
+
+
+
+
