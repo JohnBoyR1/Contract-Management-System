@@ -40,3 +40,9 @@
   max-height: 500px;
   max-width: 500px;
 }
+
+video .bottom-video {
+  border-radius: 20px;
+  width: 50px;
+
+}

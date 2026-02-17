@@ -37,7 +37,6 @@ export class ProfileStateService {
 
 
 
-
   // Called after login or guard fetch
   initProfile(profile: any) {
     this._profile.set(profile);
@@ -47,6 +46,7 @@ export class ProfileStateService {
   clearProfile() {
     this._profile.set(null);
   }
+
 }
 
 

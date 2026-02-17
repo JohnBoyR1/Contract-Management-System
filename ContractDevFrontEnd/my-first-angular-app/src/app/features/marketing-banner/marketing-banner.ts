@@ -33,7 +33,7 @@ export class MarketingBanner {
       });
     }, {
       root: null, //viewport
-      threshold: 0.99, //50% of the element is visible
+      threshold: 0.80, //50% of the element is visible
       rootMargin: "20% 0px 20% 0px"//this creates a narrow band in the middle of the screen
     });
 
