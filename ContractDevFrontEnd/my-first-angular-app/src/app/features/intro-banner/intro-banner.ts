@@ -10,12 +10,23 @@ import { Component, AfterViewInit, Input, HostBinding, OnInit, OnDestroy, Change
 })
 export class IntroBanner  {
  
+
+  // introVideo loading...
+  public currentVideo = "assets/videos/loading.mp4";
+
+
+  onVideoEnded(video: HTMLVideoElement) {
+    this.currentVideo = "assets/videos/software_blueprint.mp4";
+
+    video.load();  // reload with new source
+    //video.play();  // autoplay second video
+    video.loop;    // force replay on second video
+  }
+
+
+
   ngAfterViewInit() {
 
-
-    
-
-    
     const elements = document.querySelectorAll('.intro');//All returns a node list
 
     //The browser’s built‑in IntersectionObserver system (non-angular)

@@ -1,4 +1,5 @@
-// app.config.ts
+// app.config.ts, App-wide providers, Routing, HttpClient, animations, etc. NO THEME LOGIC HERE
+
 import { ApplicationConfig, importProvidersFrom, provideAppInitializer, inject } from '@angular/core';
 import { provideRouter, withRouterConfig, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';

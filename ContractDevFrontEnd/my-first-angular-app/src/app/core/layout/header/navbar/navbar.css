@@ -10,7 +10,7 @@
    
 }
 /*Highlights the page ones on*/
-.nav-link.active {
+.nav-link.active i {
     display: inline-block;
     transform: translateY(10px) scale(1.4);
     font-weight: bolder;
@@ -52,7 +52,14 @@ a {
 .icon {
     font-size: larger;
     margin-left: 10px;
+    color:rgb(180, 179, 184);
+    display: inline-block;  
 }
+
+.icon:hover {
+    color: white;
+}
+
 
 
 
