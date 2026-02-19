@@ -26,7 +26,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-//builder.Services.AddOpenApi();
+builder.Services.AddOpenApi();
 
 //Temporary User Authentication using cookies - eventually replaced by JWT once front-end is connected
 //NOTE: cookies is still a functional authentication system for testing purposes
@@ -58,7 +58,7 @@ builder.Services.AddAuthentication("Bearer")
             ValidIssuer = jwtSettings["Issuer"],
             ValidAudience = jwtSettings["Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+                Encoding.UTF8.GetBytes(jwtSettings["Key"]!))
         };
     });
 
@@ -76,7 +76,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    //app.MapOpenApi();
+    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
 }

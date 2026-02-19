@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Configuration;
 
 namespace ContractDevApi.Controllers
 {
@@ -97,7 +96,7 @@ namespace ContractDevApi.Controllers
             var profiles = await _context.UserProfiles.ToListAsync();
             var users = await _context.UserAccounts.ToListAsync();
 
-            var result =
+            var response =
             from u in users
             join p in profiles
                 on u.UserAccountId equals p.UserAccountId
@@ -119,7 +118,7 @@ namespace ContractDevApi.Controllers
             };
 
 
-            return Ok(result);
+            return Ok(response);
         }
     }
 }

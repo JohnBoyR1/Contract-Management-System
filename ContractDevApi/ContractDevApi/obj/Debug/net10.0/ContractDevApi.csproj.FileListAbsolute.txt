@@ -504,4 +504,3 @@ C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\Con
 C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\obj\Debug\net10.0\ContractDevApi.pdb
 C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\obj\Debug\net10.0\ContractDevApi.genruntimeconfig.cache
 C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\obj\Debug\net10.0\ref\ContractDevApi.dll
-C:\Users\moare\Documents\Course_Documents\Team_Project\Team_10_Group_Project\ContractDevApi\ContractDevApi\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
