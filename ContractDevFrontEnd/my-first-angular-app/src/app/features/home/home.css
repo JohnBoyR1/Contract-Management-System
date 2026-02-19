@@ -3,6 +3,13 @@
     padding-bottom: 50px;
 }
 
+app-intro-banner,
+app-marketing-banner {
+  display: block;
+  min-height: 250px; /* adjust to your design */
+}
+
+
 .two, .img {
     border-radius: 20px;
 }
@@ -53,6 +60,10 @@
   max-width: 500px;
 }
 
+.count {
+  color: white;
+}
+
 .button {
   background-color: #af00fa;
   border: 1px solid #af00fa;
@@ -83,4 +94,10 @@ video .bottom-video {
   border-radius: 20px;
   border: 1px solid  #af00fa; 
 }
+
+.bottom-video {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
 
