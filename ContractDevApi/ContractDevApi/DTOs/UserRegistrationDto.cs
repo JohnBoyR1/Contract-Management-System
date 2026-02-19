@@ -4,6 +4,11 @@ using System.Text.Json.Nodes;
 
 namespace ContractDevApi.DTOs
 {
+    //-----------------------
+    //Registration DTO consists of expected properties from Front-End
+    //DTO is used to construct both a new User and their associative Profile
+    //ComparePassword uses DataAnnotations - Compare attribute to ensure that this model validates that both Password and ConfirmPassword contain the same string value
+    //-----------------------
     public class UserRegistrationDto
     {
         [Required]

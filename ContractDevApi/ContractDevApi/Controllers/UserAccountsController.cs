@@ -7,6 +7,7 @@ using ContractDevApi.Models;
 using ContractDevApi.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -19,7 +20,7 @@ namespace ContractDevApi.Controllers
     {
         private readonly ContractDevContext _context;
 
-        private readonly JwtService _jwt;   // <-- Inject JWT service
+        private readonly JwtService _jwt;
 
 
         public UserAccountsController(ContractDevContext context, JwtService jwt)
@@ -35,13 +36,18 @@ namespace ContractDevApi.Controllers
             return await _context.UserAccounts.ToListAsync();
         }
 
-        // POST: api/UserAccounts
+        // POST: api/UserAccounts/Register
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //-----------------------
+        //New user registration - information received from Front-End used to populate User and Profile table
+        //-----------------------
         [HttpPost("Register")]
         public async Task<ActionResult<UserAccount>> RegisterUserAccount(UserRegistrationDto dto)
         {
+            //Checks UserAccount Model to ensure that all incoming values match the Model constraints
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
+            //emailExists & usernameExists ensure that new account details do not conflict with unique user properties
             bool emailExists = await _context.UserAccounts.AnyAsync(x => x.Email!.ToLower() == dto.Email!.ToLower());
 
             if (emailExists) return Conflict("User with that email or username already exists");
@@ -50,16 +56,20 @@ namespace ContractDevApi.Controllers
 
             if (usernameExists) return Conflict("user with that email or username already exists");
 
+            //BCrypt hashing used to hash user password that will be saved on the database
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
+            //Constructing UserAccount Entity
             var user = new UserAccount
             {
                 Email = dto.Email,
                 PasswordHash = passwordHash
             };
 
+            //Adding UserAccount Entity to in-memory database context
             _context.UserAccounts.Add(user);
 
+            //Constructing UserProfile Entity
             var profile = new UserProfile
             {
                 Username = dto.Username,
@@ -71,12 +81,16 @@ namespace ContractDevApi.Controllers
                 UserAccount = user
             };
 
+            //Adding UserProfile Entity to in-memory database context
             _context.UserProfiles.Add(profile);
 
+            //Saving changes to physical database - result stores integer value of status received from database
             int result = await _context.SaveChangesAsync();
 
+            //If result is 0 or -1 (status codes for system error) sends returns error back to Front-End
             if (result <= 0) return Problem("System error occured. User Registration Failed.");
 
+            //if all above is successful - return HTTP Status 200, Message, and UserAccountId as latter is expected in Front-End
             return Ok(new
             {
                 Message = "User Registration Successful",
@@ -85,40 +99,44 @@ namespace ContractDevApi.Controllers
 
         }
 
+        //-----------------------
+        //Login - receives email and password from Front-End, ensures that credentials are accurate and applies JWT and Cookie authentication
+        //-----------------------
         [HttpPost("Login")]
         public async Task<IActionResult> Login(UserLoginDto dto)
         {
+            //Checks UserLoginDto Model to ensure that all incoming values match the Model constraints
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
-            //Determine if user is currently logged into an account, if so log them out
-            //if (IsAuthenticated()) await Logout();
+            //Determine if user is currently logged into an account, if so log them out - will deauthorize cookie from previous login, JWT cannot be revoked - expires after 1 hour of initial authentication
+            if (IsAuthenticated()) await Logout();
 
             //Check if user with email exists
             var user = await _context.UserAccounts.FirstOrDefaultAsync(x => x.Email!.ToLower() == dto.Email!.ToLower());
 
-            //If email does not exist in UserAccounts table, return error
+            //If email does not exist in UserAccounts table, return error Status 401
             if (user == null) return Unauthorized(new { Message = "Invalid email or password" });
 
             //Check if password matches hashed password via BCrypt verification
             bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
 
-            //If password does not pass verification, return error
+            //If password does not pass verification, return error Status 401
             if (!validatePassword) return Unauthorized(new { Message = "Invalid email or password" });
 
             var userProfile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == user.UserAccountId);
 
-            ////Generate authentication cookie with a claim for the user
-            //var claims = new[]
-            //{
-            //    new Claim(ClaimTypes.NameIdentifier, user.UserAccountId.ToString()),
-            //    new Claim(ClaimTypes.Email, user.Email),
-            //    new Claim(ClaimTypes.Name, $"{userProfile.FirstName} {userProfile.LastName}")
-            //};
-            //var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            //var principal = new ClaimsPrincipal(identity);
+            //Generate authentication cookie with a claim for the user
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserAccountId.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, $"{userProfile.FirstName} {userProfile.LastName}")
+            };
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
 
-            ////Assign cookie to session - cookie authentication expires in 1 hour (range can vary)
-            //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            //Assign cookie to session - cookie authentication expires in 1 hour (range can vary)
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
             //Construct response entity
             var response = new UserResponseDto
@@ -136,7 +154,12 @@ namespace ContractDevApi.Controllers
             return Ok(new { token });
         }
 
-        [HttpPost("Account/Logout")]
+
+        //-----------------------
+        //Logout - Deauthorizes cookie associated to current user
+        //Cannot deauthorize JWT - JWT current lifetime is 1 hour
+        //-----------------------
+        [HttpPost("Logout")]
         public async Task<IActionResult> Logout()
         {
             //if (HttpContext.User.Identity?.IsAuthenticated == false) return BadRequest(new { Message = "No user is logged in" });
@@ -154,22 +177,55 @@ namespace ContractDevApi.Controllers
             });
         }
 
-        //TODO
-        // PUT: api/UserAccounts/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id)
+        //-----------------------
+        //Change Password - Receives id, old password, new password, and confirm new password from Front-End
+        //Ensures that both JWT and cookie are authenticated before updating user password
+        //id is used to find user, old password is verified, new password is hashed and overwrites old password
+        //-----------------------
+        [Authorize]
+        [HttpPost("ChangePassword/{id}")]
+        public async Task<IActionResult> ChangePassword(int id, UserPasswordDto dto)
         {
+            //Checks UserPasswordDto Model to ensure that all incoming values match the Model constraints
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+            //Check that current session is authenticated via cookie, [Authorize] attribute checks JWT
+            if (!IsAuthenticated()) return BadRequest(new { Message = "User not authenticated" });
 
+            //Retrieve user details from context based on UserAccountId
+            var user = await _context.UserAccounts.FindAsync(id);
 
-            return Ok();
+            //
+            if (user == null) return NotFound($"User with id: {id} does not exist");
+
+            //Check if password matches hashed password via BCrypt verification
+            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.OldPassword, user.PasswordHash);
+
+            //If password does not pass verification, return error Status 401
+            if (!validatePassword) return Unauthorized(new { Message = "Invalid Password" });
+
+            //Hash new password
+            var newPasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            //Overrite old hashed password with new password
+            user.PasswordHash = newPasswordHash;
+
+            //Saving changes to physical database - result stores integer value of status received from database
+            int result = await _context.SaveChangesAsync();
+
+            //If result is 0 or -1 (status codes for system error) sends returns error back to Front-End
+            if (result <= 0) return Problem("System error occured. Password Update Failed.");
+
+            return Ok(new { message = "Password updated successfully" });
         }
 
+        //Placeholder validation - Front-End expects it. Actual validation of token uses [Authorize] attribute
+        //Note to Front-End: Front-End should assume accounts are validated until HTTP request response returns Status 401 - UnAuthorized
         [HttpGet("Validate")]
         public async Task<IActionResult> ValidateToken()
         {
             return Ok(new { message = "Token Valid" });
         }
 
+        //Checks if Cookie is properly authenticated
         private bool IsAuthenticated()
         {
             return HttpContext.User.Identity?.IsAuthenticated == true;
