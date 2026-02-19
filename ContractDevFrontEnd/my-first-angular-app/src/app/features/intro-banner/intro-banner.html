@@ -5,9 +5,11 @@
     <div class="intro-banner">
             
         <div class="intro-motion-clip">
-            <video #introVideo class="d-block w-100" autoplay muted playsinline  [src]="currentVideo" (ended)="onVideoEnded(introVideo) ">
+       
+            <video id="introVideo" #introVideo class="d-block w-100" autoplay muted [src]="currentVideo" (ended)="onVideoEnded()" >
                <!-- <source   type="video/mp4">src="assets/videos/software_blueprint.mp4"-->
             </video>
+      
         </div>
 
     </div>   
@@ -26,9 +28,11 @@
            href="/sign-up" 
            >Sign Up</a>
 
+       @if(authService.isLoggedIn()){
         <a class="btn btn-outline-light btn-lg m-2"
            href="/profileGallery"  
            >Developers & Clients</a>
+         }
     </div>
 
 </div>

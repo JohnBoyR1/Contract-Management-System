@@ -1,5 +1,5 @@
 .main {
-    margin-top: 100px;
+    margin-top: 0px;
     padding-bottom: 50px;
 }
 
@@ -17,6 +17,18 @@
   transition: width 0.6s ease !important; /* slower, smoother */
 }
 
+.intro-banner {
+
+ box-shadow: 
+    0 0 7px #fff,               /* Sharp white core for intensity */
+    0 0 10px #fff,              /* Slight blur for bloom */
+    0 0 21px #af00fa,               /* Main luminous color (e.g., Neon Green #0fa) */
+    0 0 42px #af00fa,               /* Wider glow */
+    0 0 72px #af00fa;               /* Distant environmental glow #0fa, */
+    
+  border-radius: 8px;           /* Softens the edges of the glow */
+  border-bottom: 1px solid  #af00fa        /* Optional: thin border to define the edge */
+}
 
 
 
@@ -41,8 +53,34 @@
   max-width: 500px;
 }
 
+.button {
+  background-color: #af00fa;
+  border: 1px solid #af00fa;
+}
+
 video .bottom-video {
   border-radius: 20px;
   width: 50px;
 
 }
+
+.multi-cards {
+ box-shadow: 
+    0 0 7px #fff,               /* Sharp white core for intensity */
+    0 0 10px #fff,              /* Slight blur for bloom */
+    0 0 21px #af00fa,               /* Main luminous color (e.g., Neon Green #0fa) */
+    0 0 42px #af00fa,               /* Wider glow */
+    0 0 72px #af00fa;               /* Distant environmental glow #0fa, */
+    
+  border-radius: 8px;           /* Softens the edges of the glow */
+  border: 1px solid  #af00fa        /* Optional: thin border to define the edge */
+}
+
+.glass-card {
+  backdrop-filter: blur(12px);
+  background: rgba(182, 211, 211, 0.25);
+  color: white;
+  border-radius: 20px;
+  border: 1px solid  #af00fa; 
+}
+

@@ -1,63 +1,51 @@
 
-<app-intro-banner ></app-intro-banner>
 <main class="main">
     <div class="content">
-    
-        <div class="row mb-4">
-            <div class="col-12 col-md-12 col-xl-12 mb-4 ">
+        <div class="row mb-5">
+            <div class="intro-banner col-12 col-md-12 col-xl-12 mb-5">
+                <app-intro-banner></app-intro-banner>
+            </div>
+        </div>
+        <div class="row mt-5 mb-5">
+            <div class="col-12 col-md-12 col-xl-12 mb-4">
                 <app-marketing-banner></app-marketing-banner>
             </div>
         </div>
-        <div class="row mb-4">
+        <div class=" row mb-4">
             <div class="col-12 col-md-12 col-xl-12">
-                
-            </div>
-        </div>
-        <div class="how row">
-            
-            <div class="col-xl-3  next">
-                <!--<img class="img d-block w-100" src="assets/images/coder_team_smaller.png" alt="">-->
-            </div>
-            <div class="col-6 col-md-6 col-xl-6 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        Quote
-                    </div>
-                    <div class="card-body">
-                        <figure>
-                        <blockquote class="blockquote">
-                            <p>A well-known quote, contained in a blockquote element.</p>
-                            <p>{{count()}}</p>
-                            <button class="login-btn btn btn-primary btn-block mb-4"  (click)="increase()">Add 1</button>
-                        </blockquote>
-                        <figcaption class="blockquote-footer">
-                            Someone famous in <cite title="Source Title">Source Title</cite>
-                        </figcaption>
-                        </figure>
-                        <!--card animated-->
-                            <div class="box"  style="min-height: 100px; border: 1px solid black;">
-                                <div style="max-width: 300px">
-                                    <div class="card collapse-card" style="width: 300px">
-                                        <div class="card-body">You can collapse horizontally this card by clicking Toggle~~~~~~~~~~~~~~~~~~~~~~~~~
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="col-12 col-md-8 mx-auto mt-5">
+  
 
-                        </div>
                 </div>
             </div>
-            <div class="col-xl-3  next">
-                <!--<img class="img d-block w-100" src="assets/images/coder_team_smaller.png" alt="">-->
-            </div>
         </div>
-        <div class="row mb-4">
-            <div class="col-2">
+        <div class="row">
+            <div class=" col-12 col-md-8 mx-auto mt-5">
+                <div class="multi-cards glass-card p-4">
+                    <h4 class="fw-bold  mb-3">Quote</h4>
+
+                    <blockquote class="blockquote">
+                    <p class="fs-4">A well-known quote, contained in a blockquote element.</p>
+                    <p class="display-5 fw-bold text-primary">{{ count() }}</p>
+
+                    <button class="button btn btn-primary btn-lg" (click)="increase()">Add 1</button>
+                    </blockquote>
+
+                    <figcaption class="blockquote-footer mt-3">
+                    Someone famous in <cite title="Source Title">Source Title</cite>
+                    </figcaption>
+                    
+                   
+                </div>
+            </div>
+        </div>    
+        <div class="row mt-5 mb-5">
+            <div class="col-2 mb-5" >
 
             </div>
-            <div class="bottom-video col-8 col-md-8 col-xl-8 mb-4">
-                <video class="w-100" autoplay muted loop>
-                    <source type="video/mp4" src="assets/videos/tech_world.mp4">
+            <div class="  col-8 col-md-8 col-xl-8 mt-5 mb-4">
+                <video class="multi-cards bottom-video  w-100" autoplay muted loop>
+                    <source  type="video/mp4" src="assets/videos/tech_world.mp4">
                 </video>
             </div>
              <div class="col-2">

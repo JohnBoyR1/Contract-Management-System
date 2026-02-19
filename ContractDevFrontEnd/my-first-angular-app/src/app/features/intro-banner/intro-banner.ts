@@ -1,32 +1,55 @@
-import { Component, AfterViewInit, Input, HostBinding, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { AuthService } from '../../core/auth/auth.service';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-intro-banner',
   imports: [],
-  standalone: true,
   templateUrl: './intro-banner.html',
   styleUrl: './intro-banner.css',
 })
 export class IntroBanner  {
- 
+  
+  // isLoggedIn() verify a user logged in or not 
+  authService = inject(AuthService);
 
-  // introVideo loading...
+  // introVideo loading... file path
   public currentVideo = "assets/videos/loading.mp4";
 
+  // no:1 this is to ensure the intro video plays on refresh
+  @ViewChild('introVideo') introVideo!: ElementRef<HTMLVideoElement>;
 
-  onVideoEnded(video: HTMLVideoElement) {
-    this.currentVideo = "assets/videos/software_blueprint.mp4";
 
-    video.load();  // reload with new source
-    //video.play();  // autoplay second video
-    video.loop;    // force replay on second video
+  //###################Video (changes video)###################
+  onVideoEnded() {
+    const vid = this.introVideo.nativeElement;
+
+    if (this.currentVideo === "assets/videos/loading.mp4") {
+      this.currentVideo = "assets/videos/software_blueprint.mp4";
+
+      // ensure loop for second video
+      setTimeout(() => vid.loop = true);
+    }
   }
 
 
-
+  
   ngAfterViewInit() {
+    //################### Video Play on Browser refresh ###############
+    const vid = this.introVideo.nativeElement;
+    
+    // Ensure autoplay rules are satisfied
+    vid.muted = true;
+    vid.playsInline = true;
+  
+    // Try to play after Angular hydration
+    setTimeout(() => {
+      vid.play().catch(() => {});
+    }, 0);
+    
 
+
+    //######################## EFFECTs WHEN SCROLLING ######################
     const elements = document.querySelectorAll('.intro');//All returns a node list
 
     //The browser’s built‑in IntersectionObserver system (non-angular)

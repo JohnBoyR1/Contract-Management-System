@@ -29,6 +29,7 @@ export class Home implements AfterViewInit {
 
   ngAfterViewInit() {
     
+    //########################## the small box ###########################
     const elements = document.querySelectorAll('.box');//All returns a node list
 
     //The browser’s built‑in IntersectionObserver system (non-angular)
@@ -53,6 +54,6 @@ export class Home implements AfterViewInit {
   }
 }
 
-//.classList is a native DOM mutation
+
 
 
