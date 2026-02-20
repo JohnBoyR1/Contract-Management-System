@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZGTgw2WJjG4=",
+  "dgSpecHash": "8GnvqokM1lo=",
   "success": true,
-  "projectFilePath": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\contractdevapi\\ContractDevApi.csproj",
+  "projectFilePath": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\moare\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\moare\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
