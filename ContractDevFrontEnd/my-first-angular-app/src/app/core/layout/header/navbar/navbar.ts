@@ -1,31 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { AuthService } from '../../../auth/auth.service';
-import { inject } from '@angular/core';
+import { darkMode } from '../../../../../app-theme.store';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, MatTooltipModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
 export class Navbar {
 
-  isBurgerMenuVisible = false;
-
   authService = inject(AuthService);
+  darkMode = darkMode;
 
-  toggleBurgerMenu() {
-    this.isBurgerMenuVisible = !this.isBurgerMenuVisible;
+  toggleDarkMode(){
+     const valueChange = !this.darkMode();//toggle works with flipped values (not only run when true)
+     this.darkMode.set(valueChange);
+     localStorage.setItem('darkMode', JSON.stringify(valueChange));
   }
 
-  toggleSignInAndOut(){
+  toggleSignInAndOut() {
     this.authService.logout();
-  }
-
-  ngOnInit() {
-    if (this.authService.isLoggedIn ){
-      
-    }
   }
 }

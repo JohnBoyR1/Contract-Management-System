@@ -22,7 +22,7 @@ import { AuthService } from '../../core/auth/auth.service';
 })
 export class UserProfile {
   profileForm: FormGroup;//?
-   private apiUrl = 'http://localhost:5082/api/users';
+  
 
 
   private userService = inject(UserService);
@@ -76,9 +76,9 @@ export class UserProfile {
     const raw = this.profileForm.value;
 
     const payload = Object.fromEntries(
-    Object.entries(raw).filter(([_, v]) => v !== '' && v !== null)
+    Object.entries(raw).filter(([_, v]) => v !== '' && v !== null)//stripping out empty values(only sending meaningfull data to the Api)
   );
-
+  //updating backend and refreshing the global profile state
   this.userService.updateProfile(id, payload).subscribe(() => {
     this.userService.getProfile(id).subscribe(fullProfile => {
       this.profile.initProfile(fullProfile);

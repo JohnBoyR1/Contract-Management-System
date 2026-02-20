@@ -1,12 +1,14 @@
 import { Component,ViewChild, ElementRef, AfterViewInit, ViewEncapsulation } from '@angular/core';
-import { Carousel } from "../carousel/carousel";
+import { IntroBanner } from '../intro-banner/intro-banner';
 import { signal } from '@angular/core';
+import { MarketingBanner } from "../marketing-banner/marketing-banner";
+
 
 
 
 @Component({
   selector: 'app-home',
-  imports: [Carousel],
+  imports: [IntroBanner, MarketingBanner],
   standalone: true,
   templateUrl: './home.html',
   styleUrl: './home.css',
@@ -27,8 +29,10 @@ export class Home implements AfterViewInit {
 
   ngAfterViewInit() {
     
+    //########################## the small box ###########################
     const elements = document.querySelectorAll('.box');//All returns a node list
 
+    //The browser’s built‑in IntersectionObserver system (non-angular)
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -49,5 +53,7 @@ export class Home implements AfterViewInit {
     elements.forEach(element => observer.observe(element));
   }
 }
+
+
 
 
