@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Configuration;
 
 namespace ContractDevApi.Controllers
 {
@@ -56,6 +55,7 @@ namespace ContractDevApi.Controllers
         //Get Profile Details - receives user id from Front-End
         //Construct full user and profile entity from shared userid and sends that back to front-end as response
         //-----------------------
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProfileDetails(int id)
         {
@@ -91,13 +91,14 @@ namespace ContractDevApi.Controllers
         //Joins both tables on shared attribute - UserAccountId
         //Reponds to Front-End with List of Profile Response Dto, with expected naming scheme on Front-End
         //-----------------------
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
             var profiles = await _context.UserProfiles.ToListAsync();
             var users = await _context.UserAccounts.ToListAsync();
 
-            var result =
+            var response =
             from u in users
             join p in profiles
                 on u.UserAccountId equals p.UserAccountId
@@ -118,8 +119,7 @@ namespace ContractDevApi.Controllers
                 HidePhoneNumber = p.HidePhoneNumber
             };
 
-
-            return Ok(result);
+            return Ok(response);
         }
     }
 }

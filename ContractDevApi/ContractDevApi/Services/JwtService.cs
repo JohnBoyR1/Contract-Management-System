@@ -49,7 +49,7 @@ namespace ContractDevApi.Services
             //    We read the secret key from appsettings.json: "Jwt:Key".
             //    It must be a sufficiently long, random string in production.
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["Jwt:Key"])
+                Encoding.UTF8.GetBytes(_config["Jwt:Key"]!)
             );
 
             // 3. Create signing credentials.

@@ -1,11 +1,12 @@
 using System.Text;
 using ContractDevApi.Models;
+using ContractDevApi.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
-using ContractDevApi.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,56 +18,74 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular",
         policy => policy
-            .AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod());
+            .WithOrigins(
+                "http://localhost:4200",  // Angular dev server
+                "https://localhost:4200",
+                "http://localhost:5000",  // API (DEVELOPMENT ONLY)
+                "https://localhost:5001"
+            )
+            .AllowAnyHeader()  // Includes Authorization header for JWT
+            .AllowAnyMethod()
+            .AllowCredentials());
 });
 
 // Add services to the container.
 builder.Services.AddControllers();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-//builder.Services.AddOpenApi();
-
-//Temporary User Authentication using cookies - eventually replaced by JWT once front-end is connected
-//NOTE: cookies is still a functional authentication system for testing purposes
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(cookieAuth =>
-    {
-        cookieAuth.Cookie.Name = "Cookies";
-        cookieAuth.LoginPath = "/Account/Login";
-        cookieAuth.LogoutPath = "/Account/Logout";
-        cookieAuth.ExpireTimeSpan = TimeSpan.FromHours(1);
-        cookieAuth.SlidingExpiration = true;
-    });
+builder.Services.AddOpenApi();
 
 // -------------------------------------------------------------
 // JWT AUTHENTICATION CONFIGURATION
 // -------------------------------------------------------------
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer("Bearer", options =>
+builder.Services.AddAuthentication(options =>
+{
+    // Set JWT Bearer as the default authentication scheme
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
 
-            ValidIssuer = jwtSettings["Issuer"],
-            ValidAudience = jwtSettings["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtSettings["Key"]))
-        };
-    });
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwtSettings["Key"]!))
+    };
+});
 
 builder.Services.AddAuthorization();
 
-//Swagger
+//Swagger - Configure for JWT Bearer Authentication
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    // Define the Bearer security scheme
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Enter JWT Token"
+    });
+
+    // Apply security requirement globally using OpenApiSecuritySchemeReference
+    c.AddSecurityRequirement((document) => 
+    {
+        var schemeRef = new OpenApiSecuritySchemeReference("Bearer", document, null);
+        var requirement = new OpenApiSecurityRequirement();
+        requirement.Add(schemeRef, new List<string>());
+        return requirement;
+    });
+});
 
 // Register JwtService
 builder.Services.AddScoped<JwtService>();
@@ -76,7 +95,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    //app.MapOpenApi();
+    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
 }

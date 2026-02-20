@@ -30,10 +30,37 @@ namespace ContractDevApi.Controllers
         }
 
         // GET: api/UserAccounts
+        // Returns all user accounts - should be restricted to admin users in production
+        [Authorize] // Require authentication
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserAccount>>> GetUserAccounts()
         {
+            // In production, you might want to restrict this to admin users only
+            // Example: if (!User.IsInRole("Admin")) return Forbid();
+
             return await _context.UserAccounts.ToListAsync();
+        }
+
+        // GET: api/UserAccounts/{id}
+        // Get a specific user's account - users can only view their own account
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserAccount>> GetUserAccount(int id)
+        {
+            // Verify the authenticated user is requesting their own data
+            if (!IsAuthorizedUser(id))
+            {
+                return Forbid(); // 403 Forbidden
+            }
+
+            var userAccount = await _context.UserAccounts.FindAsync(id);
+
+            if (userAccount == null)
+            {
+                return NotFound();
+            }
+
+            return userAccount;
         }
 
         // POST: api/UserAccounts/Register
@@ -108,9 +135,6 @@ namespace ContractDevApi.Controllers
             //Checks UserLoginDto Model to ensure that all incoming values match the Model constraints
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
-            //Determine if user is currently logged into an account, if so log them out - will deauthorize cookie from previous login, JWT cannot be revoked - expires after 1 hour of initial authentication
-            if (IsAuthenticated()) await Logout();
-
             //Check if user with email exists
             var user = await _context.UserAccounts.FirstOrDefaultAsync(x => x.Email!.ToLower() == dto.Email!.ToLower());
 
@@ -125,18 +149,12 @@ namespace ContractDevApi.Controllers
 
             var userProfile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == user.UserAccountId);
 
-            //Generate authentication cookie with a claim for the user
-            var claims = new[]
+            // Check if user profile exists
+            if (userProfile == null)
             {
-                new Claim(ClaimTypes.NameIdentifier, user.UserAccountId.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, $"{userProfile.FirstName} {userProfile.LastName}")
-            };
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-
-            //Assign cookie to session - cookie authentication expires in 1 hour (range can vary)
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                Console.WriteLine($"ERROR: UserProfile not found for UserAccountId: {user.UserAccountId}");
+                return Problem("User profile not found");
+            }
 
             //Construct response entity
             var response = new UserResponseDto
@@ -148,9 +166,16 @@ namespace ContractDevApi.Controllers
                 LastName = userProfile.LastName
             };
 
+            // Debug logging
+            Console.WriteLine($"Generating token for user: {response.Email}, UserId: {response.UserId}");
+
             var token = _jwt.GenerateToken(response);
 
-            //Valid login, return token enttiy
+            // Verify token was generated
+            Console.WriteLine($"Token generated successfully. Length: {token.Length}");
+            Console.WriteLine($"Token preview: {token.Substring(0, Math.Min(50, token.Length))}...");
+
+            //Valid login, return token entity
             return Ok(new { token });
         }
 
@@ -162,15 +187,8 @@ namespace ContractDevApi.Controllers
         [HttpPost("Logout")]
         public async Task<IActionResult> Logout()
         {
-            //if (HttpContext.User.Identity?.IsAuthenticated == false) return BadRequest(new { Message = "No user is logged in" });
-
-             if (!IsAuthenticated()) return BadRequest(new { Message = "No user is logged in" });
-
-            //Remove cookie from session
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            //Return Status 200 OK
-            //NOTE: can send redirect post to return user to home page: return Redirect("~/");
+            //possible solution - add jwt to blacklist on database for duration of jwt expiry
+            
             return Ok(new
             {
                 Message = "User logged out"
@@ -179,7 +197,7 @@ namespace ContractDevApi.Controllers
 
         //-----------------------
         //Change Password - Receives id, old password, new password, and confirm new password from Front-End
-        //Ensures that both JWT and cookie are authenticated before updating user password
+        //Ensures JWT is authenticated and user can only change their own password
         //id is used to find user, old password is verified, new password is hashed and overwrites old password
         //-----------------------
         [Authorize]
@@ -188,13 +206,23 @@ namespace ContractDevApi.Controllers
         {
             //Checks UserPasswordDto Model to ensure that all incoming values match the Model constraints
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
-            //Check that current session is authenticated via cookie, [Authorize] attribute checks JWT
-            if (!IsAuthenticated()) return BadRequest(new { Message = "User not authenticated" });
+
+            // Get the authenticated user's ID from JWT token claims
+            var authenticatedUserId = GetAuthenticatedUserId();
+            if (authenticatedUserId == null)
+            {
+                return Unauthorized(new { Message = "Invalid token: User ID not found" });
+            }
+
+            // Verify the authenticated user is trying to change their own password
+            if (authenticatedUserId.Value != id)
+            {
+                return Forbid(); // 403 Forbidden - user is authenticated but not authorized to change another user's password
+            }
 
             //Retrieve user details from context based on UserAccountId
             var user = await _context.UserAccounts.FindAsync(id);
 
-            //
             if (user == null) return NotFound($"User with id: {id} does not exist");
 
             //Check if password matches hashed password via BCrypt verification
@@ -219,16 +247,61 @@ namespace ContractDevApi.Controllers
 
         //Placeholder validation - Front-End expects it. Actual validation of token uses [Authorize] attribute
         //Note to Front-End: Front-End should assume accounts are validated until HTTP request response returns Status 401 - UnAuthorized
+        [Authorize]
         [HttpGet("Validate")]
         public async Task<IActionResult> ValidateToken()
         {
-            return Ok(new { message = "Token Valid" });
+            // Get authenticated user info from JWT claims
+            var userId = GetAuthenticatedUserId();
+            var email = User.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
+            var username = User.FindFirst("username")?.Value;
+
+            if (userId == null)
+            {
+                return Unauthorized(new { message = "Invalid token" });
+            }
+
+            return Ok(new 
+            { 
+                message = "Token Valid",
+                userId = userId,
+                email = email,
+                username = username
+            });
         }
 
-        //Checks if Cookie is properly authenticated
-        private bool IsAuthenticated()
+        //-----------------------
+        // Helper method to get authenticated user ID from JWT token claims
+        // Returns null if claim is not found or invalid
+        //-----------------------
+        private int? GetAuthenticatedUserId()
         {
-            return HttpContext.User.Identity?.IsAuthenticated == true;
+            // The "sub" (subject) claim contains the user ID
+            var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim))
+            {
+                Console.WriteLine("WARNING: 'sub' claim not found in token");
+                return null;
+            }
+
+            if (int.TryParse(userIdClaim, out int userId))
+            {
+                return userId;
+            }
+
+            Console.WriteLine($"WARNING: Unable to parse user ID from claim: {userIdClaim}");
+            return null;
+        }
+
+        //-----------------------
+        // Helper method to check if authenticated user matches the requested user ID
+        // Use this in endpoints where users should only access their own data
+        //-----------------------
+        private bool IsAuthorizedUser(int requestedUserId)
+        {
+            var authenticatedUserId = GetAuthenticatedUserId();
+            return authenticatedUserId.HasValue && authenticatedUserId.Value == requestedUserId;
         }
 
         //TODO
