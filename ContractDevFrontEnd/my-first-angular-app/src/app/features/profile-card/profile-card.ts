@@ -41,8 +41,10 @@ export class ProfileCard {
       return "both";
     }else if (this.offeringWorkOn()){
       return "offering";
-    }else{
+    }else if (this.availableForWorkOn()){
       return "available";
+    }else if (!this.offeringWorkOn() && !this.availableForWorkOn()){
+      return "none";
     }
   }
   

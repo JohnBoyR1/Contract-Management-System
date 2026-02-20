@@ -3,7 +3,7 @@ import { Home } from './features/home/home';
 import { About } from './features/about/about';
 import { SignUp } from './features/sign-up/sign-up';
 import { Login } from './features/login/login';
-import { Carousel } from './features/carousel/carousel';
+import { IntroBanner } from './features/intro-banner/intro-banner';
 import { UserProfile } from './features/user-profile/user-profile';
 import { BillingDetails } from './features/billing-details/billing-details';
 import { Chat } from './features/chat/chat';
@@ -18,7 +18,7 @@ export const routes: Routes = [
     { path: 'about', component: About },
     { path: 'sign-up', component: SignUp },
     { path: 'login', component: Login },
-    { path: 'carousel', component: Carousel },
+    { path: 'intro-banner', component: IntroBanner },
     { path: 'profileGallery', component: ProfileGallery },
     { path: 'profileDisplay', component: ProfileDisplayCard},
 

@@ -1,29 +1,50 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ProfileDisplayCard } from '../profile-display-card/profile-display-card';
 import { UserService } from '../../core/services/user.service';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../core/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile-gallery',
   standalone: true,
-  imports: [ProfileDisplayCard],
+  imports: [CommonModule, ProfileDisplayCard],
   templateUrl: './profile-gallery.html',
   styleUrl: './profile-gallery.css',
 })
-export class ProfileGallery {
-  profiles: any[] = [];//need for multi
- 
+export class ProfileGallery implements OnInit {
 
-  constructor(private userService: UserService) {}
 
-  //for when the page loads
-  ngOnInit(): void {
-    this.userService.getAllProfiles().subscribe({//and this
-      next: (data) => {
-        console.log("ALL PROFILES FROM BACKEND:", data);
-        this.profiles = data;
-      },
-      error: (err) => console.error('Error loading profiles', err)
+  public profiles = signal([] as any[]);
+
+  userService = inject(UserService);
+
+  authorise = inject(AuthService);
+
+  router = inject(Router);
+
+  trackByUserId = (index: number, item: any) => item.userId;
+
+  ngOnInit() {
+    //this is to ensure (non-logged in users) using url commands are directed to the home page
+      if (!this.authorise.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return false;
+    }
+    this.userService.getAllProfiles().subscribe(data => {
+      this.profiles.set(data);
+      console.log('All Profiles from back end: ', data);
+      console.log('AUTH GUARD RUNNING', this.authorise.isLoggedIn());
     });
   }
-  
+
+
 }
+
+
+
+
+
+
+
+

@@ -4,7 +4,7 @@
     
     background-size: cover;
     
-    height: 100vh;
+    /*height: 100vh;*/
     overflow-y: scroll;
 }
 
@@ -12,7 +12,20 @@ html, body {
     overflow-y: auto !important;
 }
 
+body.dark-mode::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55); /* adjust darkness */
+  pointer-events: none;
+  z-index: 999999; /* sits above everything */
+}
 
+/*updating navbar css toggle switch (dark mode) / .darkModeSwitch is navbar.html*/
+body.dark-mode .navbar .darkModeSwitch{
+    background-color: blueviolet;
+    color: white;
+}
 
 
 

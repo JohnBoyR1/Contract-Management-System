@@ -1,59 +1,62 @@
 <nav class="navbar fixed-top navbar-expand-lg">
-  <a class="navbar-brand ms-3" href="#"><img class="img" src="assets/images/contract_dev_final.png" (click)="toggleBurgerMenu()" 
+  <img class="img ms-3" src="assets/images/contract_dev_final.png"  
              style="cursor: pointer;" 
-             alt="Logo" width="100"></a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+             alt="Logo" width="100">
+             
 
   <!--testing to see if I can get a hamburger menu working-->
+  @if(this.authService.isLoggedIn()){
   <div class="dropdown-menu-custom" [class.d-none]="!isBurgerMenuVisible">
+    
     <a routerLink="/user-profile" (click)="isBurgerMenuVisible = false">Profile</a>
   </div>
-
+  }
   <!--ensuring seperation-->
 
   <div class="collapse navbar-collapse" id="navbar">
     <ul class="navbar-nav me-auto mt-2 mt-lg-0">
       <li class="nav-item active">
-        <a class="Home" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true}" class="nav-link">Home</a>
+        <a class="Home nav-link" matTooltip="Home: Go Home" matTooltipPosition="below" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true}"><i class="bi bi-house-fill icon me-2"></i></a>
       </li>
       <li class="nav-item">
-        <a class="about" routerLink="/about" routerLinkActive="active" class="nav-link">About</a>
+        <a class="about nav-link" matTooltip="About: About Page" matTooltipPosition="below" routerLink="/about" routerLinkActive="active"><i class="bi bi-exclamation-square-fill icon me-2"></i></a>
       </li>
+      @if(authService.isLoggedIn()){
       <li class="nav-item">
-        <a class="gallery" routerLink="/profileGallery" routerLinkActive="active" class="nav-link">Gallery</a>
-      </li>
-       @if(!this.authService.isLoggedIn){
-      <li class="nav-item">
-        <a class="sign_up" routerLink="/sign-up" routerLinkActive="active" class="nav-link">Sign Up</a>
+        <a class="gallery nav-link"  matTooltip="Gallery: Profile Gallery" matTooltipPosition="below" routerLink="/profileGallery" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true}"><i class="bi bi-file-earmark-richtext icon me-2"></i></a>
       </li>
       }
-      @if(!this.authService.isLoggedIn){ 
+       @if(!authService.isLoggedIn()){
       <li class="nav-item">
-        <a class="Login" routerLink="/login" routerLinkActive="active" class="nav-link">Log In</a>
+        <a class="sign_up nav-link" matTooltip="Sign Up: Create Account" matTooltipPosition="below" routerLink="/sign-up" routerLinkActive="active"><i class="bi bi-pencil-square icon me-2"></i></a>
       </li>
       }
-      @if(this.authService.isLoggedIn){
+      @if(!authService.isLoggedIn()){ 
       <li class="nav-item">
-        <a class="log_out" (click)="toggleSignInAndOut()" class="nav-link">Log Out</a>
+        <a class="Login nav-link" matTooltip="Login: Sign In" matTooltipPosition="below" routerLink="/login" routerLinkActive="active"><i class="bi bi-door-open-fill icon me-2"></i></a>
       </li>
       }
-      <!--testing if this is needed (in burger menu)
+      @if(authService.isLoggedIn()){
       <li class="nav-item">
-        <a class="user-profile" routerLink="/user-profile" routerLinkActive="active" class="nav-link">User Profile</a>
+        <a class="user-profile nav-link" matTooltip="User Profile: Your Profile" matTooltipPosition="below" routerLink="/user-profile" routerLinkActive="active"><i class="bi bi-person-gear icon me-2"></i></a>
       </li>
+      }
+      @if(authService.isLoggedIn()){
       <li class="nav-item">
-        <a class="billing-details" routerLink="/billing-details" routerLinkActive="active" class="nav-link">Billing Details</a>
+        <a class="log_out nav-link" matTooltip="Logout: Sign Out" matTooltipPosition="below" (click)="toggleSignInAndOut()" ><i class="bi bi-x-circle icon me-2"></i></a>
       </li>
-    --
-      <li class="nav-item">
-        <a class="profile-design" routerLink="/profileDisplaycard" routerLinkActive="active" class="nav-link">Design-card</a>
-      </li>-->
+      }
+      
     </ul>
     <form class="d-flex">
-      <input class="form-control me-2" type="search" placeholder="Search">
-      <button class="search btn btn-outline-success me-3" type="submit">Search</button>
+      <div class="form-check form-switch me-3">
+        <input class="form-check-input darkModeSwitch" matTooltip="Dark Mode Toggle: Toggle Theme" matTooltipPosition="below"  type="checkbox" role="switch" id="flexSwitchCheckDefault" [checked]="darkMode()"
+      (change)="toggleDarkMode()" >
+        <label class="form-check-label me-2" matTooltip="Dark Mode Toggle: Toggle Theme" matTooltipPosition="below" for="flexSwitchCheckDefault"><i class="bi bi-lightbulb-off icon"></i></label>
+      </div>
+     
+        <input class="form-control me-2" type="search" placeholder="Search">
+      <button class="search btn btn-outline-success me-3" matTooltip="Search Button: Search" matTooltipPosition="below" type="submit"><i class="bi bi-search"></i></button>
     </form>
   </div>
 </nav>

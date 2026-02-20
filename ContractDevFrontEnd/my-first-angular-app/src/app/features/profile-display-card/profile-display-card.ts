@@ -32,8 +32,10 @@ export class ProfileDisplayCard {
       return "both";
     }else if (this.user.availableForWork){
       return "available";
-    }else {
+    }else if (this.user.offeringWork) {
       return "offering";
+    } else if(this.user.availableForWork && this.user.offeringWork){
+      return "none";
     }
   }
 

@@ -1,4 +1,77 @@
-// app.config.ts
+// app.config.ts, App-wide providers, Routing, HttpClient, animations, etc. NO THEME LOGIC HERE
+
+import { ApplicationConfig, importProvidersFrom, provideAppInitializer, inject } from '@angular/core';
+import { provideRouter, withRouterConfig, withInMemoryScrolling } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { firstValueFrom, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { MatDialogModule } from '@angular/material/dialog';
+
+import { routes } from './app.routes';
+import { AuthService } from './core/auth/auth.service';
+import { UserService } from './core/services/user.service';
+import { ProfileStateService } from './core/shared/profile-state.service';
+import { authInterceptor } from './core/auth/auth.interceptor';
+
+/*
+  App initializer:
+  - Runs before Angular bootstraps the app.
+  - If a valid token exists, load the user's profile once at startup.
+  - Uses inject() (Angular v16+ pattern) to access services inside the initializer.
+*/
+export function createProfileInitializer() {
+  return () => {
+    const auth = inject(AuthService);
+    const userService = inject(UserService);
+    const profileState = inject(ProfileStateService);
+
+    const userId = auth.getCurrentUserId();
+    if (!userId) return Promise.resolve();
+
+    // Skip if profile already loaded (signal-based check)
+    if (profileState.isProfileLoaded()) {
+      return Promise.resolve();
+    }
+
+    // Fetch profile and initialize state
+    return firstValueFrom(
+      userService.getProfile(userId).pipe(
+        catchError(() => of(null)) // allow app to continue booting even if request fails
+      )
+    ).then(profile => {
+      if (profile) profileState.initProfile(profile);
+    });
+  };
+}
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    // Router configuration
+    provideRouter(
+      routes,
+      withRouterConfig({ onSameUrlNavigation: 'reload' }),
+      withInMemoryScrolling({ scrollPositionRestoration: 'enabled' })
+    ),
+
+    // HTTP client + JWT interceptor
+    provideHttpClient(withInterceptors([authInterceptor])),
+
+    // Material dialog module
+    importProvidersFrom(MatDialogModule),
+
+    // Run profile initializer before app bootstraps
+    provideAppInitializer(createProfileInitializer())
+  ]
+};
+
+
+
+
+
+
+
+
+/* app.config.ts
 import { ApplicationConfig, importProvidersFrom, provideAppInitializer, inject } from '@angular/core';
 import { provideRouter, withRouterConfig, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -57,7 +130,7 @@ export const appConfig: ApplicationConfig = {
     // Provide the initializer (call the factory to get the initializer function)
     provideAppInitializer(createProfileInitializer())
   ]
-};
+};*/
 
 
 

@@ -1,0 +1,40 @@
+<div class="position-relative">
+
+    <!-- image --> 
+    
+    <div class="intro-banner">
+            
+        <div class="intro-motion-clip">
+       
+            <video id="introVideo" #introVideo class="d-block w-100" autoplay muted [src]="currentVideo" (ended)="onVideoEnded()" >
+               <!-- <source   type="video/mp4">src="assets/videos/software_blueprint.mp4"-->
+            </video>
+      
+        </div>
+
+    </div>   
+    
+
+    <!-- Overlay Text -->
+    <div class="intro text-overlay mt-5  position-absolute top-50 start-50 translate-middle text-center text-white">
+       
+        <h1 class="display-1 mb-3">ContractDev</h1>
+        <h5 class="display-6 mb-3">Developers and Clients, Matched in Moments</h5>
+        <h5 class="display-6 mb-3">find the talent or project you need</h5>
+    
+        
+
+        <a class="btn btn-outline-light btn-lg m-2"
+           href="/sign-up" 
+           >Sign Up</a>
+
+       @if(authService.isLoggedIn()){
+        <a class="btn btn-outline-light btn-lg m-2"
+           href="/profileGallery"  
+           >Developers & Clients</a>
+         }
+    </div>
+
+</div>
+
+
