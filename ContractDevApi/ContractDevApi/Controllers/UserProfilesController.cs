@@ -119,7 +119,6 @@ namespace ContractDevApi.Controllers
                 HidePhoneNumber = p.HidePhoneNumber
             };
 
-
             return Ok(response);
         }
     }

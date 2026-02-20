@@ -21,7 +21,7 @@ builder.Services.AddCors(options =>
             .WithOrigins(
                 "http://localhost:4200",  // Angular dev server
                 "https://localhost:4200",
-                "http://localhost:5000",  // API (if needed)
+                "http://localhost:5000",  // API (DEVELOPMENT ONLY)
                 "https://localhost:5001"
             )
             .AllowAnyHeader()  // Includes Authorization header for JWT
@@ -60,38 +60,6 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(jwtSettings["Key"]!))
     };
-
-    // Add event handlers to debug authentication failures
-    options.Events = new JwtBearerEvents
-    {
-        OnMessageReceived = context =>
-        {
-            var authHeader = context.Request.Headers["Authorization"].ToString();
-            Console.WriteLine($"Authorization header received: '{authHeader}'");
-            if (string.IsNullOrEmpty(authHeader))
-            {
-                Console.WriteLine("WARNING: No Authorization header found!");
-            }
-            return Task.CompletedTask;
-        },
-        OnAuthenticationFailed = context =>
-        {
-            Console.WriteLine($"Authentication failed: {context.Exception.Message}");
-            return Task.CompletedTask;
-        },
-        OnTokenValidated = context =>
-        {
-            Console.WriteLine("Token validated successfully");
-            var userId = context.Principal?.FindFirst("sub")?.Value;
-            Console.WriteLine($"User authenticated: UserId={userId}");
-            return Task.CompletedTask;
-        },
-        OnChallenge = context =>
-        {
-            Console.WriteLine($"OnChallenge error: {context.Error}, {context.ErrorDescription}");
-            return Task.CompletedTask;
-        }
-    };
 });
 
 builder.Services.AddAuthorization();
@@ -106,7 +74,7 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.Http,
         Scheme = "bearer",
         BearerFormat = "JWT",
-        Description = "Enter JWT token (without 'Bearer' prefix). Swagger will add it automatically."
+        Description = "Enter JWT Token"
     });
 
     // Apply security requirement globally using OpenApiSecuritySchemeReference
@@ -118,9 +86,6 @@ builder.Services.AddSwaggerGen(c =>
         return requirement;
     });
 });
-
-
-
 
 // Register JwtService
 builder.Services.AddScoped<JwtService>();
