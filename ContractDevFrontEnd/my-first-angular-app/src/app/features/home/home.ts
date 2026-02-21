@@ -51,6 +51,14 @@ export class Home implements AfterViewInit {
     });
 
     elements.forEach(element => observer.observe(element));
+
+    //###################Auto Play Bottom Page Video#############
+    const bottomPageVideo = document.querySelector('.bottom-video') as HTMLVideoElement;
+
+    bottomPageVideo.addEventListener('loadeddata', () => {
+      bottomPageVideo.play();
+    })
+
   }
 }
 
