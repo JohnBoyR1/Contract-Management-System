@@ -39,9 +39,30 @@ export class MarketingBanner {
 
     elements.forEach(element => observer.observe(element));
     //////////////////////Carousel Intervals////////////////////////////////////////
-    const imgElement = document.querySelector('#marketing-banner-carousel');
-    if (imgElement) {
-      new Carousel(imgElement, {
+    //////////////////////Carousel Intervals Left////////////////////////////////////////
+    const imgElementLeft = document.querySelector('#marketing-banner-carousel-left');
+    if (imgElementLeft) {
+      new Carousel(imgElementLeft, {
+        interval: 2500, 
+        ride: 'carousel'
+      });
+    }
+  
+
+  //////////////////////Carousel Intervals Center////////////////////////////////////////
+    const imgElementCenter = document.querySelector('#marketing-banner-carousel-center');
+    if (imgElementCenter) {
+      new Carousel(imgElementCenter, {
+        interval: 2500, 
+        ride: 'carousel'
+      });
+    }
+  
+
+  //////////////////////Carousel Intervals Center////////////////////////////////////////
+    const imgElementRight = document.querySelector('#marketing-banner-carousel-right');
+    if (imgElementRight) {
+      new Carousel(imgElementRight, {
         interval: 2500, 
         ride: 'carousel'
       });
