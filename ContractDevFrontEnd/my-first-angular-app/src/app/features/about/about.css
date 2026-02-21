@@ -4,8 +4,16 @@
 }
 
 .ideas_img {
+    display: block;
+    width: 100%;
     border-radius: 20px !important;
-    box-shadow: 20px 20px 20px rgb(0, 0, 0, 0.5) !important;
+    /*box-shadow: 20px 20px 20px rgb(0, 0, 0, 0.5) !important;*/
+    box-shadow: 
+    0 0 7px #fff,               /* Sharp white core for intensity */
+    0 0 10px #fff,              /* Slight blur for bloom */
+    0 0 21px #af00fa,               /* Main luminous color (e.g., Neon Green #0fa) */
+    0 0 42px #af00fa,               /* Wider glow */
+    0 0 72px #af00fa;               /* Distant environmental glow #0fa, */
     padding: 0;
     transition: transform 0.3s ease;
     
@@ -14,11 +22,26 @@
 .man_city_img, .devops_manager_img {
     max-width: 100%;
     border-radius: 20px !important;
-    box-shadow: 20px 20px 20px rgb(0, 0, 0, 0.5) !important;
+    /*box-shadow: 20px 20px 20px rgb(0, 0, 0, 0.5) !important;*/
+
+    box-shadow: 
+    0 0 7px #fff,               /* Sharp white core for intensity */
+    0 0 10px #fff,              /* Slight blur for bloom */
+    0 0 21px #af00fa,               /* Main luminous color (e.g., Neon Green #0fa) */
+    0 0 42px #af00fa,               /* Wider glow */
+    0 0 72px #af00fa;               /* Distant environmental glow #0fa, */
     margin-bottom: 40px;
     transition: transform 0.3s ease;
 }
 
 .man_city_img:hover, .devops_manager_img:hover, .ideas_img:hover {
     transform: translate(10px) scale(1.02);
-} 
+}
+
+.image-meeting {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  
+}
+
