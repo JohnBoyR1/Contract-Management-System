@@ -1,10 +1,11 @@
 import { Injectable, signal, computed } from '@angular/core';
+import { Profile } from '../models/profile.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileStateService {
 
-  // Holds the full profile object
-  private _profile = signal<any | null>(null);
+  // Holds the full profile object (change any to Profile (type‑safety, autocompletion, and error‑prevention.))
+  private _profile = signal<Profile | null>(null);
 
   // Public getter for components
   profile = computed(() => this._profile());
@@ -34,11 +35,23 @@ export class ProfileStateService {
 
   email = computed(() => this._profile()?.email ?? '');
 
+  //
+  profilePicture = computed(() => this._profile()?.profilePicture ?? '');
 
+  // file selected by user (no preview logic)
+  selectedFileForProfile = signal<File | null>(null);
+
+  previewPicture = computed(() => {
+    const profileFile = this.selectedFileForProfile();
+    if (profileFile) {
+      return URL.createObjectURL(profileFile);
+    }
+    return this._profile()?.profilePicture ?? '';
+  });
 
 
   // Called after login or guard fetch
-  initProfile(profile: any) {
+  initProfile(profile: Profile) {
     this._profile.set(profile);
   }
 

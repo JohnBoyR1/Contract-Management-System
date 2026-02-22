@@ -1,3 +1,5 @@
+import { ProfileDescription } from "./profile-description.enum";
+
 export interface Profile {
   userId: string;
 
@@ -13,6 +15,9 @@ export interface Profile {
   email: string;
   country: string;
 
-  description: "developer" | "client" | "Both";
+  description: ProfileDescription; //strict enum 
   bio: string;
+  jobRole: string;
+
+  profilePicture: string; // URL/path returned by backend
 }
