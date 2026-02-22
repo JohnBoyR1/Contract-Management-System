@@ -22,7 +22,7 @@ namespace ContractDevApi.Controllers
 
         private readonly JwtService _jwt;
 
-
+        //Controller Constructor, builds inmemory database context and JWT token service
         public UserAccountsController(ContractDevContext context, JwtService jwt)
         {
             _context = context;
@@ -35,8 +35,8 @@ namespace ContractDevApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserAccount>>> GetUserAccounts()
         {
-            // In production, you might want to restrict this to admin users only
-            // Example: if (!User.IsInRole("Admin")) return Forbid();
+            //In production we may want to consider only allowing admins to retrieve all user accounts
+            //Ex: if (!User.IsInRole("Admin")) return Forbid();
 
             return await _context.UserAccounts.ToListAsync();
         }
@@ -152,7 +152,6 @@ namespace ContractDevApi.Controllers
             // Check if user profile exists
             if (userProfile == null)
             {
-                Console.WriteLine($"ERROR: UserProfile not found for UserAccountId: {user.UserAccountId}");
                 return Problem("User profile not found");
             }
 
@@ -165,15 +164,9 @@ namespace ContractDevApi.Controllers
                 FirstName = userProfile.FirstName,
                 LastName = userProfile.LastName
             };
-
-            // Debug logging
-            Console.WriteLine($"Generating token for user: {response.Email}, UserId: {response.UserId}");
-
+            
+            //Generate JWT token claim
             var token = _jwt.GenerateToken(response);
-
-            // Verify token was generated
-            Console.WriteLine($"Token generated successfully. Length: {token.Length}");
-            Console.WriteLine($"Token preview: {token.Substring(0, Math.Min(50, token.Length))}...");
 
             //Valid login, return token entity
             return Ok(new { token });
@@ -207,14 +200,14 @@ namespace ContractDevApi.Controllers
             //Checks UserPasswordDto Model to ensure that all incoming values match the Model constraints
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
-            // Get the authenticated user's ID from JWT token claims
+            //Get the authenticated user's ID from JWT token claims
             var authenticatedUserId = GetAuthenticatedUserId();
             if (authenticatedUserId == null)
             {
                 return Unauthorized(new { Message = "Invalid token: User ID not found" });
             }
 
-            // Verify the authenticated user is trying to change their own password
+            //Verify the authenticated user is trying to change their own password
             if (authenticatedUserId.Value != id)
             {
                 return Forbid(); // 403 Forbidden - user is authenticated but not authorized to change another user's password
@@ -242,46 +235,57 @@ namespace ContractDevApi.Controllers
             //If result is 0 or -1 (status codes for system error) sends returns error back to Front-End
             if (result <= 0) return Problem("System error occured. Password Update Failed.");
 
-            return Ok(new { message = "Password updated successfully" });
+            return Ok(new { Message = "Password updated successfully" });
         }
 
-        //Placeholder validation - Front-End expects it. Actual validation of token uses [Authorize] attribute
-        //Note to Front-End: Front-End should assume accounts are validated until HTTP request response returns Status 401 - UnAuthorized
+        //TODO
+        // DELETE: api/UserAccounts/5
         [Authorize]
-        [HttpGet("Validate")]
-        public async Task<IActionResult> ValidateToken()
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            // Get authenticated user info from JWT claims
-            var userId = GetAuthenticatedUserId();
-            var email = User.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
-            var username = User.FindFirst("username")?.Value;
-
-            if (userId == null)
+            //Get the authenticated user's ID from JWT token claims
+            var authenticatedUserId = GetAuthenticatedUserId();
+            if (authenticatedUserId == null)
             {
-                return Unauthorized(new { message = "Invalid token" });
+                return Unauthorized(new { message = "Invalid token: User ID not found" });
             }
 
-            return Ok(new 
-            { 
-                message = "Token Valid",
-                userId = userId,
-                email = email,
-                username = username
-            });
+            //Verify the authenticated user is trying to delete their own account
+            if (authenticatedUserId.Value != id)
+            {
+                return Forbid(); // 403 Forbidden - user is authenticated but not authorized to delete another user's account
+            }
+
+            //Ensure that user account and profile exist
+            var userAccount = await _context.UserAccounts.FirstOrDefaultAsync(x => x.UserAccountId == id);
+            if (userAccount == null) return NotFound("Account Not Found");
+
+            var userProfile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == id);
+            if (userProfile == null) return NotFound("Profile Not Found");
+
+            _context.UserAccounts.Remove(userAccount);
+            _context.UserProfiles.Remove(userProfile);
+
+            int result = await _context.SaveChangesAsync();
+
+            if (result <= 0) return Problem("System error occured. User Account Deletion Failed.");
+
+            return Ok(new { Message = "Account and Profile successfully deleted"});
         }
 
         //-----------------------
-        // Helper method to get authenticated user ID from JWT token claims
-        // Returns null if claim is not found or invalid
+        //Helper method to retrieve JWT token claim and check if user ID matches JWT sub (user ID)
+        //Returns null if claim could not be found or if invalid
         //-----------------------
         private int? GetAuthenticatedUserId()
         {
-            // The "sub" (subject) claim contains the user ID
+            //The "sub" (subject) claim contains the user ID
             var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
 
             if (string.IsNullOrEmpty(userIdClaim))
             {
-                Console.WriteLine("WARNING: 'sub' claim not found in token");
+                //sub claim not found in token
                 return null;
             }
 
@@ -290,22 +294,47 @@ namespace ContractDevApi.Controllers
                 return userId;
             }
 
-            Console.WriteLine($"WARNING: Unable to parse user ID from claim: {userIdClaim}");
+            //Unable to parse user ID from claim
             return null;
         }
 
         //-----------------------
-        // Helper method to check if authenticated user matches the requested user ID
-        // Use this in endpoints where users should only access their own data
+        //Placeholder validation for development - Allows for quick checking of validation via Swagger UI. Actual validation of token uses [Authorize] attribute
+        //Note to Front-End: Front-End should assume accounts are validated until HTTP request response returns Status 401 - UnAuthorized
+        //-----------------------
+        [Authorize]
+        [HttpGet("Validate")]
+        public async Task<IActionResult> ValidateToken()
+        {
+            //Parse JWT claim to get authenticated user
+            var userId = GetAuthenticatedUserId();
+            var email = User.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
+            var username = User.FindFirst("username")?.Value;
+
+            if (userId == null)
+            {
+                //If claim is null return Error 401 - Unauthorized
+                return Unauthorized(new { message = "Invalid token" });
+            }
+
+            //Returns user details from endpoint
+            return Ok(new 
+            { 
+                message = "Token Valid",
+                userId,
+                email,
+                username
+            });
+        }
+
+        //-----------------------
+        //Helper method that checks if requested user ID matches the current authenticated user
+        //Method is used in endpoints where user is attempting to access their own data
         //-----------------------
         private bool IsAuthorizedUser(int requestedUserId)
         {
             var authenticatedUserId = GetAuthenticatedUserId();
             return authenticatedUserId.HasValue && authenticatedUserId.Value == requestedUserId;
         }
-
-        //TODO
-        // DELETE: api/UserAccounts/5
-
     }
 }
