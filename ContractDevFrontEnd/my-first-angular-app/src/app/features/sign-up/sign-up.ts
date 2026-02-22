@@ -13,6 +13,7 @@ import { UserService } from '../../core/services/user.service';
 
 import { ProfileStateService } from '../../core/shared/profile-state.service';
 
+
 @Component({
   selector: 'app-sign-up',
   standalone: true,
@@ -81,26 +82,21 @@ export class SignUp implements OnInit {
 
       //Calling Service...
       this.userService.signup(payload).subscribe({
-        next: (profile) => {
-          console.log('Signup success!', profile);
+        next: (user) => {
+          console.log('Signup success!', user);
 
-          // Load profile into signals
-          this.profileState.initProfile(profile);
+          // Fetch full profile using returned userId
+          this.userService.getProfile(user.userId).subscribe(fullProfile => {
+            this.profileState.initProfile(fullProfile);
 
-          this.isSubmitted.set(true);
-          this.contractForm.reset();
+            this.isSubmitted.set(true);
+            this.contractForm.reset();
+          });
         },
         error: (err) => alert('API Error: ' + err.message),
       });
-    } else {
-      console.log('Form is invalid. Show some errors!');
-      //print out of failing fields
-      Object.keys(this.contractForm.controls).forEach((key) => {
-        const controlErrors = this.contractForm.get(key)?.errors;
-        if (controlErrors) {
-          console.log('Control: ' + key + ', Errors: ', controlErrors);
-        }
-      });
+
+          
     }
   }
 
