@@ -38,6 +38,7 @@ export class UserProfile {
     public profile: ProfileStateService //then I can use {{ profile.firstName() }} etc.
   ) {
     this.profileForm = this.fb.group({
+      id: [this.authService.getCurrentUserId()],// set sub()
       firstName: [''],
       lastName: [''],
       jobRole: [''],
@@ -59,6 +60,7 @@ export class UserProfile {
   ngOnInit() {
       
       const id = this.authService.getCurrentUserId();
+     
       //subscribe is used to recieve data asyschronously (returns an Observable)
       this.userService.getProfile(id).subscribe(profile => {
       this.profileForm.patchValue(profile);//this is what is displaying the data
@@ -98,9 +100,9 @@ export class UserProfile {
     });
 
     //append ID (as it is not part of the form)
-    formData.append('id', id.toString());
+    //formData.append('id', id.toString());
 
-    // append file from signal (only if selected)
+    // append file from signal (only if selected) PROFILE PICTURE
     const profileFile = this.profile.selectedFileForProfile();
 
     if (profileFile) {
@@ -118,7 +120,7 @@ export class UserProfile {
     
 
     //updating backend and refreshing the global profile state
-    this.userService.updateProfile(id, formData).subscribe(() => {
+    this.userService.updateProfile(formData).subscribe(() => {
       this.userService.getProfile(id).subscribe(fullProfile => {
         this.profile.initProfile(fullProfile);
       });

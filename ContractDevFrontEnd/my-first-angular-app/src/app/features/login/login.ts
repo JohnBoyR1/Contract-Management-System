@@ -5,6 +5,9 @@ import { UserService } from '../../core/services/user.service';
 import { ProfileStateService } from '../../core/shared/profile-state.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+
 
 @Component({
   selector: 'app-login',
@@ -17,6 +20,8 @@ export class Login {
   private profileState = inject(ProfileStateService);
   private router = inject(Router);
   private authService = inject(AuthService);
+
+  private apiUrl = `${environment.apiUrl}/api`;
 
   isLoading = signal(false);
   loggedIn = signal(false);
@@ -33,10 +38,22 @@ export class Login {
     this.isLoading.set(true);
     this.loginError.set('');
 
+    const formData = new FormData();
+    formData.append("email", this.loginForm.value.email!);
+    formData.append("password", this.loginForm.value.password!);
+
+    
+
     //fetch profile data form the backend
-    this.authService.login(this.loginForm.value).subscribe({
-      next: () => {
+    this.authService.login(formData).subscribe({
+      next: (res) => {
+        //console.log("Status:", res.status);
+        //console.log("Message: ", res.body);
+       
+
         const userId = this.authService.getCurrentUserId();
+          
+          //update the profile data
         if (!userId) {
           this.loginError.set('Could not decode user ID');
           this.isLoading.set(false);
@@ -45,16 +62,17 @@ export class Login {
         //fetch profile and update profile signals
         this.userService.getProfile(userId).subscribe({
           next: (profile) => {
-            //update the profile data
+            
             this.profileState.initProfile(profile);
             //navigate to the home page
             this.isLoading.set(false);
             this.loggedIn.set(true);
             this.router.navigate(['/home']);
           },
-          error: () => {
+          error: (err) => {
             this.loginError.set('Failed to load profile');
             this.isLoading.set(false);
+            console.error("?", err.status, err.error);
           },
         });
       },

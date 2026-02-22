@@ -2,9 +2,6 @@
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
-import { SignupRequest } from '../models/signup-request.model';
-import { LoginRequest } from '../models/login-request.model';
-import { UserResponse } from '../models/user-response.model';
 import { Profile } from '../models/profile.models';
 
 // HttpClient lets Angular make HTTP requests (GET, POST, PUT, DELETE) to dotnet back end.
@@ -37,18 +34,18 @@ export class UserService {
   // This method sends the signup form data to your backend.
   // 'data' is the object containing firstName, lastName, email, etc.
   // It returns an Observable, meaning the component must subscribe to it.
-  signup(data: SignupRequest): Observable<UserResponse> {
+  signup(data: FormData): Observable<void> {
     // POST sends data to the backend to create a new user.
     // Example final URL: http://localhost:5082/api/users/signup
-    return this.http.post<UserResponse>(`${this.apiUrl}/UserAccounts/Register`, data);//post<UserResponse> expect backend end to return 
+    return this.http.post<void>(`${this.apiUrl}/UserAccounts/Register`, data);//post<UserResponse> expect backend end to return 
   }
 
-  login(data: LoginRequest): Observable<any> {
-    return this.http.post<UserResponse>(`${this.apiUrl}/UserAccounts/Login`, data);// back end must return user response
+  login(data: FormData): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/UserAccounts/Login`, data);// back end must return user response
   }
 
   getProfile(id: number): Observable<Profile> {
-    return this.http.get<Profile>(`${this.apiUrl}/UserProfiles/${id}`);// backend must return profile
+    return this.http.get<Profile>(`${this.apiUrl}/UserProfiles/ProfileDetails?id=${id}`);// ?id=${id} form query
   }
 
   // -----------------------------
@@ -57,22 +54,25 @@ export class UserService {
   // This method updates an existing user's profile.
   // 'id' is the user's ID in the database.
   // 'data' contains only the fields the user wants to update.
-  updateProfile(id: number, data: FormData): Observable<void> {
+  updateProfile(data: FormData): Observable<void> {
     // PUT sends updated data to the backend.
     // Example final URL: http://localhost:5082/api/users/1
-    return this.http.put<void>(`${this.apiUrl}/UserProfiles/${id}`, data);
+    return this.http.put<void>(`${this.apiUrl}/UserProfiles/UpdateProfile`, data);
+    //return this.http.put<void>(`${this.apiUrl}/UserProfiles/${id}`, data);
   }
 
   //update the users password
-  updateSecurity(id: number, payload: any) {
-    return this.http.put(`/api/users/${id}/security`, payload);
+  updateSecurity(data: FormData): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/UserProfiles/UpdateProfile`, data);
   }
-
-
-
 
   //for the fun part calling all the profiles
   getAllProfiles(): Observable<Profile[]> {
-    return this.http.get<Profile[]>(`${this.apiUrl}/UserProfiles`);// backend to return profile
+    return this.http.get<Profile[]>(`${this.apiUrl}/UserProfiles/ProfileGallery`);// backend to return profile
+  }
+
+  //delete profile
+  deleteUserAccount(data: FormData): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/UserAccounts/Delete`, data);
   }
 }

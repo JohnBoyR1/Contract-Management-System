@@ -1,3 +1,8 @@
+.complete-user {
+    min-height: 100vh;
+    margin: 0;
+}
+
 .nav-link, a[routerLink] {
     cursor: pointer !important;
 }
@@ -79,4 +84,21 @@
 
 .submit:hover{
     background-color: #C850C0;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+}
+
+.modal-window {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 2rem;
+  border-radius: .5rem;
+  z-index: 1050;
 }

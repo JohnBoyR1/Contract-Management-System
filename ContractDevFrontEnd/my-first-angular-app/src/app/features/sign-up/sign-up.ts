@@ -13,6 +13,8 @@ import { UserService } from '../../core/services/user.service';
 
 import { ProfileStateService } from '../../core/shared/profile-state.service';
 
+import { AuthService } from '../../core/auth/auth.service';
+
 
 @Component({
   selector: 'app-sign-up',
@@ -26,6 +28,8 @@ export class SignUp implements OnInit {
   private userService = inject(UserService);
 
   private profileState = inject(ProfileStateService);
+
+  private authService = inject(AuthService);
 
   private http = inject(HttpClient);
   //Todo validation on input(angular built in)
@@ -64,6 +68,10 @@ export class SignUp implements OnInit {
     if (this.contractForm.valid) {
       this.isLoading.set(true); //start loading
 
+      const formData = new FormData();
+
+
+
       console.log('Form Data for Backend: ', this.contractForm.value);
       //raw data is preferred choice in sign up forms
       const rawValue = this.contractForm.getRawValue();
@@ -80,18 +88,42 @@ export class SignUp implements OnInit {
         confirmPassword: rawValue.confirmPassword,
       };
 
+      Object.entries(payload).forEach(([key, value]) => {
+        if (value !== null && value !== '') {
+          formData.append(key , value as any);
+        }
+      });
+
       //Calling Service...
-      this.userService.signup(payload).subscribe({
+      this.userService.signup(formData).subscribe({
         next: (user) => {
           console.log('Signup success!', user);
+          //login in 
+          const loginData = new FormData();
+          loginData.append("email", rawValue.email!);
+          loginData.append("password", rawValue.password!);
 
-          // Fetch full profile using returned userId
-          this.userService.getProfile(user.userId).subscribe(fullProfile => {
+          this.authService.login(loginData).subscribe({
+            next: () => {
+              const userId = this.authService.getCurrentUserId();
+
+              this.userService.getProfile(userId).subscribe(fullProfile => {
+                this.profileState.initProfile(fullProfile);
+                this.isSubmitted.set(true);
+                this.contractForm.reset();
+              });
+            }
+          });
+
+          /* Fetch full profile using returned userId
+          const userId = this.authService.getCurrentUserId();
+
+          this.userService.getProfile(userId).subscribe(fullProfile => {
             this.profileState.initProfile(fullProfile);
 
             this.isSubmitted.set(true);
             this.contractForm.reset();
-          });
+          });*/
         },
         error: (err) => alert('API Error: ' + err.message),
       });

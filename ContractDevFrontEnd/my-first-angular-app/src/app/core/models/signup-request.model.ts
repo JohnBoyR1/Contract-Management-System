@@ -1,5 +1,5 @@
 
-
+/*
 export interface SignupRequest {
   firstName: string;
   lastName: string;
@@ -9,4 +9,4 @@ export interface SignupRequest {
   email: string;
   password: string;
   confirmPassword: string;
-}
+}*/

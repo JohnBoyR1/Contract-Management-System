@@ -96,7 +96,38 @@
 
                                          <!-- Settings Cards -->
                                         <div class="row g-4 mb-4">
-                                            <div class="col-md-6 ms-auto">
+                                            <div class="col-md-6 ">
+                                                <div class="settings-card card">
+                                                    <div class="card-body">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <div>
+                                                                <h6 class="mb-1">DELETE PROFILE</h6>
+                                                                <p class="text-muted mb-0 small">Only if you want to delete your profile
+                                                                </p>
+                                                            </div>
+                                                            <div>
+                                                                <button type="button" class="btn btn-danger" (click)="openModal()">Delete</button>
+                                                                @if (isOpenDeleteModal()){
+                                                                    <div class="modal-backdrop"></div>
+
+                                                                    <div class="modal-window" >
+                                                                        <h3>Confirm Delete</h3>
+                                                                        <p>Are you sure?</p>
+                    
+                                                                        
+                                    
+                                                                    
+
+                                                                        <button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+                                                                        <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 ">
                                                 <div class="settings-card card">
                                                     <div class="card-body">
                                                         <div class="d-flex justify-content-between align-items-center">
@@ -112,6 +143,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            
                                         </div>
                                     </div>
                                     

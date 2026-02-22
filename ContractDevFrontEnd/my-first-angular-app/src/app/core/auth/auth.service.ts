@@ -1,10 +1,12 @@
 import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { jwtDecode } from 'jwt-decode';
 import { ProfileStateService } from '../shared/profile-state.service';
+import { Observable } from 'rxjs';
+
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -20,16 +22,24 @@ export class AuthService {
     private profileStateService: ProfileStateService
   ) {}
 
-  login(credentials: any) {
-    return this.http
-      .post<{ token: string }>(`${environment.apiUrl}/api/UserAccounts/Login`, credentials)
-      .pipe(
-        tap((res) => {
-          localStorage.setItem(this.TOKEN_KEY, res.token);
-          this.isLoggedIn.set(true); // signal update
-        })
-      );
-  }
+  login(formData: FormData): Observable<HttpResponse<{ token: string }>> {
+  return this.http
+    .post<{ token: string }>(
+      `${environment.apiUrl}/api/UserAccounts/Login`,
+      formData,
+      { observe: 'response' }
+    )
+    .pipe(
+      tap((res) => {
+        const token = res.body?.token;
+        if (token) {
+          localStorage.setItem(this.TOKEN_KEY, token);
+          this.isLoggedIn.set(true);
+        }
+      })
+    );
+}
+
 
   logout() {
     localStorage.removeItem(this.TOKEN_KEY);
