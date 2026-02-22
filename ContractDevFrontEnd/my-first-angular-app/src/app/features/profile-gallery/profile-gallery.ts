@@ -23,8 +23,7 @@ export class ProfileGallery implements OnInit {
 
   router = inject(Router);
 
-  trackByUserId = (index: number, item: any) => item.userId;
-
+  
   ngOnInit() {
     //this is to ensure (non-logged in users) using url commands are directed to the home page
       if (!this.authorise.isLoggedIn()) {
