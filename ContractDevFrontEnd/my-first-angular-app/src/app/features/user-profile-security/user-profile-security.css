@@ -76,3 +76,7 @@
     left: -7px;
     top: 5px;
 }
+
+.submit:hover{
+    background-color: #C850C0;
+}

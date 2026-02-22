@@ -4,7 +4,7 @@ import { Router, RouterLinkActive, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { ProfileStateService } from '../../core/shared/profile-state.service';
-import { routes } from '../../app.routes';
+
 
 
 @Component({
@@ -67,5 +67,12 @@ export class UserProfileSecurity {
       }
     });
   }
+
+  securityQuestions = [
+    "What is your mother’s maiden name?",
+    "What was the name of your first pet?",
+    "What city were you born in?"
+  ];
+
 
 }
