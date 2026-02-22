@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using ContractDevApi.Models;
 using ContractDevApi.Services;
@@ -40,6 +41,9 @@ builder.Services.AddOpenApi();
 // -------------------------------------------------------------
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
+// Disable default claim type mapping to use standard JWT claim names (sub, email, etc.)
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
 builder.Services.AddAuthentication(options =>
 {
     // Set JWT Bearer as the default authentication scheme
@@ -48,6 +52,9 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    // Disable inbound claim mapping to use standard JWT claim names
+    options.MapInboundClaims = false;
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -68,7 +75,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    // Define the Bearer security scheme
+    //Define the Bearer security scheme
+    //Default settings for registering Swagger to utilize JWT
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.Http,
@@ -109,7 +117,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Root test endpoint
+//Root test endpoint
+//Allows for quickly checking if api is running
 app.MapGet("/", () => "API is running...");
 
 app.Run();

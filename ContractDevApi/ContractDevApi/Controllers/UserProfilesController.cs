@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace ContractDevApi.Controllers
 {
@@ -20,6 +21,7 @@ namespace ContractDevApi.Controllers
 
         private readonly JwtService _jwt;
 
+        //Controller Constructor, builds inmemory database context and JWT token service
         public UserProfilesController(ContractDevContext context, JwtService jwt)
         {
             _context = context;
@@ -35,6 +37,19 @@ namespace ContractDevApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProfile(int id, ProfileUpdateDto dto)
         {
+            //Get the authenticated user ID from JWT token claim
+            var authenticatedUserId = GetAuthenticatedUserId();
+            if (authenticatedUserId == null)
+            {
+                return Unauthorized(new { Message = "Invalid token" });
+            }
+
+            //Verify the authenticated user is trying to change their own profile
+            if (authenticatedUserId.Value != id)
+            {
+                return Forbid(); // 403 Forbidden - user is authenticated but attempting to change the profile of another user
+            }
+
             var profile = await _context.UserProfiles.FindAsync(id);
 
             if (profile == null) return NotFound("User not found");
@@ -59,6 +74,20 @@ namespace ContractDevApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProfileDetails(int id)
         {
+
+            //Get the authenticated user ID from JWT token claim
+            var authenticatedUserId = GetAuthenticatedUserId();
+            if (authenticatedUserId == null)
+            {
+                return Unauthorized(new { Message = "Invalid token" });
+            }
+
+            //Verify the authenticated user is trying to get their own details
+            if (authenticatedUserId.Value != id)
+            {
+                return Forbid(); // 403 Forbidden - user is authenticated but attempting to retrieve the details of another user
+            }
+
             var user = await _context.UserAccounts.FindAsync(id);
             if (user == null) return NotFound("User not found");
 
@@ -120,6 +149,30 @@ namespace ContractDevApi.Controllers
             };
 
             return Ok(response);
+        }
+
+        //-----------------------
+        //Helper method to retrieve JWT token claim and check if user ID matches JWT sub (user ID)
+        //Returns null if claim could not be found or if invalid
+        //-----------------------
+        private int? GetAuthenticatedUserId()
+        {
+            // The "sub" (subject) claim contains the user ID
+            var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim))
+            {
+                //sub claim not found in token
+                return null;
+            }
+
+            if (int.TryParse(userIdClaim, out int userId))
+            {
+                return userId;
+            }
+
+            //Unable to parse user ID from claim
+            return null;
         }
     }
 }
