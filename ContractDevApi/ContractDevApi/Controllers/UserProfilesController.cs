@@ -34,8 +34,8 @@ namespace ContractDevApi.Controllers
         //Empty or null values are ignored for updated fields - prevents dataloss
         //-----------------------
         [Authorize]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProfile(int id, ProfileUpdateDto dto)
+        [HttpPut("UpdateProfile")]
+        public async Task<IActionResult> UpdateProfile([FromForm] ProfileUpdateDto dto)
         {
             //Get the authenticated user ID from JWT token claim
             var authenticatedUserId = GetAuthenticatedUserId();
@@ -45,12 +45,12 @@ namespace ContractDevApi.Controllers
             }
 
             //Verify the authenticated user is trying to change their own profile
-            if (authenticatedUserId.Value != id)
+            if (authenticatedUserId.Value != dto.Id)
             {
                 return Forbid(); // 403 Forbidden - user is authenticated but attempting to change the profile of another user
             }
 
-            var profile = await _context.UserProfiles.FindAsync(id);
+            var profile = await _context.UserProfiles.FindAsync(dto.Id);
 
             if (profile == null) return NotFound("User not found");
 
@@ -71,8 +71,8 @@ namespace ContractDevApi.Controllers
         //Construct full user and profile entity from shared userid and sends that back to front-end as response
         //-----------------------
         [Authorize]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetProfileDetails(int id)
+        [HttpGet("Profile")]
+        public async Task<IActionResult> GetProfileDetails([FromForm] int id)
         {
 
             //Get the authenticated user ID from JWT token claim
@@ -121,7 +121,7 @@ namespace ContractDevApi.Controllers
         //Reponds to Front-End with List of Profile Response Dto, with expected naming scheme on Front-End
         //-----------------------
         [Authorize]
-        [HttpGet]
+        [HttpGet("ProfileGallery")]
         public async Task<IActionResult> GetAllUsers()
         {
             var profiles = await _context.UserProfiles.ToListAsync();

@@ -5,6 +5,9 @@ namespace ContractDevApi.DTOs
     public class UserPasswordDto
     {
         [Required]
+        public int Id { get; set; }
+
+        [Required]
         public string OldPassword { get; set; } = string.Empty;
 
         [Required]
