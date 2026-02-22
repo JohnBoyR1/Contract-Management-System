@@ -63,6 +63,8 @@ namespace ContractDevApi.Controllers
 
             int result = await _context.SaveChangesAsync();
 
+            if (result <= 0) return Problem("System error occured. User Profile Update Failed.");
+
             return Ok(new { message = "Profile updated successfully" });
         }
 
@@ -149,6 +151,67 @@ namespace ContractDevApi.Controllers
             };
 
             return Ok(response);
+        }
+        //-----------------------
+        //Upload Profile File - used by Frontend to upload profile specific files (e.g., profile picture)
+        //Ensure that file upload associated to profile is valid and token user is authorized to make changes
+        //-----------------------
+        [Authorize]
+        [HttpPost("UploadProfileFile")]
+        public async Task<IActionResult> UploadProfileFile([FromForm] ProfileUploadDto dto)
+        {
+            //Get the authenticated user ID from JWT token claim
+            var authenticatedUserId = GetAuthenticatedUserId();
+            if (authenticatedUserId == null)
+            {
+                return Unauthorized(new { Message = "Invalid token" });
+            }
+
+            //Verify the authenticated user is trying to get their own details
+            if (authenticatedUserId.Value != dto.Id)
+            {
+                return Forbid(); // 403 Forbidden - user is authenticated but attempting to retrieve the details of another user
+            }
+
+            //Ensure that user and profile exist
+            var user = await _context.UserAccounts.FindAsync(dto.Id);
+            if (user == null) return NotFound("User not found");
+
+            var profile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
+            if (profile == null) return NotFound("Profile not found");
+
+            //Check if file exists
+            if (dto.file.Length == 0) return BadRequest("No file uploaded");
+
+            //Define path to save file
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+            //If directory doesnt exist, create directory for file storage
+            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+            //Generate unique filename - Security risk if we use user provided filename (prevents collisions and malicious attempts to save file outside of chosen directory (example: "../../../.jpg")
+            var fileName = $"{Guid.NewGuid()}{dto.Extension}";
+            //Combine filepath and new file name
+            var filePath = Path.Combine(folderPath, fileName);
+            
+            //Use FileStream to save file to image directory
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await dto.file.CopyToAsync(stream);
+            }
+
+            var newFile = new UserFile
+            {
+                FilePath = filePath,
+                Extension = dto.Extension,
+                UserAccountId = dto.Id,
+                UserAccount = user
+            };
+
+            int result = await _context.SaveChangesAsync();
+
+            if (result <= 0) return Problem("System error occured. User Account Deletion Failed.");
+
+            return Ok(new {path = filePath});
         }
 
         //-----------------------

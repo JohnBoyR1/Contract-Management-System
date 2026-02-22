@@ -22,6 +22,8 @@ namespace ContractDevApi.Models
 
         public DbSet<UserProfile> UserProfiles { get; set; }
 
+        public DbSet<UserFile> UserFiles { get; set; }
+
         //-----------------------
         //By default Entity Framework will throw an error when attempting to assign a List as a data type for database
         //To store the two-factor authentication recovery codes, stored here as list of hashed strings
