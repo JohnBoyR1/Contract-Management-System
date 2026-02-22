@@ -71,7 +71,7 @@ namespace ContractDevApi.Controllers
         //Construct full user and profile entity from shared userid and sends that back to front-end as response
         //-----------------------
         [Authorize]
-        [HttpGet("Profile")]
+        [HttpGet("ProfileDetails")]
         public async Task<IActionResult> GetProfileDetails([FromForm] int id)
         {
 
