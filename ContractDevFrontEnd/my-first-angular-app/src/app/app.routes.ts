@@ -11,6 +11,8 @@ import { ProfileCard } from './features/profile-card/profile-card';
 import { authGuard } from './core/auth/auth.guard';
 import { ProfileGallery } from './features/profile-gallery/profile-gallery';
 import { ProfileDisplayCard } from './features/profile-display-card/profile-display-card';
+import { UserProfileSecurity } from './features/user-profile-security/user-profile-security'; 
+
 
 export const routes: Routes = [
     //public routes
@@ -21,6 +23,7 @@ export const routes: Routes = [
     { path: 'intro-banner', component: IntroBanner },
     { path: 'profileGallery', component: ProfileGallery },
     { path: 'profileDisplay', component: ProfileDisplayCard},
+    { path: 'userProfileSecurity', component: UserProfileSecurity},
 
     //protectd routes (locked by auth.guard.ts)
     { path: 'user-profile', component: UserProfile, canActivate: [authGuard] },

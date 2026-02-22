@@ -63,6 +63,14 @@ export class UserService {
     return this.http.put<void>(`${this.apiUrl}/UserProfiles/${id}`, data);
   }
 
+  //update the users password
+  updateSecurity(id: number, payload: any) {
+    return this.http.put(`/api/users/${id}/security`, payload);
+  }
+
+
+
+
   //for the fun part calling all the profiles
   getAllProfiles(): Observable<Profile[]> {
     return this.http.get<Profile[]>(`${this.apiUrl}/UserProfiles`);// backend to return profile
