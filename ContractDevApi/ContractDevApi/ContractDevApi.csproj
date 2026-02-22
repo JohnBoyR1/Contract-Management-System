@@ -30,6 +30,7 @@
   <ItemGroup>
     <Folder Include="Migrations\" />
     <Folder Include="Views\UserAccounts\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

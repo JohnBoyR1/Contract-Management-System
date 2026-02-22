@@ -111,6 +111,14 @@ namespace ContractDevApi.Controllers
             //Adding UserProfile Entity to in-memory database context
             _context.UserProfiles.Add(profile);
 
+            var profileImage = new UserFile
+            {
+                UserAccountId = user.UserAccountId,
+                UserAccount = user
+            };
+
+            _context.UserFiles.Add(profileImage);
+
             //Saving changes to physical database - result stores integer value of status received from database
             int result = await _context.SaveChangesAsync();
 

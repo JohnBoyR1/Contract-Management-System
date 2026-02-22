@@ -33,5 +33,7 @@
         public bool? DisplayUserName { get; set; } = false;
 
         public bool? HidePhoneNumber { get; set; } = false;
+
+        public string ProfileImagePath { get; set; } = string.Empty;
     }
 }

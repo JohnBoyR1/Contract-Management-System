@@ -96,6 +96,9 @@ namespace ContractDevApi.Controllers
             var profile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == id);
             if (profile == null) return NotFound("Profile not found");
 
+            var profilePicture = await _context.UserFiles.FirstOrDefaultAsync(x => x.UserAccountId == id);
+            //if user has no uploaded a file to UserFiles table, default profile picture is used in place
+
             var response = new ProfileResponseDto
             {
                 UserId = user.UserAccountId,
@@ -110,7 +113,8 @@ namespace ContractDevApi.Controllers
                 AvailableForWork = profile.AvailableForWork,
                 OfferingWork = profile.OfferingWork,
                 DisplayUserName = profile.DisplayUserName,
-                HidePhoneNumber = profile.HidePhoneNumber
+                HidePhoneNumber = profile.HidePhoneNumber,
+                ProfileImagePath = profilePicture!.FilePath
             };
 
             return Ok(response);
@@ -128,11 +132,14 @@ namespace ContractDevApi.Controllers
         {
             var profiles = await _context.UserProfiles.ToListAsync();
             var users = await _context.UserAccounts.ToListAsync();
+            var files = await _context.UserFiles.ToListAsync();
 
             var response =
             from u in users
             join p in profiles
                 on u.UserAccountId equals p.UserAccountId
+            join f in files
+                on u.UserAccountId equals f.UserAccountId
             select new ProfileResponseDto
             {
                 UserId = u.UserAccountId,
@@ -152,12 +159,13 @@ namespace ContractDevApi.Controllers
 
             return Ok(response);
         }
+
         //-----------------------
         //Upload Profile File - used by Frontend to upload profile specific files (e.g., profile picture)
         //Ensure that file upload associated to profile is valid and token user is authorized to make changes
         //-----------------------
         [Authorize]
-        [HttpPost("UploadProfileFile")]
+        [HttpPut("UploadProfileFile")]
         public async Task<IActionResult> UploadProfileFile([FromForm] ProfileUploadDto dto)
         {
             //Get the authenticated user ID from JWT token claim
@@ -199,17 +207,26 @@ namespace ContractDevApi.Controllers
                 await dto.file.CopyToAsync(stream);
             }
 
-            var newFile = new UserFile
+            //Update existing filepath and extension if such exists, else create new one
+            var updateFile = await _context.UserFiles.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
+            if (updateFile != null)
             {
-                FilePath = filePath,
-                Extension = dto.Extension,
-                UserAccountId = dto.Id,
-                UserAccount = user
-            };
-
+                updateFile.FilePath = filePath;
+                updateFile.Extension = dto.Extension;
+            }else
+            {
+                var newFile = new UserFile
+                {
+                    FilePath = filePath,
+                    Extension = dto.Extension,
+                    UserAccountId = dto.Id,
+                    UserAccount = user
+                };
+            }
+            
             int result = await _context.SaveChangesAsync();
 
-            if (result <= 0) return Problem("System error occured. User Account Deletion Failed.");
+            if (result <= 0) return Problem("System error occured. User Profile Image Upload Failed.");
 
             return Ok(new {path = filePath});
         }
