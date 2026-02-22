@@ -13,9 +13,9 @@ namespace ContractDevApi.DTOs
     {
         [Required]
         public int Id { get; set; }
-        public string PhoneNumber { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; } = string.Empty;
 
-        public string Bio { get; set; } = string.Empty;
+        public string? Bio { get; set; } = string.Empty;
 
         public bool? AvailableForWork { get; set; } = false;
 

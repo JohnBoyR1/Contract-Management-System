@@ -72,7 +72,7 @@ namespace ContractDevApi.Controllers
         //-----------------------
         [Authorize]
         [HttpGet("ProfileDetails")]
-        public async Task<IActionResult> GetProfileDetails([FromForm] int id)
+        public async Task<IActionResult> GetProfileDetails([FromQuery] int id)
         {
 
             //Get the authenticated user ID from JWT token claim
