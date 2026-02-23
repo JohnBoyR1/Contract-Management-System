@@ -9,7 +9,7 @@ namespace ContractDevApi.Models
         public int UserFileId { get; set; }
 
         [Required]
-        public string FilePath { get; set; } = "images/default_profile_picture.png";
+        public string FilePath { get; set; } = "/images/default_profile_picture.png";
 
         [Required]
         public string Extension { get; set; } = ".png";
