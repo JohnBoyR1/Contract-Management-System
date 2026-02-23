@@ -238,8 +238,29 @@ namespace ContractDevApi.Controllers
             //If directory doesnt exist, create directory for file storage
             if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 
+
+            //Get extension from file type meta data
+            string extension = string.Empty;
+            switch(dto.File.ContentType)
+            {
+                case "image/jpeg":
+                    extension = ".jpg";
+                    break;
+                case "image/png":
+                    extension = ".png";
+                    break;
+                case "image/gif":
+                    extension = ".gif";
+                    break;
+                case "image/webp":
+                    extension = ".webp";
+                    break;
+                default:
+                    return BadRequest("File data malformed");
+            }    
+
             //Generate unique filename - Security risk if we use user provided filename (prevents collisions and malicious attempts to save file outside of chosen directory (example: "../../../.jpg")
-            var fileName = $"{Guid.NewGuid()}{dto.Extension}";
+            var fileName = $"{Guid.NewGuid()}{extension}";
             //Combine filepath and new file name
             var filePath = Path.Combine(folderPath, fileName);
 
@@ -257,13 +278,13 @@ namespace ContractDevApi.Controllers
             if (updateFile != null)
             {
                 updateFile.ProfilePictureFilepath = dbRelativePath;
-                updateFile.ProfilePictureExtension = dto.Extension;
+                updateFile.ProfilePictureExtension = extension;
             }else
             {
                 var newFile = new UserFile
                 {
-                    FilePath = filePath,
-                    Extension = dto.Extension,
+                    FilePath = dbRelativePath,
+                    Extension = extension,
                     UserAccountId = dto.Id,
                     UserAccount = user
                 };
