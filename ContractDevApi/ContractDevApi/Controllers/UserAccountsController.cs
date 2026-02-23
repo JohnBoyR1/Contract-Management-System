@@ -75,7 +75,7 @@ namespace ContractDevApi.Controllers
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
             //emailExists & usernameExists ensure that new account details do not conflict with unique user properties
-            bool emailExists = await _context.UserAccounts.AnyAsync(x => x.Email!.ToLower() == dto.Email!.ToLower());
+            bool emailExists = await _context.UserAccounts.AnyAsync(x => x.UserSignupEmail! == dto.Email!.ToLower());
 
             if (emailExists) return Conflict("User with that email or username already exists");
 
@@ -84,13 +84,16 @@ namespace ContractDevApi.Controllers
             if (usernameExists) return Conflict("user with that email or username already exists");
 
             //BCrypt hashing used to hash user password that will be saved on the database
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            string hashedSecurityAnswer = BCrypt.Net.BCrypt.HashPassword(dto.SecurityAnswer.ToLower());
 
             //Constructing UserAccount Entity
             var user = new UserAccount
             {
-                Email = dto.Email,
-                PasswordHash = passwordHash
+                UserSignupEmail = dto.Email.ToLower(),
+                HashedPassword = hashedPassword,
+                SecurityQuestion = dto.SecurityQuestion,
+                SecurityAnswer = hashedSecurityAnswer
             };
 
             //Adding UserAccount Entity to in-memory database context
@@ -103,13 +106,42 @@ namespace ContractDevApi.Controllers
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Country = dto.Country,
-                Description = dto.Description,
+                Bio = "",
+                PhoneNumber = "",
+                UserTitle = dto.UserTitle,
+                AvailableForWork = false,
+                OfferingWork = false,
+                LastLogin = DateTimeOffset.UtcNow,
+                UsernameDisplay = false,
+                HidePhoneNumber = false,
                 UserAccountId = user.UserAccountId,
                 UserAccount = user
             };
 
             //Adding UserProfile Entity to in-memory database context
             _context.UserProfiles.Add(profile);
+
+            var socials = new SocialConnection
+            {
+                UserAccountId = user.UserAccountId,
+                FacebookLink = "",
+                UserSocialEmailLink = "",
+                XLink = "",
+                GithubLink = "",
+                LinkedinLink = "",
+                UserAccount = user
+            };
+
+            _context.SocialConnections.Add(socials);
+
+            var reviews = new UserReview
+            {
+                UserAccountId = user.UserAccountId,
+                NumberOfReviews = 0,
+                TotalReviewPoints = 0.0f,
+                AverageReviewScore = 0.0f,
+                UserAccount = user
+            };
 
             //Saving changes to physical database - result stores integer value of status received from database
             int result = await _context.SaveChangesAsync();
@@ -136,13 +168,13 @@ namespace ContractDevApi.Controllers
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
             //Check if user with email exists
-            var user = await _context.UserAccounts.FirstOrDefaultAsync(x => x.Email!.ToLower() == dto.Email!.ToLower());
+            var user = await _context.UserAccounts.FirstOrDefaultAsync(x => x.UserSignupEmail! == dto.Email!.ToLower());
 
             //If email does not exist in UserAccounts table, return error Status 401
             if (user == null) return Unauthorized(new { Message = "Invalid email or password" });
 
             //Check if password matches hashed password via BCrypt verification
-            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
+            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.Password, user.HashedPassword);
 
             //If password does not pass verification, return error Status 401
             if (!validatePassword) return Unauthorized(new { Message = "Invalid email or password" });
@@ -159,7 +191,7 @@ namespace ContractDevApi.Controllers
             var response = new UserResponseDto
             {
                 UserId = user.UserAccountId,
-                Email = user.Email,
+                Email = user.UserSignupEmail,
                 Username = userProfile.Username,
                 FirstName = userProfile.FirstName,
                 LastName = userProfile.LastName
@@ -219,15 +251,20 @@ namespace ContractDevApi.Controllers
             if (user == null) return NotFound($"User with id: {dto.Id} does not exist");
 
             //Check if password matches hashed password via BCrypt verification
-            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.OldPassword, user.PasswordHash);
+            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.OldPassword, user.HashedPassword);
 
             //If password does not pass verification, return error Status 401
             if (!validatePassword) return Unauthorized(new { Message = "Invalid Password" });
 
+            //Check if Security answer given matches one created at account creation
+            bool validateSecurityAnswer = BCrypt.Net.BCrypt.Verify(dto.SecurityAnswer.ToLower(), user.SecurityAnswer);
+
+            if (!validateSecurityAnswer) return Unauthorized(new { Message = "Invalid Security Answer" });
+            
             //Hash new password
-            var newPasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            var newHashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
             //Overrite old hashed password with new password
-            user.PasswordHash = newPasswordHash;
+            user.HashedPassword = newHashedPassword;
 
             //Saving changes to physical database - result stores integer value of status received from database
             int result = await _context.SaveChangesAsync();
@@ -238,8 +275,7 @@ namespace ContractDevApi.Controllers
             return Ok(new { Message = "Password updated successfully" });
         }
 
-        //TODO
-        // DELETE: api/UserAccounts/5
+        // DELETE: api/UserAccounts/Delete
         [Authorize]
         [HttpDelete("Delete")]
         public async Task<IActionResult> DeleteUser([FromForm] UserDeletionDto dto)
@@ -270,7 +306,7 @@ namespace ContractDevApi.Controllers
             if (user == null) return NotFound($"User with id: {dto.Id} does not exist");
 
             //Check if password matches hashed password via BCrypt verification
-            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
+            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.Password, user.HashedPassword);
 
             //If password does not pass verification, return error Status 401
             if (!validatePassword) return Unauthorized(new { Message = "Invalid Password" });

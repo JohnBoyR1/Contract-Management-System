@@ -22,24 +22,70 @@ namespace ContractDevApi.Models
 
         public DbSet<UserProfile> UserProfiles { get; set; }
 
+        public DbSet<UserReview> UserReviews { get; set; }
+
+        public DbSet<SocialConnection> SocialConnections { get; set; }
+
         //-----------------------
-        //By default Entity Framework will throw an error when attempting to assign a List as a data type for database
-        //To store the two-factor authentication recovery codes, stored here as list of hashed strings
-        //it is necessary to define the bespoke insturctions for reading and writing data to and from the database
+        //Additional constraint mapping for database tables that Entity Framework requires for valid migrations
         //-----------------------
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            //Map database enum to model enum Title
+            modelBuilder.HasPostgresEnum<Title>(
+                schema: "public",
+                name: "title"
+            );
+
             modelBuilder.Entity<UserAccount>(entity =>
             {
-                // Configure the recoverCode property to be stored as JSON
-                entity.Property(e => e.RecoveryCodesHash)
-                    .HasColumnType("jsonb")
-                    .HasConversion(
-                        v => System.Text.Json.JsonSerializer.Serialize(v, (System.Text.Json.JsonSerializerOptions)null),
-                        v => System.Text.Json.JsonSerializer.Deserialize<List<string>>(v, (System.Text.Json.JsonSerializerOptions)null) ?? new List<string>()
-                    );
+                //Map UserAccounts to user_accounts table
+                entity.ToTable("user_accounts");
+
+                //Email entity contraints
+                entity.ToTable("user_accounts", t => t.HasCheckConstraint(
+                    "allowed_email_providers",
+                    "user_signup_email ILIKE '%@gmail.com' OR " +
+                    "user_signup_email ILIKE '%@outlook.com' OR " +
+                    "user_signup_email ILIKE '%@icloud.com' OR " +
+                    "user_signup_email ILIKE '%@yahoo.com' OR " +
+                    "user_signup_email ILIKE '%@hotmail.com' OR " +
+                    "user_signup_email ILIKE '%@proton.me' OR " +
+                    "user_signup_email ILIKE '%@protonmail.com' OR " +
+                    "user_signup_email ILIKE '%@pm.me'"
+                ));
+                //Additional DB email constraint, must be unique
+                entity.HasIndex(e => e.UserSignupEmail).IsUnique();
+
+            });
+
+            modelBuilder.Entity<UserProfile>(entity =>
+            {
+                //Map UserProfiles to user_profiles table
+                entity.ToTable("user_profiles");
+
+                //UserTitle enum constraint
+                entity.ToTable("user_profiles", t => t.HasCheckConstraint(
+                    "allowed_user_titles",
+                    "user_title ILIKE 'developer' OR " +
+                    "user_title ILIKE 'client' OR " +
+                    "user_title ILIKE 'both'"
+                ));
+
+
+            });
+
+            modelBuilder.Entity<SocialConnection>(entity =>
+            {
+                entity.ToTable("social_connections");
+
+            });
+
+            modelBuilder.Entity<UserReview>(entity =>
+            {
+                entity.ToTable("user_reviews");
             });
         }
     }

@@ -8,11 +8,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Database Connection. NOTE: Ensure user_secrets is properly configured to prevent leaking passwords(this is for connecting back end)
-builder.Services.AddDbContext<ContractDevContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<ContractDevContext>(options => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+           .UseSnakeCaseNamingConvention());
 
 // CORS for Angular
 builder.Services.AddCors(options =>
@@ -99,7 +102,10 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<JwtService>();
 
 var app = builder.Build();
-    
+
+//Allow storing static files - from wwwroot default
+app.UseStaticFiles();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

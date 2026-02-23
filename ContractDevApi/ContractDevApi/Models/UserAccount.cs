@@ -16,24 +16,22 @@ namespace ContractDevApi.Models
         //Email does not need mimimum length here as DTO will ensure email validation
         [Required]
         [StringLength(255)]
+        [EmailAddress]
         [Column(TypeName = "varchar(255)")]
-        public string Email { get; set; } = string.Empty;
+        public string UserSignupEmail { get; set; } = string.Empty;
+
+        [Required]
+        [Column(TypeName = "text")]
+        public string SecurityQuestion { get; set; } = string.Empty;
+
+        [Required]
+        [Column(TypeName = "text")]
+        public string SecurityAnswer { get; set; } = string.Empty;
 
         //Hashed
         [Required]
-        [StringLength(255)]
-        [Column(TypeName = "varchar(255)")]
-        public string PasswordHash { get; set; } = string.Empty;
-
-        [Column(TypeName = "boolean")]
-        public bool Is2faEnabled { get; set; } = false;
-
-        //Stored Encryoted TOTP secret
         [Column(TypeName = "text")]
-        public string EncryptedTOTPSecret { get; set; } = string.Empty;
+        public string HashedPassword { get; set; } = string.Empty;
 
-        //Hashed
-        [Column(TypeName = "JSONB")]
-        public List<string> RecoveryCodesHash { get; set; } = new List<string>();
     }
 }
