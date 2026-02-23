@@ -9,5 +9,8 @@ namespace ContractDevApi.DTOs
 
         [Required]
         public string Password { get; set; } = string.Empty;
+
+        [Required]
+        public string SecurityAnswer { get; set; } = string.Empty;
     }
 }

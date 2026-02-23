@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using ContractDevApi.DTOs;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ContractDevApi.Controllers
 {
@@ -50,16 +51,29 @@ namespace ContractDevApi.Controllers
                 return Forbid(); // 403 Forbidden - user is authenticated but attempting to change the profile of another user
             }
 
+            var user = await _context.UserAccounts.FindAsync(dto.Id);
             var profile = await _context.UserProfiles.FindAsync(dto.Id);
+            var social = await _context.SocialConnections.FindAsync(dto.Id);
+            var review = await _context.UserReviews.FindAsync(dto.Id);
 
-            if (profile == null) return NotFound("User not found");
+            if (user == null) return NotFound("User Not Found");
+            if (profile == null) return NotFound("Profile not found");
+            if (social == null) return NotFound("Social Connections not found");
 
+            if (dto.Username != null) profile.Username = dto.Username;
+            if (dto.Email != null) user.UserSignupEmail = dto.Email.ToLower();
             if (dto.PhoneNumber != null) profile.PhoneNumber = dto.PhoneNumber;
+            if (dto.Country != null) profile.Country = dto.Country;
+            if (dto.UserTitle != null) profile.UserTitle = dto.UserTitle;
             if (dto.Bio != null) profile.Bio = dto.Bio;
             if (dto.AvailableForWork.HasValue) profile.AvailableForWork = dto.AvailableForWork;
             if (dto.OfferingWork.HasValue) profile.OfferingWork = dto.OfferingWork;
-            if (dto.DisplayUserName.HasValue) profile.DisplayUserName = dto.DisplayUserName;
+            if (dto.DisplayUserName.HasValue) profile.UsernameDisplay = dto.DisplayUserName;
             if (dto.HidePhoneNumber.HasValue) profile.HidePhoneNumber = dto.HidePhoneNumber;
+            if (dto.FacebookLink != null) social.FacebookLink = dto.FacebookLink;
+            if (dto.UserSocialEmailLink != null) social.UserSocialEmailLink = dto.UserSocialEmailLink;
+            if (dto.XLink != null) social.XLink = dto.XLink;
+            if (dto.GithubLink != null) social.LinkedinLink = dto.LinkedinLink;
 
             int result = await _context.SaveChangesAsync();
 
@@ -76,7 +90,6 @@ namespace ContractDevApi.Controllers
         [HttpGet("ProfileDetails")]
         public async Task<IActionResult> GetProfileDetails([FromQuery] int id)
         {
-
             //Get the authenticated user ID from JWT token claim
             var authenticatedUserId = GetAuthenticatedUserId();
             if (authenticatedUserId == null)
@@ -96,8 +109,11 @@ namespace ContractDevApi.Controllers
             var profile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == id);
             if (profile == null) return NotFound("Profile not found");
 
-            var profilePicture = await _context.UserFiles.FirstOrDefaultAsync(x => x.UserAccountId == id);
-            //if user has no uploaded a file to UserFiles table, default profile picture is used in place
+            var social = await _context.SocialConnections.FirstOrDefaultAsync(x => x.UserAccountId == id);
+            if (social == null) social = new SocialConnection();
+
+            var review = await _context.UserReviews.FirstOrDefaultAsync(x => x.UserAccountId == id);
+            if (review == null) review = new UserReview();
 
             var response = new ProfileResponseDto
             {
@@ -105,16 +121,27 @@ namespace ContractDevApi.Controllers
                 FirstName = profile.FirstName,
                 LastName = profile.LastName,
                 Username = profile.Username,
-                Email = user.Email,
+                Email = user.UserSignupEmail,
                 PhoneNumber = profile.PhoneNumber,
                 Country = profile.Country,
-                Description = profile.Description,
+                UserTitle = profile.UserTitle,
                 Bio = profile.Bio,
                 AvailableForWork = profile.AvailableForWork,
                 OfferingWork = profile.OfferingWork,
-                DisplayUserName = profile.DisplayUserName,
+                DisplayUserName = profile.UsernameDisplay,
                 HidePhoneNumber = profile.HidePhoneNumber,
-                ProfileImagePath = profilePicture!.FilePath
+                ProfileImagePath = profile.ProfilePictureFilepath,
+                ProfileImageExtension = profile.ProfilePictureExtension,
+                Socials = new Dictionary<string, string?> {
+                        { "facebook", social.FacebookLink },
+                        { "Social Email", social.UserSocialEmailLink },
+                        { "X", social.XLink },
+                        { "Github", social.GithubLink },
+                        { "LinkedIn", social.LinkedinLink }
+                },
+                NumberOfReviews = review.NumberOfReviews,
+                TotalReviewPoints = review.TotalReviewPoints,
+                AverageReviewScore = review.AverageReviewScore
             };
 
             return Ok(response);
@@ -132,29 +159,44 @@ namespace ContractDevApi.Controllers
         {
             var profiles = await _context.UserProfiles.ToListAsync();
             var users = await _context.UserAccounts.ToListAsync();
-            var files = await _context.UserFiles.ToListAsync();
+            var socials = await _context.SocialConnections.ToListAsync();
+            var reviews = await _context.UserReviews.ToListAsync();
 
             var response =
             from u in users
             join p in profiles
                 on u.UserAccountId equals p.UserAccountId
-            join f in files
-                on u.UserAccountId equals f.UserAccountId
+            join s in socials
+                on u.UserAccountId equals s.UserAccountId
+            join r in reviews
+                on u.UserAccountId equals r.UserAccountId
             select new ProfileResponseDto
             {
                 UserId = u.UserAccountId,
                 FirstName = p.FirstName,
                 LastName = p.LastName,
                 Username = p.Username,
-                Email = u.Email,
+                Email = u.UserSignupEmail,
                 PhoneNumber = p.PhoneNumber,
                 Country = p.Country,
-                Description = p.Description,
+                UserTitle = p.UserTitle,
                 Bio = p.Bio,
                 AvailableForWork = p.AvailableForWork,
                 OfferingWork = p.OfferingWork,
-                DisplayUserName = p.DisplayUserName,
-                HidePhoneNumber = p.HidePhoneNumber
+                DisplayUserName = p.UsernameDisplay,
+                HidePhoneNumber = p.HidePhoneNumber,
+                ProfileImagePath = p.ProfilePictureFilepath,
+                ProfileImageExtension = p.ProfilePictureExtension,
+                Socials = new Dictionary<string, string?> {
+                        { "facebook", s.FacebookLink },
+                        { "Social Email", s.UserSocialEmailLink },
+                        { "X", s.XLink },
+                        { "Github", s.GithubLink },
+                        { "LinkedIn", s.LinkedinLink }
+                },
+                NumberOfReviews = r.NumberOfReviews,
+                TotalReviewPoints = r.TotalReviewPoints,
+                AverageReviewScore = r.AverageReviewScore
             };
 
             return Ok(response);
@@ -166,7 +208,7 @@ namespace ContractDevApi.Controllers
         //-----------------------
         [Authorize]
         [HttpPut("UploadFile")]
-        public async Task<IActionResult> UploadProfileFile([FromForm] ProfileUploadDto dto)
+        public async Task<IActionResult> UploadFile([FromForm] ProfileUploadDto dto)
         {
             //Get the authenticated user ID from JWT token claim
             var authenticatedUserId = GetAuthenticatedUserId();
@@ -211,11 +253,11 @@ namespace ContractDevApi.Controllers
             }
 
             //Update existing filepath and extension if such exists, else create new one
-            var updateFile = await _context.UserFiles.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
+            var updateFile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
             if (updateFile != null)
             {
-                updateFile.FilePath = dbRelativePath;
-                updateFile.Extension = dto.Extension;
+                updateFile.ProfilePictureFilepath = dbRelativePath;
+                updateFile.ProfilePictureExtension = dto.Extension;
             }else
             {
                 var newFile = new UserFile

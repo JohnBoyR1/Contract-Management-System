@@ -13,9 +13,17 @@ namespace ContractDevApi.DTOs
     {
         [Required]
         public int Id { get; set; }
-        public string? PhoneNumber { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
 
-        public string? Bio { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+
+        public string PhoneNumber { get; set; } = string.Empty;
+
+        public string Country { get; set; } = string.Empty;
+
+        public string UserTitle { get; set; } = string.Empty;
+
+        public string Bio { get; set; } = string.Empty;
 
         public bool? AvailableForWork { get; set; } = false;
 
@@ -24,5 +32,15 @@ namespace ContractDevApi.DTOs
         public bool? DisplayUserName { get; set; } = false;
 
         public bool? HidePhoneNumber { get; set; } = false;
+
+        public string FacebookLink { get; set; } = string.Empty;
+
+        public string UserSocialEmailLink { get; set; } = string.Empty;
+
+        public string XLink { get; set; } = string.Empty;
+
+        public string GithubLink { get; set; } = string.Empty;
+
+        public string LinkedinLink { get; set; } = string.Empty;
     }
 }
