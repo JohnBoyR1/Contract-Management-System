@@ -1,11 +1,16 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { Profile } from '../models/profile.models';
+import { effect } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileStateService {
-
   // Holds the full profile object (change any to Profile (type‑safety, autocompletion, and error‑prevention.))
   private _profile = signal<Profile | null>(null);
+
+  // 1. Define the signal that was missing
+  previewUrl = signal<string | null>(null);
+
+  selectedFileForProfile = signal<File | null>(null);
 
   // Public getter for components
   profile = computed(() => this._profile());
@@ -35,7 +40,7 @@ export class ProfileStateService {
 
   email = computed(() => this._profile()?.email ?? '');
 
-  //
+  /*
   profilePicture = computed(() => this._profile()?.profilePicture ?? '');
 
   // file selected by user (no preview logic)
@@ -47,30 +52,37 @@ export class ProfileStateService {
       return URL.createObjectURL(profileFile);
     }
     return this._profile()?.profilePicture ?? '';
-  });
+  });*/
 
+  private cleanupEffect = effect((onCleanup) => {
+    const file = this.selectedFileForProfile();
+
+    if (file) {
+      const url = URL.createObjectURL(file);
+      this.previewUrl.set(url);
+
+      // This runs automatically before the effect runs again or component is destroyed
+      onCleanup(() => {
+        URL.revokeObjectURL(url);
+        console.log('Memory cleaned up!');
+      });
+    } else {
+      // Fallback to the existing profile picture if no new file is selected
+      this.previewUrl.set(this._profile()?.profilePicture ?? '');
+    }
+  });
 
   // Called after login or guard fetch
   initProfile(profile: Profile) {
     this._profile.set(profile);
+    this.selectedFileForProfile.set(null);
   }
 
   // Called on logout
   clearProfile() {
     this._profile.set(null);
   }
-
 }
-
-
-
-
-
-
-
-
-
-
 
 /* manages one logged in user's profile using signals *
 

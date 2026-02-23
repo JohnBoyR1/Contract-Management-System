@@ -1,7 +1,7 @@
 import { Component, computed } from '@angular/core';
-import {Router, RouterLink, RouterLinkActive } from "@angular/router";
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-//input signals 
+//input signals
 import { ProfileStateService } from '../../core/shared/profile-state.service';
 import { UserService } from '../../core/services/user.service';
 import { Profile } from '../../core/models/profile.models';
@@ -9,36 +9,31 @@ import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
-
-
-
-
+import { FileUpload } from '../../core/shared/components/file-upload/file-upload';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, ReactiveFormsModule],
+  imports: [RouterLink, RouterLinkActive, ReactiveFormsModule, FileUpload],
   templateUrl: './user-profile.html',
   styleUrl: './user-profile.css',
 })
 export class UserProfile {
-  profileForm: FormGroup;//?
-  
-
+  profileForm: FormGroup; //?
 
   private userService = inject(UserService);
   private authService = inject(AuthService);
 
   // 2. Inject the Router in the constructor
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
 
     private router: Router,
     private fb: FormBuilder, //FormBuilder is a built in angular ?
-    public profile: ProfileStateService //then I can use {{ profile.firstName() }} etc.
+    public profile: ProfileStateService, //then I can use {{ profile.firstName() }} etc.
   ) {
     this.profileForm = this.fb.group({
-      id: [this.authService.getCurrentUserId()],// set sub()
+      id: [this.authService.getCurrentUserId()], // set sub()
       firstName: [''],
       lastName: [''],
       jobRole: [''],
@@ -52,25 +47,22 @@ export class UserProfile {
       availableForWork: [false],
       offeringWork: [false],
       displayUserName: [false],
-      hidePhoneNumber: [false]
-
+      hidePhoneNumber: [false],
     });
   }
 
   ngOnInit() {
-      
-      const id = this.authService.getCurrentUserId();
-     
-      //subscribe is used to recieve data asyschronously (returns an Observable)
-      this.userService.getProfile(id).subscribe(profile => {
-      this.profileForm.patchValue(profile);//this is what is displaying the data
-      //console.log("User ID:", id);
+    const id = this.authService.getCurrentUserId();
 
+    //subscribe is used to recieve data asyschronously (returns an Observable)
+    this.userService.getProfile(id).subscribe((profile) => {
+      this.profileForm.patchValue(profile); //this is what is displaying the data
+      //console.log("User ID:", id);
     });
   }
 
-  nameDisplay(){
-    return `${this.profile.firstName()} ${this.profile.lastName()}`; 
+  nameDisplay() {
+    return `${this.profile.firstName()} ${this.profile.lastName()}`;
   }
 
   onFileSelected(event: Event) {
@@ -80,8 +72,6 @@ export class UserProfile {
     this.profile.selectedFileForProfile.set(file);
   }
 
-
-
   saveProfile() {
     const id = this.authService.getCurrentUserId();
 
@@ -89,13 +79,10 @@ export class UserProfile {
 
     const formData = new FormData();
 
-    
-
-
     // append all text fields (underscore instead of key (We only care about the values))
     Object.entries(raw).forEach(([key, value]) => {
       if (value !== null && value !== '') {
-        formData.append(key , value as any);
+        formData.append(key, value as any);
       }
     });
 
@@ -111,21 +98,58 @@ export class UserProfile {
 
     /*<input type="file" (change)="onFileSelected($event)" accept="image/*">*/
 
-
     //updating the user profile  (must change to send FormData instead of JSON)
     /*const payload = Object.fromEntries(
     Object.entries(raw).filter(([_, v]) => v !== '' && v !== null)//stripping out empty values(only sending meaningfull data to the Api)
   );*/
 
-    
-
     //updating backend and refreshing the global profile state
     this.userService.updateProfile(formData).subscribe(() => {
-      this.userService.getProfile(id).subscribe(fullProfile => {
+      this.userService.getProfile(id).subscribe((fullProfile) => {
         this.profile.initProfile(fullProfile);
       });
     });
-
-  } 
-  
+  }
 }
+
+/*--
+
+import { Component } from '@angular/core';
+import { UploadService } from './upload.service'; // Assume you have a service
+
+@Component({
+  selector: 'app-profile',
+  template: `
+    <h2>Edit Profile</h2>
+    
+    <app-file-upload 
+      label="Update Avatar" 
+      (fileSelected)="handleUpload($event)">
+    </app-file-upload>
+
+    <div *ngIf="uploadProgress > 0">
+      Progress: {{ uploadProgress }}%
+    </div>
+  `
+})
+export class ProfileComponent {
+  uploadProgress = 0;
+
+  constructor(private uploadService: UploadService) {}
+
+  handleUpload(file: File) {
+    this.uploadService.uploadImage(file).subscribe(event => {
+      // You can handle progress or success here
+      console.log('File received in parent, ready for API!', file.name);
+    });
+  }
+}*/
+
+/*
+const maxSize = 2 * 1024 * 1024; // 2MB
+if (file.size > maxSize) {
+  alert('File is too big!');
+  return;
+}
+
+*/

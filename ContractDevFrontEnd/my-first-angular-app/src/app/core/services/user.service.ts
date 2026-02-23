@@ -11,9 +11,6 @@ import { HttpClient } from '@angular/common/http';
 // Angular will create ONE shared instance of this service.
 import { Injectable } from '@angular/core';
 
-
-
-
 @Injectable({
   // 'root' means this service is available everywhere in the app
   // without needing to manually add it to providers[].
@@ -37,15 +34,15 @@ export class UserService {
   signup(data: FormData): Observable<void> {
     // POST sends data to the backend to create a new user.
     // Example final URL: http://localhost:5082/api/users/signup
-    return this.http.post<void>(`${this.apiUrl}/UserAccounts/Register`, data);//post<UserResponse> expect backend end to return 
+    return this.http.post<void>(`${this.apiUrl}/UserAccounts/Register`, data); //post<UserResponse> expect backend end to return
   }
 
   login(data: FormData): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/UserAccounts/Login`, data);// back end must return user response
+    return this.http.post<void>(`${this.apiUrl}/UserAccounts/Login`, data); // back end must return user response
   }
 
   getProfile(id: number): Observable<Profile> {
-    return this.http.get<Profile>(`${this.apiUrl}/UserProfiles/ProfileDetails?id=${id}`);// ?id=${id} form query
+    return this.http.get<Profile>(`${this.apiUrl}/UserProfiles/ProfileDetails?id=${id}`); // ?id=${id} form query
   }
 
   // -----------------------------
@@ -60,6 +57,10 @@ export class UserService {
     return this.http.put<void>(`${this.apiUrl}/UserProfiles/UpdateProfile`, data);
     //return this.http.put<void>(`${this.apiUrl}/UserProfiles/${id}`, data);
   }
+  //upload file
+  uploadFile(data: FormData): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/UserProfiles/UploadFile`, data);
+  }
 
   //update the users password
   updateSecurity(data: FormData): Observable<void> {
@@ -68,7 +69,7 @@ export class UserService {
 
   //for the fun part calling all the profiles
   getAllProfiles(): Observable<Profile[]> {
-    return this.http.get<Profile[]>(`${this.apiUrl}/UserProfiles/ProfileGallery`);// backend to return profile
+    return this.http.get<Profile[]>(`${this.apiUrl}/UserProfiles/ProfileGallery`); // backend to return profile
   }
 
   //delete profile

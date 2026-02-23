@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "p0YDnHGpgec=",
+  "dgSpecHash": "hvWV7YeoQGI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\walco\\Documents\\git_team_projects\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
+  "projectFilePath": "C:\\Users\\walco\\Desktop\\git_angular_laptop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\walco\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\walco\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",

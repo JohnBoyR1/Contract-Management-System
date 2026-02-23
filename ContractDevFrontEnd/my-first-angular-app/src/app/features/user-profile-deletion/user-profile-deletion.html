@@ -49,8 +49,8 @@
                       <i class="fas fa-lock me-2"></i>Security
                     </a>
 
-                    <a class="nav-link" href="javascript:void(0)">
-                      <i class="fas fa-bell me-2"></i>Notifications
+                    <a class="nav-link" routerLink="/userProfileDeletion" routerLinkActive="active">
+                      <i class="fas fa-trash me-2"></i>Delete Account
                     </a>
 
                     <a class="nav-link" routerLink="/billing-details" routerLinkActive="active">
@@ -67,11 +67,11 @@
               <!-- Content Area -->
               <div class="col-lg-9">
                 <!-- update profile through form submission (submit button will call this)-->
-                <form [formGroup]="securityForm" (ngSubmit)="saveSecurity()">
+                <form [formGroup]="deletionForm">
                   <div class="p-4">
                     <!-- Personal Information -->
                     <div class="mb-4">
-                      <h5 class="mb-4">Security Information</h5>
+                      <h5 class="mb-4">Delete Account</h5>
                       <div class="row g-3">
                         <div class="col-md-6">
                           <label class="form-label">Current Password</label>
@@ -82,7 +82,7 @@
                             value=""
                           />
                         </div>
-                        <div class="col-md-6">
+                        <!---- <div class="col-md-6">
                           <label class="form-label">New Password</label>
                           <input
                             formControlName="newPassword"
@@ -99,12 +99,12 @@
                             class="form-control"
                             value=""
                           />
-                        </div>
-                        <div class="col-md-6">
+                        </div>---->
+                        <div class="col-md-6 mx-auto">
                           <label class="form-label">Security Question</label>
                           <select class="form-select" formControlName="securityQuestion">
                             <option value="" disabled selected>Select a question</option>
-                            @for (q of securityQuestions; track q) {
+                            @for (q of securityQuestions(); track $index) {
                               <option [value]="q">{{ q }}</option>
                             }
                           </select>
@@ -128,25 +128,36 @@
                           <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                               <div>
-                                <h6 class="mb-1">Delete User Account</h6>
+                                <h6 class="mb-1">DELETE PROFILE</h6>
                                 <p class="text-muted mb-0 small">
-                                  Only if you want to delete your account
+                                  Only if you want to delete your profile
                                 </p>
                               </div>
                               <div>
-                                <button
-                                  type="button"
-                                  class="btn btn-danger"
-                                  routerLink="/userProfileDeletion"
-                                >
+                                <button type="button" class="btn btn-danger" (click)="openModal()">
                                   Delete
                                 </button>
+                                @if (isOpenDeleteModal()) {
+                                  <div class="modal-backdrop"></div>
+
+                                  <div class="modal-window">
+                                    <h3>Confirm Delete</h3>
+                                    <p>Are you sure?</p>
+
+                                    <button class="btn btn-secondary" (click)="closeModal()">
+                                      Cancel
+                                    </button>
+                                    <button class="btn btn-danger" (click)="confirmDelete()">
+                                      Delete
+                                    </button>
+                                  </div>
+                                }
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div class="col-md-6">
+                      <!---- <div class="col-md-6">
                         <div class="settings-card card">
                           <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
@@ -162,7 +173,7 @@
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </div>---->
                     </div>
                   </div>
                 </form>
