@@ -99,7 +99,10 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<JwtService>();
 
 var app = builder.Build();
-    
+
+//Allow storing static files - from wwwroot default
+app.UseStaticFiles();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -200,7 +200,10 @@ namespace ContractDevApi.Controllers
             var fileName = $"{Guid.NewGuid()}{dto.Extension}";
             //Combine filepath and new file name
             var filePath = Path.Combine(folderPath, fileName);
-            
+
+            //relative path for file "/images/filename.jpg"
+            var dbRelativePath = $"/images/{fileName}";
+
             //Use FileStream to save file to image directory
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
@@ -211,7 +214,7 @@ namespace ContractDevApi.Controllers
             var updateFile = await _context.UserFiles.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
             if (updateFile != null)
             {
-                updateFile.FilePath = filePath;
+                updateFile.FilePath = dbRelativePath;
                 updateFile.Extension = dto.Extension;
             }else
             {
@@ -228,7 +231,7 @@ namespace ContractDevApi.Controllers
 
             if (result <= 0) return Problem("System error occured. User Profile Image Upload Failed.");
 
-            return Ok(new {path = filePath});
+            return Ok(new {path = dbRelativePath});
         }
 
         //-----------------------
