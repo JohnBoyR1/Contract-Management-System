@@ -165,7 +165,7 @@ namespace ContractDevApi.Controllers
         //Ensure that file upload associated to profile is valid and token user is authorized to make changes
         //-----------------------
         [Authorize]
-        [HttpPut("UploadProfileFile")]
+        [HttpPut("UploadFile")]
         public async Task<IActionResult> UploadProfileFile([FromForm] ProfileUploadDto dto)
         {
             //Get the authenticated user ID from JWT token claim
@@ -189,7 +189,7 @@ namespace ContractDevApi.Controllers
             if (profile == null) return NotFound("Profile not found");
 
             //Check if file exists
-            if (dto.file.Length == 0) return BadRequest("No file uploaded");
+            if (dto.File.Length == 0) return BadRequest("No file uploaded");
 
             //Define path to save file
             var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
@@ -207,7 +207,7 @@ namespace ContractDevApi.Controllers
             //Use FileStream to save file to image directory
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                await dto.file.CopyToAsync(stream);
+                await dto.File.CopyToAsync(stream);
             }
 
             //Update existing filepath and extension if such exists, else create new one

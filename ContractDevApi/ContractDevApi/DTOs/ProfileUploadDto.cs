@@ -3,7 +3,7 @@
     public class ProfileUploadDto
     {
         public int Id { get; set; }
-        public IFormFile file { get; set; } = null!;
+        public IFormFile File { get; set; } = null!;
 
         public string Extension { get; set; } = string.Empty;
     }
