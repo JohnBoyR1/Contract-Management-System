@@ -42,7 +42,8 @@ export class UserService {
   }
 
   getProfile(id: number): Observable<Profile> {
-    return this.http.get<Profile>(`${this.apiUrl}/UserProfiles/ProfileDetails?id=${id}`); // ?id=${id} form query
+    //return this.http.get<Profile>(`${this.apiUrl}/UserProfiles/ProfileDetails?id=${id}`); // ?id=${id} form query
+    return this.http.get<Profile>(`${this.apiUrl}/UserProfiles/ProfileDetails`, { params: { id }});
   }
 
   // -----------------------------
@@ -64,7 +65,7 @@ export class UserService {
 
   //update the users password
   updateSecurity(data: FormData): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/UserProfiles/UpdateProfile`, data);
+    return this.http.put<void>(`${this.apiUrl}/UserAccounts/ChangePassword`, data);
   }
 
   //for the fun part calling all the profiles
@@ -74,6 +75,6 @@ export class UserService {
 
   //delete profile
   deleteUserAccount(data: FormData): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/UserAccounts/Delete`, data);
+    return this.http.request<void>( 'Delete',`${this.apiUrl}/UserAccounts/Delete`, { body: data, responseType: 'json'});
   }
 }

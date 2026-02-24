@@ -36,7 +36,27 @@ export class UserProfileSecurity {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    const userId = this.authService.getCurrentUserId();
+
+    this.userService.getProfile(userId).subscribe(profile => {
+      this.securityForm.patchValue({
+        securityQuestion: profile.securityQuestion
+      });
+    });
+
+    
+  }
+
+  //displaying the security question that the account holder used on sign up
+  displaySecurityQuestion(){
+    const userId =  this.authService.getCurrentUserId();
+     
+    this.userService.getProfile(userId).subscribe(profile => {
+        return profile.securityQuestion;
+     
+      });
+  }
 
   nameDisplay() {
     return `${this.profile.firstName()} ${this.profile.lastName()}`;
@@ -56,9 +76,9 @@ export class UserProfileSecurity {
     //payload to change password
     const payload = {
       Id: this.authService.getCurrentUserId(),
-      currentPassword: raw.currentPassword,
+      oldPassword: raw.currentPassword,
       newPassword: raw.newPassword,
-      securityQuestion: raw.securityQuestion,
+      confirmNewPassword: raw.confirmNewPassword,
       securityAnswer: raw.securityAnswer,
     };
 

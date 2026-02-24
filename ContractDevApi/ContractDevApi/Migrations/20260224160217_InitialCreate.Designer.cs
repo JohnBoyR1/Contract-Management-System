@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ContractDevApi.Migrations
 {
     [DbContext(typeof(ContractDevContext))]
-    [Migration("20260224103127_InitialCreate")]
+    [Migration("20260224160217_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -130,6 +130,11 @@ namespace ContractDevApi.Migrations
                         .HasColumnType("varchar(2)")
                         .HasColumnName("country");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("description");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -176,7 +181,7 @@ namespace ContractDevApi.Migrations
 
                     b.Property<string>("UserTitle")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("user_title");
 
                     b.Property<string>("Username")
@@ -197,7 +202,7 @@ namespace ContractDevApi.Migrations
 
                     b.ToTable("user_profiles", null, t =>
                         {
-                            t.HasCheckConstraint("allowed_user_titles", "user_title ILIKE 'developer' OR user_title ILIKE 'client' OR user_title ILIKE 'both'");
+                            t.HasCheckConstraint("allowed_descriptions", "description ILIKE 'developer' OR description ILIKE 'client' OR description ILIKE 'both'");
                         });
                 });
 

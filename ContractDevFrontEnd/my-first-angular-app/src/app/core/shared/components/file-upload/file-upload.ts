@@ -53,17 +53,11 @@ export class FileUpload {
     if (!this.selectedFile) return;
 
     const id = this.authService.getCurrentUserId();
-    //const extension = this.selectedFile.name.split('.').pop() ?? ''; update due needing the dot to render from backend
-    const extension = this.selectedFile.name.includes('.')
-    ? '.' + this.selectedFile.name.split('.').pop()
-    : '';
-
-
+  
     const formData = new FormData();
     formData.append('Id', id.toString());
-    //formData.append('Title', 'developer'); ///definitely should not be this
     formData.append('File', this.selectedFile);
-    formData.append('Extension', extension);
+    
 
     console.log('FORM RAW:', formData.values);
 

@@ -60,7 +60,7 @@ namespace ContractDevApi.Controllers
             if (profile == null) return NotFound("Profile not found");
             if (social == null) return NotFound("Social Connections not found");
 
-            if (dto.Username != null) profile.Username = dto.Username;
+            if (dto.Username != null) profile.Username = dto.Username.ToLower();
             if (dto.Email != null) user.UserSignupEmail = dto.Email.ToLower();
             if (dto.PhoneNumber != null) profile.PhoneNumber = dto.PhoneNumber;
             if (dto.Country != null) profile.Country = dto.Country;

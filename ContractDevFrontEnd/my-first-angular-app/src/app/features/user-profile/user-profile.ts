@@ -34,11 +34,10 @@ export class UserProfile {
     public profile: ProfileStateService, //then I can use {{ profile.firstName() }} etc.
   ) {
     this.profileForm = this.fb.group({
-      id: [this.authService.getCurrentUserId()], // set sub()
-      title: [''], //? after last update 23/02/2026
+      userId: [this.authService.getCurrentUserId()], // set sub()
+      userTitle: [''], //? after last update 23/02/2026
       firstName: [''],
       lastName: [''],
-      jobRole: [''],
       username: [''],
       phoneNumber: [''],
       email: [''],
@@ -65,21 +64,16 @@ export class UserProfile {
       //updating global profile state
       this.profile.initProfile(profile);
 
-      /*Build and store the full image URL
-      if (profile.profileImagePath) {
-        const fullImageUrl = `${environment.apiUrl}${profile.profileImagePath}`;
-        //setting the signal for global use
-        this.profile.profileImageUrl.set(fullImageUrl);
-      }*/
     });
   }
 
-  /*goUploadImage() {
-    this.router.navigate(["/userProfileUploadImage"]);
-  }*/
 
   nameDisplay() {
     return `${this.profile.firstName()} ${this.profile.lastName()}`;
+  }
+
+  titleDisplay(){
+    return `${this.profile.userTitle()}`;
   }
 
   saveProfile() {
@@ -94,24 +88,12 @@ export class UserProfile {
       if (value !== null && value !== '') {
         formData.append(key, value as any);
       }
+      
     });
 
     //append ID (as it is not part of the form)
-    //formData.append('id', id.toString());
+    formData.append('id', id.toString());
 
-    // append file from signal (only if selected) PROFILE PICTURE
-    //const profileFile = this.profile.selectedFileForProfile();
-
-    //if (profileFile) {
-    // formData.append('profilePicture', profileFile);
-    //}
-
-    /*<input type="file" (change)="onFileSelected($event)" accept="image/*">*/
-
-    //updating the user profile  (must change to send FormData instead of JSON)
-    /*const payload = Object.fromEntries(
-    Object.entries(raw).filter(([_, v]) => v !== '' && v !== null)//stripping out empty values(only sending meaningfull data to the Api)
-  );*/
 
     //updating backend and refreshing the global profile state
     this.userService.updateProfile(formData).subscribe(() => {
@@ -122,44 +104,3 @@ export class UserProfile {
   }
 }
 
-/*--
-
-import { Component } from '@angular/core';
-import { UploadService } from './upload.service'; // Assume you have a service
-
-@Component({
-  selector: 'app-profile',
-  template: `
-    <h2>Edit Profile</h2>
-    
-    <app-file-upload 
-      label="Update Avatar" 
-      (fileSelected)="handleUpload($event)">
-    </app-file-upload>
-
-    <div *ngIf="uploadProgress > 0">
-      Progress: {{ uploadProgress }}%
-    </div>
-  `
-})
-export class ProfileComponent {
-  uploadProgress = 0;
-
-  constructor(private uploadService: UploadService) {}
-
-  handleUpload(file: File) {
-    this.uploadService.uploadImage(file).subscribe(event => {
-      // You can handle progress or success here
-      console.log('File received in parent, ready for API!', file.name);
-    });
-  }
-}*/
-
-/*
-const maxSize = 2 * 1024 * 1024; // 2MB
-if (file.size > maxSize) {
-  alert('File is too big!');
-  return;
-}
-
-*/

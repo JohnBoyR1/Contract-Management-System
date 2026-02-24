@@ -8,6 +8,7 @@ export interface Profile {
   phoneNumber: string;
   country: string;
 
+  description: string;
   userTitle: string;
   bio: string;
 
@@ -19,6 +20,8 @@ export interface Profile {
   //profile images
   profileImagePath: string | null;
   profileImageExtension: string | null;
+
+  securityQuestion: string;
 
   socials: { [key: string]: string | null };
 

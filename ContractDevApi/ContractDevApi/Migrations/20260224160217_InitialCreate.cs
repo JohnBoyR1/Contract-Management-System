@@ -66,7 +66,8 @@ namespace ContractDevApi.Migrations
                     country = table.Column<string>(type: "varchar(2)", maxLength: 2, nullable: false),
                     bio = table.Column<string>(type: "varchar(255)", nullable: false),
                     phone_number = table.Column<string>(type: "varchar(20)", maxLength: 15, nullable: false),
-                    user_title = table.Column<string>(type: "text", nullable: false),
+                    description = table.Column<string>(type: "varchar(20)", nullable: false),
+                    user_title = table.Column<string>(type: "varchar(50)", nullable: false),
                     available_for_work = table.Column<bool>(type: "boolean", nullable: true),
                     offering_work = table.Column<bool>(type: "boolean", nullable: true),
                     last_login = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -79,7 +80,7 @@ namespace ContractDevApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_user_profiles", x => x.user_profile_id);
-                    table.CheckConstraint("allowed_user_titles", "user_title ILIKE 'developer' OR user_title ILIKE 'client' OR user_title ILIKE 'both'");
+                    table.CheckConstraint("allowed_descriptions", "description ILIKE 'developer' OR description ILIKE 'client' OR description ILIKE 'both'");
                     table.ForeignKey(
                         name: "fk_user_profiles_user_accounts_user_account_id",
                         column: x => x.user_account_id,

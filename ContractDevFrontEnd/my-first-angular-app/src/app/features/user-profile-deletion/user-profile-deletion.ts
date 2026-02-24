@@ -46,7 +46,8 @@ export class UserProfileDeletion {
 
     const deletePayload = {
       Id: this.authService.getCurrentUserId(),
-      currentPassword: rawData.currentPassword,
+      Password: rawData.currentPassword,
+      SecurityAnswer: rawData.securityAnswer
     };
 
     //appending payload to a formData

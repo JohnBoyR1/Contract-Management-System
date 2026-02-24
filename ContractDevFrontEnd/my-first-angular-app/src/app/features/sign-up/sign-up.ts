@@ -81,8 +81,7 @@ export class SignUp implements OnInit {
         lastName: rawValue.lastName,
         username: rawValue.username,
         country: rawValue.country,
-        //user title should be description
-        userTitle: rawValue.description,
+        description: rawValue.description,
         email: rawValue.email,
         password: rawValue.password,
         confirmPassword: rawValue.confirmPassword,

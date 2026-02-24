@@ -44,6 +44,8 @@ export class ProfileStateService {
 
   email = computed(() => this._profile()?.email ?? '');
 
+  userTitle = computed(() => this._profile()?.userTitle ?? '');
+
   /*
   profilePicture = computed(() => this._profile()?.profilePicture ?? '');
 
