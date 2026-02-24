@@ -108,7 +108,7 @@ namespace ContractDevApi.Controllers
                 Country = dto.Country,
                 Bio = "",
                 PhoneNumber = "",
-                UserTitle = dto.UserTitle,
+                Description = dto.Description,
                 AvailableForWork = false,
                 OfferingWork = false,
                 LastLogin = DateTimeOffset.UtcNow,

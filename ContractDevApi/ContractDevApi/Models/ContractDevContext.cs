@@ -68,10 +68,10 @@ namespace ContractDevApi.Models
 
                 //UserTitle enum constraint
                 entity.ToTable("user_profiles", t => t.HasCheckConstraint(
-                    "allowed_user_titles",
-                    "user_title ILIKE 'developer' OR " +
-                    "user_title ILIKE 'client' OR " +
-                    "user_title ILIKE 'both'"
+                    "allowed_descriptions",
+                    "description ILIKE 'developer' OR " +
+                    "description ILIKE 'client' OR " +
+                    "description ILIKE 'both'"
                 ));
 
 

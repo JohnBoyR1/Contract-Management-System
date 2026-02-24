@@ -24,9 +24,13 @@ namespace ContractDevApi.DTOs
 
         public string Country { get; set; } = string.Empty;
 
+        public string Description { get; set; } = string.Empty;
+
         public string UserTitle { get; set; } = string.Empty;
 
         public string Bio { get; set; } = string.Empty;
+
+        public string SecurityQuestion { get; set; } = string.Empty;
 
         public bool? AvailableForWork { get; set; } = false;
 

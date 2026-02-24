@@ -126,12 +126,12 @@ namespace ContractDevApi.Controllers
                 Country = profile.Country,
                 UserTitle = profile.UserTitle,
                 Bio = profile.Bio,
+                SecurityQuestion = user.SecurityQuestion,
                 AvailableForWork = profile.AvailableForWork,
                 OfferingWork = profile.OfferingWork,
                 DisplayUserName = profile.UsernameDisplay,
                 HidePhoneNumber = profile.HidePhoneNumber,
                 ProfileImagePath = profile.ProfilePictureFilepath,
-                ProfileImageExtension = profile.ProfilePictureExtension,
                 Socials = new Dictionary<string, string?> {
                         { "facebook", social.FacebookLink },
                         { "Social Email", social.UserSocialEmailLink },
@@ -166,10 +166,16 @@ namespace ContractDevApi.Controllers
             from u in users
             join p in profiles
                 on u.UserAccountId equals p.UserAccountId
+                into profileJoin
+            from p in profileJoin.DefaultIfEmpty()
             join s in socials
                 on u.UserAccountId equals s.UserAccountId
+                into socialJoin
+            from s in socialJoin.DefaultIfEmpty()
             join r in reviews
                 on u.UserAccountId equals r.UserAccountId
+                into reviewJoin
+            from r in reviewJoin.DefaultIfEmpty()
             select new ProfileResponseDto
             {
                 UserId = u.UserAccountId,
@@ -179,6 +185,7 @@ namespace ContractDevApi.Controllers
                 Email = u.UserSignupEmail,
                 PhoneNumber = p.PhoneNumber,
                 Country = p.Country,
+                Description = p.Description,
                 UserTitle = p.UserTitle,
                 Bio = p.Bio,
                 AvailableForWork = p.AvailableForWork,
@@ -186,7 +193,6 @@ namespace ContractDevApi.Controllers
                 DisplayUserName = p.UsernameDisplay,
                 HidePhoneNumber = p.HidePhoneNumber,
                 ProfileImagePath = p.ProfilePictureFilepath,
-                ProfileImageExtension = p.ProfilePictureExtension,
                 Socials = new Dictionary<string, string?> {
                         { "facebook", s.FacebookLink },
                         { "Social Email", s.UserSocialEmailLink },
@@ -194,9 +200,9 @@ namespace ContractDevApi.Controllers
                         { "Github", s.GithubLink },
                         { "LinkedIn", s.LinkedinLink }
                 },
-                NumberOfReviews = r.NumberOfReviews,
-                TotalReviewPoints = r.TotalReviewPoints,
-                AverageReviewScore = r.AverageReviewScore
+                NumberOfReviews = r?.NumberOfReviews ?? 0, 
+                TotalReviewPoints = r?.TotalReviewPoints ?? 0,
+                AverageReviewScore = r?.AverageReviewScore ?? 0
             };
 
             return Ok(response);
