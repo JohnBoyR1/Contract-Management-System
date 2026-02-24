@@ -10,7 +10,7 @@
                     </div>
                     <div class="text-center">
                         <div class="position-relative d-inline-block">
-                            <img src="https://randomuser.me/api/portraits/men/40.jpg" class="rounded-circle profile-pic" [class]="workStatus()" alt="Profile Picture">
+                            <img [src]="profile.profileImageUrl()" class="rounded-circle profile-pic" [class]="workStatus()" alt="Profile Picture">
                         </div>
                         <!--profile name under profile picture-->
                         <h3 class="mt-3 mb-1 dispalyName">{{ displayUserNameProfile() }}</h3>

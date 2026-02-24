@@ -1,6 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { Profile } from '../models/profile.models';
 import { effect } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileStateService {
@@ -9,7 +10,10 @@ export class ProfileStateService {
 
   // 1. Define the signal that was missing
   previewUrl = signal<string | null>(null);
+  //check this .....(for profile image) temporary
+  profileImageUrl = signal<string | null>(null);
 
+  // the actual file selected for upload
   selectedFileForProfile = signal<File | null>(null);
 
   // Public getter for components
@@ -54,33 +58,29 @@ export class ProfileStateService {
     return this._profile()?.profilePicture ?? '';
   });*/
 
-  private cleanupEffect = effect((onCleanup) => {
-    const file = this.selectedFileForProfile();
 
-    if (file) {
-      const url = URL.createObjectURL(file);
-      this.previewUrl.set(url);
-
-      // This runs automatically before the effect runs again or component is destroyed
-      onCleanup(() => {
-        URL.revokeObjectURL(url);
-        console.log('Memory cleaned up!');
-      });
-    } else {
-      // Fallback to the existing profile picture if no new file is selected
-      this.previewUrl.set(this._profile()?.profilePicture ?? '');
-    }
-  });
 
   // Called after login or guard fetch
   initProfile(profile: Profile) {
     this._profile.set(profile);
-    this.selectedFileForProfile.set(null);
+    
+    //Set the real saved image URL
+    if (profile.profileImagePath) {
+      const fullImageUrl = `${environment.apiUrl}${profile.profileImagePath}`;
+      this.profileImageUrl.set(fullImageUrl);
+    }
+    
+    // reset preview
+    this.previewUrl.set(null);
   }
 
   // Called on logout
   clearProfile() {
     this._profile.set(null);
+     this.profileImageUrl.set(null);
+    this.previewUrl.set(null);
+    this.selectedFileForProfile.set(null);
+
   }
 }
 

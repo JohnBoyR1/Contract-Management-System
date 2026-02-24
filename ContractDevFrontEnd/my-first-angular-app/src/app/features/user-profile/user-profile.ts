@@ -9,12 +9,13 @@ import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
-import { FileUpload } from '../../core/shared/components/file-upload/file-upload';
+
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, ReactiveFormsModule, FileUpload],
+  imports: [RouterLink, RouterLinkActive, ReactiveFormsModule],
   templateUrl: './user-profile.html',
   styleUrl: './user-profile.css',
 })
@@ -49,6 +50,8 @@ export class UserProfile {
       offeringWork: [false],
       displayUserName: [false],
       hidePhoneNumber: [false],
+
+      
     });
   }
 
@@ -57,10 +60,23 @@ export class UserProfile {
 
     //subscribe is used to recieve data asyschronously (returns an Observable)
     this.userService.getProfile(id).subscribe((profile) => {
-      this.profileForm.patchValue(profile); //this is what is displaying the data
-      //console.log("User ID:", id);
+      this.profileForm.patchValue(profile); 
+
+      //updating global profile state
+      this.profile.initProfile(profile);
+
+      /*Build and store the full image URL
+      if (profile.profileImagePath) {
+        const fullImageUrl = `${environment.apiUrl}${profile.profileImagePath}`;
+        //setting the signal for global use
+        this.profile.profileImageUrl.set(fullImageUrl);
+      }*/
     });
   }
+
+  /*goUploadImage() {
+    this.router.navigate(["/userProfileUploadImage"]);
+  }*/
 
   nameDisplay() {
     return `${this.profile.firstName()} ${this.profile.lastName()}`;

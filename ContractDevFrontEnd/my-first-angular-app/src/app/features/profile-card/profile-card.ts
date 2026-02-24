@@ -47,6 +47,10 @@ export class ProfileCard {
       return "none";
     }
   }
+
+  ngOnInit() {
+    console.log("ProfileCard image:", this.profile.profileImageUrl());
+  }
   
   //display phone number
   isPhoneDisplay(){

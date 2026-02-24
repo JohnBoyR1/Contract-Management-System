@@ -1,22 +1,29 @@
-
 export interface Profile {
-  userId: string;
+  userId: number;
+
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  country: string;
+
+  userTitle: string;
+  bio: string;
 
   availableForWork: boolean;
   offeringWork: boolean;
   displayUserName: boolean;
   hidePhoneNumber: boolean;
 
-  phoneNumber: string;
-  firstName: string;
-  lastName: string;
-  username: string;
-  email: string;
-  country: string;
+  //profile images
+  profileImagePath: string | null;
+  profileImageExtension: string | null;
 
-  description: string; 
-  bio: string;
-  jobRole: string;
+  socials: { [key: string]: string | null };
 
-  profilePicture: string; // URL/path returned by backend
+  numberOfReviews: number;
+  totalReviewPoints: number;
+  averageReviewScore: number;
 }
+

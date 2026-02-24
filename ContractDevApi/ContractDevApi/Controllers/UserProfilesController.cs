@@ -194,6 +194,7 @@ namespace ContractDevApi.Controllers
                         { "Github", s.GithubLink },
                         { "LinkedIn", s.LinkedinLink }
                 },
+            
                 NumberOfReviews = r.NumberOfReviews,
                 TotalReviewPoints = r.TotalReviewPoints,
                 AverageReviewScore = r.AverageReviewScore

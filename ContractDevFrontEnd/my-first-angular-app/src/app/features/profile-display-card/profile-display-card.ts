@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Profile } from '../../core/models/profile.models';
+import { ProfileStateService } from '../../core/shared/profile-state.service';
 
 
 
@@ -15,7 +16,8 @@ export class ProfileDisplayCard {
   
 
   constructor(
-    private router: Router
+    private router: Router,
+    public profile: ProfileStateService
   ){}
   @Input() user: Profile;
   

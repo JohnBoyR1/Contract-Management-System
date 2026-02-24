@@ -4,6 +4,7 @@ import { UserService } from '../../core/services/user.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/auth/auth.service';
 import { Router } from '@angular/router';
+import { Profile } from '../../core/models/profile.models';
 
 @Component({
   selector: 'app-profile-gallery',
@@ -15,7 +16,9 @@ import { Router } from '@angular/router';
 export class ProfileGallery implements OnInit {
 
 
-  public profiles = signal([] as any[]);
+  //public profiles = signal([] as any[]);
+
+  public profiles = signal<Profile[]>([]);
 
   userService = inject(UserService);
 

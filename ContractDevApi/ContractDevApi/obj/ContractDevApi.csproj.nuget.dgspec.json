@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\walco\\Desktop\\git_angular_laptop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj": {}
+    "C:\\Users\\walco\\Documents\\git_team_projects\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\walco\\Desktop\\git_angular_laptop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj": {
+    "C:\\Users\\walco\\Documents\\git_team_projects\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\walco\\Desktop\\git_angular_laptop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
+        "projectUniqueName": "C:\\Users\\walco\\Documents\\git_team_projects\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
         "projectName": "ContractDevApi",
-        "projectPath": "C:\\Users\\walco\\Desktop\\git_angular_laptop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
+        "projectPath": "C:\\Users\\walco\\Documents\\git_team_projects\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
         "packagesPath": "C:\\Users\\walco\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\walco\\Desktop\\git_angular_laptop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\obj\\",
+        "outputPath": "C:\\Users\\walco\\Documents\\git_team_projects\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\walco\\AppData\\Roaming\\NuGet\\NuGet.Config"
