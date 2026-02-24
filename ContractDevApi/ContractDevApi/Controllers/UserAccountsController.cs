@@ -69,7 +69,7 @@ namespace ContractDevApi.Controllers
         //New user registration - information received from Front-End used to populate User and Profile table
         //-----------------------
         [HttpPost("Register")]
-        public async Task<ActionResult<UserAccount>> RegisterUserAccount([FromForm] UserRegistrationDto dto)
+        public async Task<ActionResult> RegisterUserAccount([FromForm] UserRegistrationDto dto)
         {
             //Checks UserAccount Model to ensure that all incoming values match the Model constraints
             if (!ModelState.IsValid) return ValidationProblem(ModelState);

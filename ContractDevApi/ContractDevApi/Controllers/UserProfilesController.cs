@@ -64,6 +64,7 @@ namespace ContractDevApi.Controllers
             if (dto.Email != null) user.UserSignupEmail = dto.Email.ToLower();
             if (dto.PhoneNumber != null) profile.PhoneNumber = dto.PhoneNumber;
             if (dto.Country != null) profile.Country = dto.Country;
+            if (dto.Description != null) profile.Description = dto.Description;
             if (dto.UserTitle != null) profile.UserTitle = dto.UserTitle;
             if (dto.Bio != null) profile.Bio = dto.Bio;
             if (dto.AvailableForWork.HasValue) profile.AvailableForWork = dto.AvailableForWork;
@@ -73,7 +74,8 @@ namespace ContractDevApi.Controllers
             if (dto.FacebookLink != null) social.FacebookLink = dto.FacebookLink;
             if (dto.UserSocialEmailLink != null) social.UserSocialEmailLink = dto.UserSocialEmailLink;
             if (dto.XLink != null) social.XLink = dto.XLink;
-            if (dto.GithubLink != null) social.LinkedinLink = dto.LinkedinLink;
+            if (dto.GithubLink != null) social.GithubLink = dto.GithubLink;
+            if (dto.LinkedinLink != null) social.LinkedinLink = dto.LinkedinLink;
 
             int result = await _context.SaveChangesAsync();
 

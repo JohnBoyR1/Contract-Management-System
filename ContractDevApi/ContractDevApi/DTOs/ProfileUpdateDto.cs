@@ -13,34 +13,35 @@ namespace ContractDevApi.DTOs
     {
         [Required]
         public int Id { get; set; }
-        public string Username { get; set; } = string.Empty;
+        public string? Username { get; set; }
 
-        public string Email { get; set; } = string.Empty;
+        public string? Email { get; set; }
 
-        public string PhoneNumber { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; }
 
-        public string Country { get; set; } = string.Empty;
+        public string? Country { get; set; }
 
-        public string UserTitle { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public string? UserTitle { get; set; }
 
-        public string Bio { get; set; } = string.Empty;
+        public string? Bio { get; set; }
 
-        public bool? AvailableForWork { get; set; } = false;
+        public bool? AvailableForWork { get; set; }
 
-        public bool? OfferingWork { get; set; } = false;
+        public bool? OfferingWork { get; set; }
 
-        public bool? DisplayUserName { get; set; } = false;
+        public bool? DisplayUserName { get; set; }
 
-        public bool? HidePhoneNumber { get; set; } = false;
+        public bool? HidePhoneNumber { get; set; }
 
-        public string FacebookLink { get; set; } = string.Empty;
+        public string? FacebookLink { get; set; }
 
-        public string UserSocialEmailLink { get; set; } = string.Empty;
+        public string? UserSocialEmailLink { get; set; }
 
-        public string XLink { get; set; } = string.Empty;
+        public string? XLink { get; set; }
 
-        public string GithubLink { get; set; } = string.Empty;
+        public string? GithubLink { get; set; }
 
-        public string LinkedinLink { get; set; } = string.Empty;
+        public string? LinkedinLink { get; set; }
     }
 }

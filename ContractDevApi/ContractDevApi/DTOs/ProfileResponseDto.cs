@@ -42,8 +42,6 @@ namespace ContractDevApi.DTOs
 
         public string ProfileImagePath { get; set; } = string.Empty;
 
-        public string ProfileImageExtension { get; set; } = string.Empty;
-
         public Dictionary<string, string?> Socials { get; set; } = new Dictionary<string,string?>();
 
         public int NumberOfReviews { get; set; }
