@@ -19,7 +19,7 @@ export interface Profile {
 
   //profile images
   profileImagePath: string | null;
-  profileImageExtension: string | null;
+  
 
   securityQuestion: string;
 

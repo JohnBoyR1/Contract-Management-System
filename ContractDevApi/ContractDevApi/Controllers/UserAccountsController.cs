@@ -109,6 +109,7 @@ namespace ContractDevApi.Controllers
                 Bio = "",
                 PhoneNumber = "",
                 Description = dto.Description,
+                UserTitle = "New User",
                 AvailableForWork = false,
                 OfferingWork = false,
                 LastLogin = DateTimeOffset.UtcNow,

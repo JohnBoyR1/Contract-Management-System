@@ -49,7 +49,7 @@ export class UserProfile {
       offeringWork: [false],
       displayUserName: [false],
       hidePhoneNumber: [false],
-
+      profileImagePath: [''],
       
     });
   }
@@ -75,6 +75,8 @@ export class UserProfile {
   titleDisplay(){
     return `${this.profile.userTitle()}`;
   }
+
+  
 
   saveProfile() {
     const id = this.authService.getCurrentUserId();
