@@ -69,7 +69,7 @@ namespace ContractDevApi.Controllers
         //New user registration - information received from Front-End used to populate User and Profile table
         //-----------------------
         [HttpPost("Register")]
-        public async Task<ActionResult<UserAccount>> RegisterUserAccount([FromForm] UserRegistrationDto dto)
+        public async Task<ActionResult> RegisterUserAccount([FromForm] UserRegistrationDto dto)
         {
             //Checks UserAccount Model to ensure that all incoming values match the Model constraints
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
@@ -108,7 +108,7 @@ namespace ContractDevApi.Controllers
                 Country = dto.Country,
                 Bio = "",
                 PhoneNumber = "",
-                UserTitle = dto.UserTitle,
+                Description = dto.Description,
                 AvailableForWork = false,
                 OfferingWork = false,
                 LastLogin = DateTimeOffset.UtcNow,
@@ -186,6 +186,10 @@ namespace ContractDevApi.Controllers
             {
                 return Problem("User profile not found");
             }
+
+            userProfile.LastLogin = DateTimeOffset.UtcNow;
+
+            await _context.SaveChangesAsync();
 
             //Construct response entity
             var response = new UserResponseDto

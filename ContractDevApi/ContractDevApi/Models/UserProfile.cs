@@ -41,6 +41,11 @@ namespace ContractDevApi.Models
         public string PhoneNumber { get; set; } = string.Empty;
 
         [Required]
+        [Column(TypeName = "varchar(20)")]
+        public string Description { get; set; } = string.Empty;
+
+        [Required]
+        [Column(TypeName = "varchar(50)")]
         public string UserTitle { get; set; } = string.Empty;
         
         [Column(TypeName = "boolean")]

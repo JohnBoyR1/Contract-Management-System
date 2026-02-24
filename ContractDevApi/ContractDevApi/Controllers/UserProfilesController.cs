@@ -64,6 +64,7 @@ namespace ContractDevApi.Controllers
             if (dto.Email != null) user.UserSignupEmail = dto.Email.ToLower();
             if (dto.PhoneNumber != null) profile.PhoneNumber = dto.PhoneNumber;
             if (dto.Country != null) profile.Country = dto.Country;
+            if (dto.Description != null) profile.Description = dto.Description;
             if (dto.UserTitle != null) profile.UserTitle = dto.UserTitle;
             if (dto.Bio != null) profile.Bio = dto.Bio;
             if (dto.AvailableForWork.HasValue) profile.AvailableForWork = dto.AvailableForWork;
@@ -73,7 +74,8 @@ namespace ContractDevApi.Controllers
             if (dto.FacebookLink != null) social.FacebookLink = dto.FacebookLink;
             if (dto.UserSocialEmailLink != null) social.UserSocialEmailLink = dto.UserSocialEmailLink;
             if (dto.XLink != null) social.XLink = dto.XLink;
-            if (dto.GithubLink != null) social.LinkedinLink = dto.LinkedinLink;
+            if (dto.GithubLink != null) social.GithubLink = dto.GithubLink;
+            if (dto.LinkedinLink != null) social.LinkedinLink = dto.LinkedinLink;
 
             int result = await _context.SaveChangesAsync();
 
@@ -126,12 +128,12 @@ namespace ContractDevApi.Controllers
                 Country = profile.Country,
                 UserTitle = profile.UserTitle,
                 Bio = profile.Bio,
+                SecurityQuestion = user.SecurityQuestion,
                 AvailableForWork = profile.AvailableForWork,
                 OfferingWork = profile.OfferingWork,
                 DisplayUserName = profile.UsernameDisplay,
                 HidePhoneNumber = profile.HidePhoneNumber,
                 ProfileImagePath = profile.ProfilePictureFilepath,
-                ProfileImageExtension = profile.ProfilePictureExtension,
                 Socials = new Dictionary<string, string?> {
                         { "facebook", social.FacebookLink },
                         { "Social Email", social.UserSocialEmailLink },
@@ -166,10 +168,16 @@ namespace ContractDevApi.Controllers
             from u in users
             join p in profiles
                 on u.UserAccountId equals p.UserAccountId
+                into profileJoin
+            from p in profileJoin.DefaultIfEmpty()
             join s in socials
                 on u.UserAccountId equals s.UserAccountId
+                into socialJoin
+            from s in socialJoin.DefaultIfEmpty()
             join r in reviews
                 on u.UserAccountId equals r.UserAccountId
+                into reviewJoin
+            from r in reviewJoin.DefaultIfEmpty()
             select new ProfileResponseDto
             {
                 UserId = u.UserAccountId,
@@ -179,6 +187,7 @@ namespace ContractDevApi.Controllers
                 Email = u.UserSignupEmail,
                 PhoneNumber = p.PhoneNumber,
                 Country = p.Country,
+                Description = p.Description,
                 UserTitle = p.UserTitle,
                 Bio = p.Bio,
                 AvailableForWork = p.AvailableForWork,
@@ -186,7 +195,6 @@ namespace ContractDevApi.Controllers
                 DisplayUserName = p.UsernameDisplay,
                 HidePhoneNumber = p.HidePhoneNumber,
                 ProfileImagePath = p.ProfilePictureFilepath,
-                ProfileImageExtension = p.ProfilePictureExtension,
                 Socials = new Dictionary<string, string?> {
                         { "facebook", s.FacebookLink },
                         { "Social Email", s.UserSocialEmailLink },
@@ -194,10 +202,9 @@ namespace ContractDevApi.Controllers
                         { "Github", s.GithubLink },
                         { "LinkedIn", s.LinkedinLink }
                 },
-            
-                NumberOfReviews = r.NumberOfReviews,
-                TotalReviewPoints = r.TotalReviewPoints,
-                AverageReviewScore = r.AverageReviewScore
+                NumberOfReviews = r?.NumberOfReviews ?? 0, 
+                TotalReviewPoints = r?.TotalReviewPoints ?? 0,
+                AverageReviewScore = r?.AverageReviewScore ?? 0
             };
 
             return Ok(response);
@@ -239,8 +246,29 @@ namespace ContractDevApi.Controllers
             //If directory doesnt exist, create directory for file storage
             if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 
+
+            //Get extension from file type meta data
+            string extension = string.Empty;
+            switch(dto.File.ContentType)
+            {
+                case "image/jpeg":
+                    extension = ".jpg";
+                    break;
+                case "image/png":
+                    extension = ".png";
+                    break;
+                case "image/gif":
+                    extension = ".gif";
+                    break;
+                case "image/webp":
+                    extension = ".webp";
+                    break;
+                default:
+                    return BadRequest("File data malformed");
+            }    
+
             //Generate unique filename - Security risk if we use user provided filename (prevents collisions and malicious attempts to save file outside of chosen directory (example: "../../../.jpg")
-            var fileName = $"{Guid.NewGuid()}{dto.Extension}";
+            var fileName = $"{Guid.NewGuid()}{extension}";
             //Combine filepath and new file name
             var filePath = Path.Combine(folderPath, fileName);
 
@@ -258,13 +286,13 @@ namespace ContractDevApi.Controllers
             if (updateFile != null)
             {
                 updateFile.ProfilePictureFilepath = dbRelativePath;
-                updateFile.ProfilePictureExtension = dto.Extension;
+                updateFile.ProfilePictureExtension = extension;
             }else
             {
                 var newFile = new UserFile
                 {
-                    FilePath = filePath,
-                    Extension = dto.Extension,
+                    FilePath = dbRelativePath,
+                    Extension = extension,
                     UserAccountId = dto.Id,
                     UserAccount = user
                 };
