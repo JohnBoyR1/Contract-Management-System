@@ -11,16 +11,37 @@ namespace ContractDevApi.DTOs
     //-----------------------
     public class ProfileUpdateDto
     {
-        public string PhoneNumber { get; set; } = string.Empty;
+        [Required]
+        public int Id { get; set; }
+        public string? Username { get; set; }
 
-        public string Bio { get; set; } = string.Empty;
+        public string? Email { get; set; }
 
-        public bool? AvailableForWork { get; set; } = false;
+        public string? PhoneNumber { get; set; }
 
-        public bool? OfferingWork { get; set; } = false;
+        public string? Country { get; set; }
 
-        public bool? DisplayUserName { get; set; } = false;
+        public string? Description { get; set; }
+        public string? UserTitle { get; set; }
 
-        public bool? HidePhoneNumber { get; set; } = false;
+        public string? Bio { get; set; }
+
+        public bool? AvailableForWork { get; set; }
+
+        public bool? OfferingWork { get; set; }
+
+        public bool? DisplayUserName { get; set; }
+
+        public bool? HidePhoneNumber { get; set; }
+
+        public string? FacebookLink { get; set; }
+
+        public string? UserSocialEmailLink { get; set; }
+
+        public string? XLink { get; set; }
+
+        public string? GithubLink { get; set; }
+
+        public string? LinkedinLink { get; set; }
     }
 }

@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "RPpGv3dPL0g=",
+  "dgSpecHash": "a9c3FYqhxuQ=",
   "success": true,
   "projectFilePath": "C:\\Users\\moare\\Documents\\Course_Documents\\Team_Project\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\moare\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\moare\\.nuget\\packages\\efcore.namingconventions\\10.0.1\\efcore.namingconventions.10.0.1.nupkg.sha512",
     "C:\\Users\\moare\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "C:\\Users\\moare\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\moare\\.nuget\\packages\\humanizer.core.af\\2.14.1\\humanizer.core.af.2.14.1.nupkg.sha512",

@@ -31,37 +31,37 @@ namespace ContractDevApi.Controllers
 
         // GET: api/UserAccounts
         // Returns all user accounts - should be restricted to admin users in production
-        [Authorize] // Require authentication
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserAccount>>> GetUserAccounts()
-        {
-            //In production we may want to consider only allowing admins to retrieve all user accounts
-            //Ex: if (!User.IsInRole("Admin")) return Forbid();
+        //[Authorize] // Require authentication
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<UserAccount>>> GetUserAccounts()
+        //{
+        //    //In production we may want to consider only allowing admins to retrieve all user accounts
+        //    //Ex: if (!User.IsInRole("Admin")) return Forbid();
 
-            return await _context.UserAccounts.ToListAsync();
-        }
+        //    return await _context.UserAccounts.ToListAsync();
+        //}
 
         // GET: api/UserAccounts/{id}
         // Get a specific user's account - users can only view their own account
-        [Authorize]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserAccount>> GetUserAccount(int id)
-        {
-            // Verify the authenticated user is requesting their own data
-            if (!IsAuthorizedUser(id))
-            {
-                return Forbid(); // 403 Forbidden
-            }
+        //[Authorize]
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<UserAccount>> GetUserAccount(int id)
+        //{
+        //    //Verify the authenticated user is requesting their own data
+        //    if (!IsAuthorizedUser(id))
+        //    {
+        //        return Forbid(); // 403 Forbidden
+        //    }
 
-            var userAccount = await _context.UserAccounts.FindAsync(id);
+        //    var userAccount = await _context.UserAccounts.FindAsync(id);
 
-            if (userAccount == null)
-            {
-                return NotFound();
-            }
+        //    if (userAccount == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return userAccount;
-        }
+        //    return userAccount;
+        //}
 
         // POST: api/UserAccounts/Register
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -69,13 +69,13 @@ namespace ContractDevApi.Controllers
         //New user registration - information received from Front-End used to populate User and Profile table
         //-----------------------
         [HttpPost("Register")]
-        public async Task<ActionResult<UserAccount>> RegisterUserAccount(UserRegistrationDto dto)
+        public async Task<ActionResult> RegisterUserAccount([FromForm] UserRegistrationDto dto)
         {
             //Checks UserAccount Model to ensure that all incoming values match the Model constraints
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
             //emailExists & usernameExists ensure that new account details do not conflict with unique user properties
-            bool emailExists = await _context.UserAccounts.AnyAsync(x => x.Email!.ToLower() == dto.Email!.ToLower());
+            bool emailExists = await _context.UserAccounts.AnyAsync(x => x.UserSignupEmail! == dto.Email!.ToLower());
 
             if (emailExists) return Conflict("User with that email or username already exists");
 
@@ -84,13 +84,16 @@ namespace ContractDevApi.Controllers
             if (usernameExists) return Conflict("user with that email or username already exists");
 
             //BCrypt hashing used to hash user password that will be saved on the database
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            string hashedSecurityAnswer = BCrypt.Net.BCrypt.HashPassword(dto.SecurityAnswer.ToLower());
 
             //Constructing UserAccount Entity
             var user = new UserAccount
             {
-                Email = dto.Email,
-                PasswordHash = passwordHash
+                UserSignupEmail = dto.Email.ToLower(),
+                HashedPassword = hashedPassword,
+                SecurityQuestion = dto.SecurityQuestion,
+                SecurityAnswer = hashedSecurityAnswer
             };
 
             //Adding UserAccount Entity to in-memory database context
@@ -103,13 +106,42 @@ namespace ContractDevApi.Controllers
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Country = dto.Country,
+                Bio = "",
+                PhoneNumber = "",
                 Description = dto.Description,
+                AvailableForWork = false,
+                OfferingWork = false,
+                LastLogin = DateTimeOffset.UtcNow,
+                UsernameDisplay = false,
+                HidePhoneNumber = false,
                 UserAccountId = user.UserAccountId,
                 UserAccount = user
             };
 
             //Adding UserProfile Entity to in-memory database context
             _context.UserProfiles.Add(profile);
+
+            var socials = new SocialConnection
+            {
+                UserAccountId = user.UserAccountId,
+                FacebookLink = "",
+                UserSocialEmailLink = "",
+                XLink = "",
+                GithubLink = "",
+                LinkedinLink = "",
+                UserAccount = user
+            };
+
+            _context.SocialConnections.Add(socials);
+
+            var reviews = new UserReview
+            {
+                UserAccountId = user.UserAccountId,
+                NumberOfReviews = 0,
+                TotalReviewPoints = 0.0f,
+                AverageReviewScore = 0.0f,
+                UserAccount = user
+            };
 
             //Saving changes to physical database - result stores integer value of status received from database
             int result = await _context.SaveChangesAsync();
@@ -130,19 +162,19 @@ namespace ContractDevApi.Controllers
         //Login - receives email and password from Front-End, ensures that credentials are accurate and applies JWT and Cookie authentication
         //-----------------------
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(UserLoginDto dto)
+        public async Task<IActionResult> Login([FromForm] UserLoginDto dto)
         {
             //Checks UserLoginDto Model to ensure that all incoming values match the Model constraints
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
 
             //Check if user with email exists
-            var user = await _context.UserAccounts.FirstOrDefaultAsync(x => x.Email!.ToLower() == dto.Email!.ToLower());
+            var user = await _context.UserAccounts.FirstOrDefaultAsync(x => x.UserSignupEmail! == dto.Email!.ToLower());
 
             //If email does not exist in UserAccounts table, return error Status 401
             if (user == null) return Unauthorized(new { Message = "Invalid email or password" });
 
             //Check if password matches hashed password via BCrypt verification
-            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
+            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.Password, user.HashedPassword);
 
             //If password does not pass verification, return error Status 401
             if (!validatePassword) return Unauthorized(new { Message = "Invalid email or password" });
@@ -155,11 +187,15 @@ namespace ContractDevApi.Controllers
                 return Problem("User profile not found");
             }
 
+            userProfile.LastLogin = DateTimeOffset.UtcNow;
+
+            await _context.SaveChangesAsync();
+
             //Construct response entity
             var response = new UserResponseDto
             {
                 UserId = user.UserAccountId,
-                Email = user.Email,
+                Email = user.UserSignupEmail,
                 Username = userProfile.Username,
                 FirstName = userProfile.FirstName,
                 LastName = userProfile.LastName
@@ -177,16 +213,16 @@ namespace ContractDevApi.Controllers
         //Logout - Deauthorizes cookie associated to current user
         //Cannot deauthorize JWT - JWT current lifetime is 1 hour
         //-----------------------
-        [HttpPost("Logout")]
-        public async Task<IActionResult> Logout()
-        {
-            //possible solution - add jwt to blacklist on database for duration of jwt expiry
+        //[HttpPost("Logout")]
+        //public async Task<IActionResult> Logout()
+        //{
+        //    //possible solution - add jwt to blacklist on database for duration of jwt expiry
             
-            return Ok(new
-            {
-                Message = "User logged out"
-            });
-        }
+        //    return Ok(new
+        //    {
+        //        Message = "User logged out"
+        //    });
+        //}
 
         //-----------------------
         //Change Password - Receives id, old password, new password, and confirm new password from Front-End
@@ -194,8 +230,8 @@ namespace ContractDevApi.Controllers
         //id is used to find user, old password is verified, new password is hashed and overwrites old password
         //-----------------------
         [Authorize]
-        [HttpPost("ChangePassword/{id}")]
-        public async Task<IActionResult> ChangePassword(int id, UserPasswordDto dto)
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePassword([FromForm] UserPasswordDto dto)
         {
             //Checks UserPasswordDto Model to ensure that all incoming values match the Model constraints
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
@@ -208,26 +244,31 @@ namespace ContractDevApi.Controllers
             }
 
             //Verify the authenticated user is trying to change their own password
-            if (authenticatedUserId.Value != id)
+            if (authenticatedUserId.Value != dto.Id)
             {
                 return Forbid(); // 403 Forbidden - user is authenticated but not authorized to change another user's password
             }
 
             //Retrieve user details from context based on UserAccountId
-            var user = await _context.UserAccounts.FindAsync(id);
+            var user = await _context.UserAccounts.FindAsync(dto.Id);
 
-            if (user == null) return NotFound($"User with id: {id} does not exist");
+            if (user == null) return NotFound($"User with id: {dto.Id} does not exist");
 
             //Check if password matches hashed password via BCrypt verification
-            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.OldPassword, user.PasswordHash);
+            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.OldPassword, user.HashedPassword);
 
             //If password does not pass verification, return error Status 401
             if (!validatePassword) return Unauthorized(new { Message = "Invalid Password" });
 
+            //Check if Security answer given matches one created at account creation
+            bool validateSecurityAnswer = BCrypt.Net.BCrypt.Verify(dto.SecurityAnswer.ToLower(), user.SecurityAnswer);
+
+            if (!validateSecurityAnswer) return Unauthorized(new { Message = "Invalid Security Answer" });
+            
             //Hash new password
-            var newPasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            var newHashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
             //Overrite old hashed password with new password
-            user.PasswordHash = newPasswordHash;
+            user.HashedPassword = newHashedPassword;
 
             //Saving changes to physical database - result stores integer value of status received from database
             int result = await _context.SaveChangesAsync();
@@ -238,11 +279,10 @@ namespace ContractDevApi.Controllers
             return Ok(new { Message = "Password updated successfully" });
         }
 
-        //TODO
-        // DELETE: api/UserAccounts/5
+        // DELETE: api/UserAccounts/Delete
         [Authorize]
         [HttpDelete("Delete")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser([FromForm] UserDeletionDto dto)
         {
             //Get the authenticated user's ID from JWT token claims
             var authenticatedUserId = GetAuthenticatedUserId();
@@ -252,17 +292,29 @@ namespace ContractDevApi.Controllers
             }
 
             //Verify the authenticated user is trying to delete their own account
-            if (authenticatedUserId.Value != id)
+            if (authenticatedUserId.Value != dto.Id)
             {
                 return Forbid(); // 403 Forbidden - user is authenticated but not authorized to delete another user's account
             }
 
             //Ensure that user account and profile exist
-            var userAccount = await _context.UserAccounts.FirstOrDefaultAsync(x => x.UserAccountId == id);
+            var userAccount = await _context.UserAccounts.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
             if (userAccount == null) return NotFound("Account Not Found");
 
-            var userProfile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == id);
+            var userProfile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
             if (userProfile == null) return NotFound("Profile Not Found");
+
+            //Retrieve user details from context based on UserAccountId
+            var user = await _context.UserAccounts.FindAsync(dto.Id);
+
+            if (user == null) return NotFound($"User with id: {dto.Id} does not exist");
+
+            //Check if password matches hashed password via BCrypt verification
+            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.Password, user.HashedPassword);
+
+            //If password does not pass verification, return error Status 401
+            if (!validatePassword) return Unauthorized(new { Message = "Invalid Password" });
+
 
             _context.UserAccounts.Remove(userAccount);
             _context.UserProfiles.Remove(userProfile);
@@ -331,10 +383,10 @@ namespace ContractDevApi.Controllers
         //Helper method that checks if requested user ID matches the current authenticated user
         //Method is used in endpoints where user is attempting to access their own data
         //-----------------------
-        private bool IsAuthorizedUser(int requestedUserId)
-        {
-            var authenticatedUserId = GetAuthenticatedUserId();
-            return authenticatedUserId.HasValue && authenticatedUserId.Value == requestedUserId;
-        }
+        //private bool IsAuthorizedUser(int requestedUserId)
+        //{
+        //    var authenticatedUserId = GetAuthenticatedUserId();
+        //    return authenticatedUserId.HasValue && authenticatedUserId.Value == requestedUserId;
+        //}
     }
 }

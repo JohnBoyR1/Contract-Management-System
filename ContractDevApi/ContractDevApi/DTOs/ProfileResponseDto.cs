@@ -1,4 +1,6 @@
-﻿namespace ContractDevApi.DTOs
+﻿using ContractDevApi.Models;
+
+namespace ContractDevApi.DTOs
 {
     //-----------------------
     //This ResponseDTO is responsible for sending the combined User and Profile entity to the Front-End
@@ -24,7 +26,11 @@
 
         public string Description { get; set; } = string.Empty;
 
+        public string UserTitle { get; set; } = string.Empty;
+
         public string Bio { get; set; } = string.Empty;
+
+        public string SecurityQuestion { get; set; } = string.Empty;
 
         public bool? AvailableForWork { get; set; } = false;
 
@@ -33,5 +39,15 @@
         public bool? DisplayUserName { get; set; } = false;
 
         public bool? HidePhoneNumber { get; set; } = false;
+
+        public string ProfileImagePath { get; set; } = string.Empty;
+
+        public Dictionary<string, string?> Socials { get; set; } = new Dictionary<string,string?>();
+
+        public int NumberOfReviews { get; set; }
+
+        public float TotalReviewPoints { get; set; }
+
+        public float AverageReviewScore { get; set; }
     }
 }

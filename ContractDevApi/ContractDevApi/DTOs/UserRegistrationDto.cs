@@ -1,6 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text.Json.Nodes;
+using ContractDevApi.Models;
 
 namespace ContractDevApi.DTOs
 {
@@ -37,5 +40,11 @@ namespace ContractDevApi.DTOs
         [Required]
         [Compare("Password", ErrorMessage = "Passwords do not match.")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        [Required]
+        public string SecurityQuestion { get; set; } = string.Empty;
+
+        [Required]
+        public string SecurityAnswer { get; set; } = string.Empty;
     }
 }
