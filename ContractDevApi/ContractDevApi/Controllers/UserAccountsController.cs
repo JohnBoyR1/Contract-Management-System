@@ -187,6 +187,10 @@ namespace ContractDevApi.Controllers
                 return Problem("User profile not found");
             }
 
+            userProfile.LastLogin = DateTimeOffset.UtcNow;
+
+            await _context.SaveChangesAsync();
+
             //Construct response entity
             var response = new UserResponseDto
             {
