@@ -1,141 +1,260 @@
 <main class="main" id="global_background">
-    <div class="content">
-        <section class="section">
-            <div class="container py-5 h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col">
-                <div class="card card-registration my-4">
-                    <div class="row g-0 reg-input">
-                    <div class="col-xl-6 d-none d-xl-block">
-                        <img src="assets/images/pic_dev.png"
-                        alt="Sample photo" class="img-fluid reg-pic"
-                        />
-                    </div>
-                    <form class="col-xl-6" [formGroup]="contractForm" (ngSubmit)="handleFormSubmit()">
-                        <div class="card-body p-md-5 text-black">
-                            <h3 class="mb-5 text-uppercase">Registration Form</h3>
-                            <!--verify a valid form has been sent banner pop up-->
-                            @if (isSubmitted()) {
-                                <div class="alert alert-success mt-3">
-                                    <strong>Success!</strong> Your registration has been seen to the server.
-                                </div>
-                            }
-
-                            <div class="row">
-                                <div class="col-md-6 mb-4">
-                                <div data-mdb-input-init class="form-outline">
-                                    <input type="text" formControlName="firstName" id="form3Example1m" class="form-control form-control-lg" />
-                                    <label class="form-label" for="form3Example1m">First name</label>
-                                    @if (contractForm.get('firstName')?.touched && contractForm.get('firstName')?.hasError('required')) {
-                                    <div class="text-danger" >First name is required.</div>}
-                                </div>
-                                </div>
-                                <div class="col-md-6 mb-4">
-                                <div data-mdb-input-init class="form-outline">
-                                    <input type="text" formControlName="lastName" id="form3Example1n" class="form-control form-control-lg" />
-                                    <label class="form-label" for="form3Example1n">Last name</label>
-                                    @if (contractForm.get('lastName')?.touched && contractForm.get('lastName')?.hasError('required')) {
-                                    <div class="text-danger" >First name is required.</div>}
-                                </div>
-                                </div>
-                            </div>
-                        
-                            <div data-mdb-input-init class="form-outline mb-4">
-                                <input type="text" formControlName="username" id="form3Example8" class="form-control form-control-lg" />
-                                <label class="form-label" for="form3Example8">Username</label>
-                                @if (contractForm.get('Username')?.touched && contractForm.get('Username')?.hasError('required')) {
-                                <div class="text-danger" >First name is required.</div>}
-                            </div>
-                            <!--Town/City Input-->
-                            <div class="row">
-                                <!--Country DropDown Menu-->
-                                <div class="col-md-12 mb-4">
-                                <select class="form-control form-control-lg" formControlName="country">
-                                    @for (c of countries; track c.code) {
-                                    <option [value]="c.code">{{ c.name }}</option>
-                                    }
-                                </select>
-                                <label class="form-label">Country</label>
-                                @if (contractForm.get('country')?.touched && contractForm.get('country')?.hasError('required')) {
-                                <div class="text-danger" >First name is required.</div>}
-                                </div>
-                            </div>
-
-                            <div class="d-md-flex justify-content-start align-items-center mb-4 py-2">
-
-                                <h6 class="mb-0 me-4">Description: </h6>
-
-                                <div class="form-check form-check-inline mb-0 me-4">
-                                <input class="form-check-input" type="radio" formControlName="description" name="description" id="developer"
-                                    value="developer" />
-                                <label class="form-check-label" for="developer">Developer</label>
-                                </div>
-
-                                <div class="form-check form-check-inline mb-0 me-4">
-                                <input class="form-check-input" type="radio" formControlName="description" name="description" id="client"
-                                    value="client" />
-                                <label class="form-check-label" for="client">Client</label>
-                                </div>
-
-                                <div class="form-check form-check-inline mb-0">
-                                <input class="form-check-input" type="radio" formControlName="description" name="description" id="Both"
-                                    value="both" />
-                                <label class="form-check-label" for="both">Both</label>
-                                </div>
-                                @if (contractForm.get('description')?.touched && contractForm.get('description')?.hasError('required')) {
-                                <div class="text-danger" >First name is required.</div>}
-                            </div>
-                            
-
-                            <div data-mdb-input-init class="form-outline mb-4">
-                                <input type="text" formControlName="email" id="form3Example90" class="form-control form-control-lg" />
-                                <label class="form-label" for="form3Example90">Email</label>
-                                @if (contractForm.get('email')?.touched) {
-                                @if (contractForm.get('email')?.hasError('required')) {
-                                    <div class="text-danger">Email is required.</div>
-                                }
-                                @if (contractForm.get('email')?.hasError('email')) {
-                                    <div class="text-danger">Please enter a valid email.</div>
-                                }
-                                }
-                            </div>
-
-                            <div data-mdb-input-init class="form-outline mb-4">
-                                <input type="text" formControlName="password" id="form3Example99" class="form-control form-control-lg" />
-                                <label class="form-label" for="form3Example99">Password</label>
-                                @if (contractForm.get('password')?.touched && contractForm.get('password')?.hasError('required')) {
-                                <div class="text-danger" >Password is required.</div>}
-                            </div>
-
-                            <div data-mdb-input-init class="form-outline mb-4">
-                                <input type="text" formControlName="confirmPassword" id="form3Example97" class="form-control form-control-lg" />
-                                <label class="form-label" for="form3Example97">Confirm Password</label>
-                                @if (contractForm.get('confirmPassword')?.touched) {
-                                    @if (contractForm.get('confirmPassword')?.hasError('required')) {
-                                        <div class="text-danger">Confirm password is required.</div>
-                                    }
-
-                                    @if (contractForm.hasError('passwordsMismatch')) {
-                                        <div class="text-danger">Passwords do not match.</div>
-                                    }
-                                }
-                            </div>
-
-                            <div class="d-flex justify-content-end pt-3">
-                                <button  type="button" (click)="resetForm()" data-mdb-button-init data-mdb-ripple-init class="btn btn-light btn-lg">Reset all</button>
-                                <button  type="submit" [disabled]="contractForm.invalid || isLoading()" 
-                                    data-mdb-button-init data-mdb-ripple-init class="btn btn-warning btn-lg ms-2 submit">Register
-                                </button>
-                            </div>
-
-                        </div>
-                    </form>
+  <div class="content">
+    <section class="section">
+      <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col">
+            <div class="card card-registration my-4">
+              <div class="row g-0 reg-input">
+                <div class="col-xl-6 d-none d-xl-block">
+                  <img
+                    src="assets/images/pic_dev.png"
+                    alt="Sample photo"
+                    class="img-fluid reg-pic"
+                  />
                 </div>
+                <form class="col-xl-6" [formGroup]="contractForm" (ngSubmit)="handleFormSubmit()">
+                  <div class="card-body p-md-5 text-black">
+                    <h3 class="mb-5 text-uppercase">Registration Form</h3>
+                    <!--verify a valid form has been sent banner pop up-->
+                    @if (isSubmitted()) {
+                      <div class="alert alert-success mt-3">
+                        <strong>Success!</strong> Your registration has been seen to the server.
+                      </div>
+                    }
+
+                    <div class="row">
+                      <div class="col-md-6 mb-4">
+                        <div data-mdb-input-init class="form-outline">
+                          <input
+                            type="text"
+                            formControlName="firstName"
+                            id="form3Example1m"
+                            class="form-control form-control-lg"
+                          />
+                          <label class="form-label" for="form3Example1m">First name</label>
+                          @if (
+                            contractForm.get('firstName')?.touched &&
+                            contractForm.get('firstName')?.hasError('required')
+                          ) {
+                            <div class="text-danger">First name is required.</div>
+                          }
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-4">
+                        <div data-mdb-input-init class="form-outline">
+                          <input
+                            type="text"
+                            formControlName="lastName"
+                            id="form3Example1n"
+                            class="form-control form-control-lg"
+                          />
+                          <label class="form-label" for="form3Example1n">Last name</label>
+                          @if (
+                            contractForm.get('lastName')?.touched &&
+                            contractForm.get('lastName')?.hasError('required')
+                          ) {
+                            <div class="text-danger">First name is required.</div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+
+                    <div data-mdb-input-init class="form-outline mb-4">
+                      <input
+                        type="text"
+                        formControlName="username"
+                        id="form3Example8"
+                        class="form-control form-control-lg"
+                      />
+                      <label class="form-label" for="form3Example8">Username</label>
+                      @if (
+                        contractForm.get('Username')?.touched &&
+                        contractForm.get('Username')?.hasError('required')
+                      ) {
+                        <div class="text-danger">First name is required.</div>
+                      }
+                    </div>
+                    <!--Town/City Input-->
+                    <div class="row">
+                      <!--Country DropDown Menu-->
+                      <div class="col-md-12 mb-4">
+                        <select class="form-control form-control-lg" formControlName="country">
+                          @for (c of countries; track c.code) {
+                            <option [value]="c.code">{{ c.name }}</option>
+                          }
+                        </select>
+                        <label class="form-label">Country</label>
+                        @if (
+                          contractForm.get('country')?.touched &&
+                          contractForm.get('country')?.hasError('required')
+                        ) {
+                          <div class="text-danger">First name is required.</div>
+                        }
+                      </div>
+                    </div>
+
+                    <div class="d-md-flex justify-content-start align-items-center mb-4 py-2">
+                      <h6 class="mb-0 me-4">Description:</h6>
+
+                      <div class="form-check form-check-inline mb-0 me-4">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          formControlName="description"
+                          name="description"
+                          id="developer"
+                          value="developer"
+                        />
+                        <label class="form-check-label" for="developer">Developer</label>
+                      </div>
+
+                      <div class="form-check form-check-inline mb-0 me-4">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          formControlName="description"
+                          name="description"
+                          id="client"
+                          value="client"
+                        />
+                        <label class="form-check-label" for="client">Client</label>
+                      </div>
+
+                      <div class="form-check form-check-inline mb-0">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          formControlName="description"
+                          name="description"
+                          id="Both"
+                          value="both"
+                        />
+                        <label class="form-check-label" for="both">Both</label>
+                      </div>
+                      @if (
+                        contractForm.get('description')?.touched &&
+                        contractForm.get('description')?.hasError('required')
+                      ) {
+                        <div class="text-danger">First name is required.</div>
+                      }
+                    </div>
+
+                    <div data-mdb-input-init class="form-outline mb-4">
+                      <input
+                        type="text"
+                        formControlName="email"
+                        id="form3Example90"
+                        class="form-control form-control-lg"
+                      />
+                      <label class="form-label" for="form3Example90">Email</label>
+                      @if (contractForm.get('email')?.touched) {
+                        @if (contractForm.get('email')?.hasError('required')) {
+                          <div class="text-danger">Email is required.</div>
+                        }
+                        @if (contractForm.get('email')?.hasError('email')) {
+                          <div class="text-danger">Please enter a valid email.</div>
+                        }
+                      }
+                    </div>
+
+                    <div data-mdb-input-init class="form-outline mb-4">
+                      <input
+                        type="text"
+                        formControlName="password"
+                        id="form3Example99"
+                        class="form-control form-control-lg"
+                      />
+                      <label class="form-label" for="form3Example99">Password</label>
+                      @if (
+                        contractForm.get('password')?.touched &&
+                        contractForm.get('password')?.hasError('required')
+                      ) {
+                        <div class="text-danger">Password is required.</div>
+                      }
+                    </div>
+
+                    <div data-mdb-input-init class="form-outline mb-4">
+                      <input
+                        type="text"
+                        formControlName="confirmPassword"
+                        id="form3Example97"
+                        class="form-control form-control-lg"
+                      />
+                      <label class="form-label" for="form3Example97">Confirm Password</label>
+                      @if (contractForm.get('confirmPassword')?.touched) {
+                        @if (contractForm.get('confirmPassword')?.hasError('required')) {
+                          <div class="text-danger">Confirm password is required.</div>
+                        }
+
+                        @if (contractForm.hasError('passwordsMismatch')) {
+                          <div class="text-danger">Passwords do not match.</div>
+                        }
+                      }
+                    </div>
+                    <div class="row">
+                      <!--Country DropDown Menu-->
+                      <div class="col-md-12 mb-4">
+                        <select
+                          class="form-control form-control-lg"
+                          formControlName="securityQuestion"
+                        >
+                          @for (q of securityQuestions(); track $index) {
+                            <option [value]="q">{{ q }}</option>
+                          }
+                        </select>
+                        <label class="form-label">Security Question</label>
+                        @if (
+                          contractForm.get('securityQuestion')?.touched &&
+                          contractForm.get('securityQuestion')?.hasError('required')
+                        ) {
+                          <div class="text-danger">Security question is required.</div>
+                        }
+                      </div>
+                    </div>
+                    <div data-mdb-input-init class="form-outline mb-4">
+                      <input
+                        type="text"
+                        formControlName="securityAnswer"
+                        id="form3Example99"
+                        class="form-control form-control-lg"
+                      />
+                      <label class="form-label" for="form3Example99">Security Answer</label>
+                      @if (
+                        contractForm.get('securityAnswer')?.touched &&
+                        contractForm.get('securityAnswer')?.hasError('required')
+                      ) {
+                        <div class="text-danger">Security answer is required.</div>
+                      }
+                    </div>
+
+                    <div class="d-flex justify-content-end pt-3">
+                      <button
+                        type="button"
+                        (click)="resetForm()"
+                        data-mdb-button-init
+                        data-mdb-ripple-init
+                        class="btn btn-light btn-lg"
+                      >
+                        Reset all
+                      </button>
+                      <button
+                        type="submit"
+                        [disabled]="contractForm.invalid || isLoading()"
+                        data-mdb-button-init
+                        data-mdb-ripple-init
+                        class="btn btn-warning btn-lg ms-2 submit"
+                      >
+                        Register
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
+          </div>
         </div>
-        </div>
-        </div>
+      </div>
     </section>
-                
-    </div>
+  </div>
 </main>

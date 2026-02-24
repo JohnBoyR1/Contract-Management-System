@@ -44,8 +44,16 @@ export class FileUpload {
 
     const formData = new FormData();
     formData.append('Id', id.toString());
+    formData.append('Title', 'developer'); ///definitely should not be this
     formData.append('File', this.selectedFile);
     formData.append('Extension', extension);
+
+    console.log('FORM RAW:', formData.values);
+
+    console.log('FORMDATA:');
+    for (const entry of formData.entries()) {
+      console.log(entry[0], entry[1]);
+    }
 
     this.userService.uploadFile(formData).subscribe(() => {
       this.userService.getProfile(id).subscribe((fullProfile) => {

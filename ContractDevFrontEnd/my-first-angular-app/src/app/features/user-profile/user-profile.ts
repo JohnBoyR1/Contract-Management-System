@@ -34,6 +34,7 @@ export class UserProfile {
   ) {
     this.profileForm = this.fb.group({
       id: [this.authService.getCurrentUserId()], // set sub()
+      title: [''], //? after last update 23/02/2026
       firstName: [''],
       lastName: [''],
       jobRole: [''],
@@ -65,13 +66,6 @@ export class UserProfile {
     return `${this.profile.firstName()} ${this.profile.lastName()}`;
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0] ?? null;
-
-    this.profile.selectedFileForProfile.set(file);
-  }
-
   saveProfile() {
     const id = this.authService.getCurrentUserId();
 
@@ -90,11 +84,11 @@ export class UserProfile {
     //formData.append('id', id.toString());
 
     // append file from signal (only if selected) PROFILE PICTURE
-    const profileFile = this.profile.selectedFileForProfile();
+    //const profileFile = this.profile.selectedFileForProfile();
 
-    if (profileFile) {
-      formData.append('profilePicture', profileFile);
-    }
+    //if (profileFile) {
+    // formData.append('profilePicture', profileFile);
+    //}
 
     /*<input type="file" (change)="onFileSelected($event)" accept="image/*">*/
 

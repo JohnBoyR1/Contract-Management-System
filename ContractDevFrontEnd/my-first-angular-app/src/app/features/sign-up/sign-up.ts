@@ -15,7 +15,6 @@ import { ProfileStateService } from '../../core/shared/profile-state.service';
 
 import { AuthService } from '../../core/auth/auth.service';
 
-
 @Component({
   selector: 'app-sign-up',
   standalone: true,
@@ -45,6 +44,8 @@ export class SignUp implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
       confirmPassword: new FormControl('', [Validators.required]),
+      securityQuestion: new FormControl('', [Validators.required]),
+      securityAnswer: new FormControl('', [Validators.required]),
     },
     { validators: this.passwordMatchValidator.bind(this) }, //this is now bound to the FormGroup body
   );
@@ -70,8 +71,6 @@ export class SignUp implements OnInit {
 
       const formData = new FormData();
 
-
-
       console.log('Form Data for Backend: ', this.contractForm.value);
       //raw data is preferred choice in sign up forms
       const rawValue = this.contractForm.getRawValue();
@@ -82,15 +81,18 @@ export class SignUp implements OnInit {
         lastName: rawValue.lastName,
         username: rawValue.username,
         country: rawValue.country,
-        description: rawValue.description,
+        //user title should be description
+        userTitle: rawValue.description,
         email: rawValue.email,
         password: rawValue.password,
         confirmPassword: rawValue.confirmPassword,
+        securityQuestion: rawValue.securityQuestion,
+        securityAnswer: rawValue.securityAnswer,
       };
 
       Object.entries(payload).forEach(([key, value]) => {
         if (value !== null && value !== '') {
-          formData.append(key , value as any);
+          formData.append(key, value as any);
         }
       });
 
@@ -98,21 +100,21 @@ export class SignUp implements OnInit {
       this.userService.signup(formData).subscribe({
         next: (user) => {
           console.log('Signup success!', user);
-          //login in 
+          //login in
           const loginData = new FormData();
-          loginData.append("email", rawValue.email!);
-          loginData.append("password", rawValue.password!);
+          loginData.append('email', rawValue.email!);
+          loginData.append('password', rawValue.password!);
 
           this.authService.login(loginData).subscribe({
             next: () => {
               const userId = this.authService.getCurrentUserId();
 
-              this.userService.getProfile(userId).subscribe(fullProfile => {
+              this.userService.getProfile(userId).subscribe((fullProfile) => {
                 this.profileState.initProfile(fullProfile);
                 this.isSubmitted.set(true);
                 this.contractForm.reset();
               });
-            }
+            },
           });
 
           /* Fetch full profile using returned userId
@@ -127,8 +129,6 @@ export class SignUp implements OnInit {
         },
         error: (err) => alert('API Error: ' + err.message),
       });
-
-          
     }
   }
 
@@ -148,6 +148,12 @@ export class SignUp implements OnInit {
     // });
   }
   //https://localhost:7256/api/UserAccounts
+
+  securityQuestions = signal([
+    'What is your mother’s maiden name?',
+    'What was the name of your first pet?',
+    'What city were you born in?',
+  ]);
 
   selectedCountry: string = '';
 
