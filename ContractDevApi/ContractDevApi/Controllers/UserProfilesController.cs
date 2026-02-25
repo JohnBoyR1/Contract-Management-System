@@ -52,9 +52,9 @@ namespace ContractDevApi.Controllers
             }
 
             var user = await _context.UserAccounts.FindAsync(dto.Id);
-            var profile = await _context.UserProfiles.FindAsync(dto.Id);
-            var social = await _context.SocialConnections.FindAsync(dto.Id);
-            var review = await _context.UserReviews.FindAsync(dto.Id);
+            var profile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
+            var social = await _context.SocialConnections.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
+            var review = await _context.UserReviews.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
 
             if (user == null) return NotFound("User Not Found");
             if (profile == null) return NotFound("Profile not found");
