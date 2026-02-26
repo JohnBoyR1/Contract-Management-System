@@ -1,6 +1,7 @@
 .main {
     margin-top: 0px;
     padding-bottom: 50px;
+    overflow-x: hidden !important;
 }
 
 app-intro-banner,

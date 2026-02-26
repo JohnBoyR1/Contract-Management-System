@@ -5,7 +5,13 @@
 .card-registration {
     border-radius: 20px;
     background-color: rgb(163, 223, 241);
-    box-shadow: 20px 20px 20px rgb(0, 0, 0, 0.5) !important;
+    /*box-shadow: 20px 20px 20px rgb(0, 0, 0, 0.5) !important;*/
+    box-shadow: 
+    0 0 7px #fff,               /* Sharp white core for intensity */
+    0 0 10px #fff,              /* Slight blur for bloom */
+    0 0 21px rgb(163, 223, 241),               /* Main luminous color (e.g., Neon Green #0fa) */
+    0 0 42px rgb(163, 223, 241),               /* Wider glow */
+    0 0 72px rgb(163, 223, 241);               /* Distant environmental glow #0fa, */
 }
 
 

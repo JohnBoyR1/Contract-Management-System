@@ -109,6 +109,7 @@ namespace ContractDevApi.Controllers
                 Bio = "",
                 PhoneNumber = "",
                 Description = dto.Description,
+                UserTitle = "New User",
                 AvailableForWork = false,
                 OfferingWork = false,
                 LastLogin = DateTimeOffset.UtcNow,
@@ -230,7 +231,7 @@ namespace ContractDevApi.Controllers
         //id is used to find user, old password is verified, new password is hashed and overwrites old password
         //-----------------------
         [Authorize]
-        [HttpPost("ChangePassword")]
+        [HttpPut("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromForm] UserPasswordDto dto)
         {
             //Checks UserPasswordDto Model to ensure that all incoming values match the Model constraints

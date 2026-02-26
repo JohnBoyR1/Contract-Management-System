@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ProfileStateService } from '../../core/shared/profile-state.service';
 
 @Component({
   selector: 'app-billing-details',
@@ -9,4 +10,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class BillingDetails {
 
+  constructor(
+    public profile: ProfileStateService
+  ){}
 }

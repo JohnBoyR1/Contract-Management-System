@@ -1,0 +1,171 @@
+<div class="bg-light complete-user">
+  <div class="container py-5">
+    <div class="row">
+      <!-- Profile Header -->
+      <div class="col-12 mb-4">
+        <div class="profile-header position-relative mb-4">
+          <div class="position-absolute top-0 end-0 p-3">
+            <button class="btn btn-light"><i class="fas fa-edit me-2"></i>Edit Cover</button>
+          </div>
+        </div>
+        <div class="text-center">
+          <div class="position-relative d-inline-block">
+            <img
+              [src]="profile.profileImageUrl()"
+              class="rounded-circle profile-pic"
+              alt="Profile Picture"
+            />
+            <!--<button class="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle">
+              <i class="fas fa-camera"></i>
+            </button>-->
+          </div>
+          <h3 class="mt-3 mb-1">{{ nameDisplay() }}</h3>
+          <p class="text-muted mb-3">{{ this.profile.userTitle() }}</p>
+          <div class="d-flex justify-content-center gap-2 mb-4">
+            <button class="btn btn-outline-primary">
+              <i class="fas fa-envelope me-2"></i>Message
+            </button>
+            <button class="btn btn-primary">
+              <i class="fas fa-user-plus me-2"></i>Add Favourite
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-12">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-0">
+            <div class="row g-0">
+              <!-- Sidebar -->
+              <div class="col-lg-3 border-end">
+                <div class="p-4">
+                  <div class="navbar-nav flex-column nav-pills">
+                    <a class="nav-link" routerLink="/user-profile" routerLinkActive="active">
+                      <i class="fas fa-user me-2"></i>Personal Info
+                    </a>
+
+                    <a class="nav-link" routerLink="/userProfileSecurity" routerLinkActive="active">
+                      <i class="fas fa-lock me-2"></i>Security
+                    </a>
+
+                    <a class="nav-link" href="javascript:void(0)">
+                      <i class="fas fa-bell me-2"></i>Notifications
+                    </a>
+
+                    <a class="nav-link" routerLink="/billing-details" routerLinkActive="active">
+                      <i class="fas fa-credit-card me-2"></i>Billing
+                    </a>
+
+                    <a class="nav-link" routerLink="/profile-card" routerLinkActive="active">
+                      <i class="fas fa-chart-line me-2"></i>Profile Card
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Content Area -->
+              <div class="col-lg-9">
+                <!-- update profile through form submission (submit button will call this)-->
+                <form [formGroup]="securityForm" (ngSubmit)="saveSecurity()">
+                  <div class="p-4">
+                    <!-- Personal Information -->
+                    <div class="mb-4">
+                      <h5 class="mb-4">Security Information</h5>
+                      <div class="row g-3">
+                        <div class="col-md-6">
+                          <label class="form-label">Current Password</label>
+                          <input
+                            formControlName="currentPassword"
+                            type="password"
+                            class="form-control"
+                            value=""
+                          />
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label">New Password</label>
+                          <input
+                            formControlName="newPassword"
+                            type="password"
+                            class="form-control"
+                            value=""
+                          />
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label">Confirm New Password</label>
+                          <input
+                            formControlName="confirmNewPassword"
+                            type="password"
+                            class="form-control"
+                            value=""
+                          />
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label">Security Question: </label>
+                          <input class="form-control"  type="text" formControlName="securityQuestion" value=""  readonly/>
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label">Security Questions: Answer</label>
+                          <input
+                            formControlName="securityAnswer"
+                            type="text"
+                            class="form-control"
+                            value=""
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Settings Cards -->
+                    <div class="row g-4 mb-4">
+                      <div class="col-md-6">
+                        <div class="settings-card card">
+                          <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <div>
+                                <h6 class="mb-1">Delete User Account</h6>
+                                <p class="text-muted mb-0 small">
+                                  Only if you want to delete your account
+                                </p>
+                              </div>
+                              <div>
+                                <button
+                                  type="button"
+                                  class="btn btn-danger"
+                                  routerLink="/userProfileDeletion"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="settings-card card">
+                          <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <div>
+                                <h6 class="mb-1">Update Profile</h6>
+                                <p class="text-muted mb-0 small">Only if you made changes</p>
+                              </div>
+                              <div>
+                                <button type="button" class="btn btn-outline-primary" type="submit">
+                                  Save
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

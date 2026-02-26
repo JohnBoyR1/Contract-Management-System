@@ -1,17 +1,16 @@
 import { Component, computed } from '@angular/core';
-import {Router, RouterLink, RouterLinkActive } from "@angular/router";
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-//input signals 
+//input signals
 import { ProfileStateService } from '../../core/shared/profile-state.service';
 import { UserService } from '../../core/services/user.service';
+import { Profile } from '../../core/models/profile.models';
 import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 
-
-
-
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-user-profile',
@@ -21,25 +20,24 @@ import { AuthService } from '../../core/auth/auth.service';
   styleUrl: './user-profile.css',
 })
 export class UserProfile {
-  profileForm: FormGroup;//?
-  
-
+  profileForm: FormGroup; //?
 
   private userService = inject(UserService);
   private authService = inject(AuthService);
 
   // 2. Inject the Router in the constructor
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
 
     private router: Router,
-    private fb: FormBuilder,
-    public profile: ProfileStateService //then I can use {{ profile.firstName() }} etc.
+    private fb: FormBuilder, //FormBuilder is a built in angular ?
+    public profile: ProfileStateService, //then I can use {{ profile.firstName() }} etc.
   ) {
     this.profileForm = this.fb.group({
+      userId: [this.authService.getCurrentUserId()], // set sub()
+      userTitle: [''], //? after last update 23/02/2026
       firstName: [''],
       lastName: [''],
-      jobRole: [''],
       username: [''],
       phoneNumber: [''],
       email: [''],
@@ -50,41 +48,61 @@ export class UserProfile {
       availableForWork: [false],
       offeringWork: [false],
       displayUserName: [false],
-      hidePhoneNumber: [false]
-
+      hidePhoneNumber: [false],
+      profileImagePath: [''],
+      
     });
   }
 
   ngOnInit() {
-      
-      const id = this.authService.getCurrentUserId();
-      
-      this.userService.getProfile(id).subscribe(profile => {
-      this.profileForm.patchValue(profile);//this is what is displaying the data
-      //console.log("User ID:", id);
+    const id = this.authService.getCurrentUserId();
+
+    //subscribe is used to recieve data asyschronously (returns an Observable)
+    this.userService.getProfile(id).subscribe((profile) => {
+      this.profileForm.patchValue(profile); 
+
+      //updating global profile state
+      this.profile.initProfile(profile);
 
     });
   }
 
-  nameDisplay(){
-    return `${this.profile.firstName()} ${this.profile.lastName()}`; 
+
+  nameDisplay() {
+    return `${this.profile.firstName()} ${this.profile.lastName()}`;
   }
+
+  titleDisplay(){
+    return `${this.profile.userTitle()}`;
+  }
+
+  
 
   saveProfile() {
     const id = this.authService.getCurrentUserId();
 
     const raw = this.profileForm.value;
 
-    const payload = Object.fromEntries(
-    Object.entries(raw).filter(([_, v]) => v !== '' && v !== null)//stripping out empty values(only sending meaningfull data to the Api)
-  );
-  //updating backend and refreshing the global profile state
-  this.userService.updateProfile(id, payload).subscribe(() => {
-    this.userService.getProfile(id).subscribe(fullProfile => {
-      this.profile.initProfile(fullProfile);
-    });
-  });
+    const formData = new FormData();
 
-  } 
-  
+    // append all text fields (underscore instead of key (We only care about the values))
+    Object.entries(raw).forEach(([key, value]) => {
+      if (value !== null && value !== '') {
+        formData.append(key, value as any);
+      }
+      
+    });
+
+    //append ID (as it is not part of the form)
+    formData.append('id', id.toString());
+
+
+    //updating backend and refreshing the global profile state
+    this.userService.updateProfile(formData).subscribe(() => {
+      this.userService.getProfile(id).subscribe((fullProfile) => {
+        this.profile.initProfile(fullProfile);
+      });
+    });
+  }
 }
+

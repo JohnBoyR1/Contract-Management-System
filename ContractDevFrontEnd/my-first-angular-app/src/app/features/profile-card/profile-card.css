@@ -1,5 +1,8 @@
+
 .complete-user {
-    margin-top: 90px;
+    min-height: 100vh;
+    
+    margin: 0;
 }
 
 .nav-link, a[routerLink] {

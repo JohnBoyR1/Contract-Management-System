@@ -78,6 +78,9 @@ dotnet tool update --global dotnet-ef
     (this creates all the tables and applies migration)
         dotnet ef database update
 
+*   dotnet ef migrations add InitialCreate
+    dotnet ef database update
+
 
 
 

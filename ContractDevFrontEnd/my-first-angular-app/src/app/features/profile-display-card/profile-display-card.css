@@ -76,4 +76,6 @@
 .display-card:hover {
     transform: translate(8px) scale(1.02);
 }
-
+textarea {
+    resize: none;
+}

@@ -1,10 +1,20 @@
 import { Injectable, signal, computed } from '@angular/core';
+import { Profile } from '../models/profile.models';
+import { effect } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileStateService {
+  // Holds the full profile object (change any to Profile (type‑safety, autocompletion, and error‑prevention.))
+  private _profile = signal<Profile | null>(null);
 
-  // Holds the full profile object
-  private _profile = signal<any | null>(null);
+  // 1. Define the signal that was missing
+  previewUrl = signal<string | null>(null);
+  //check this .....(for profile image) temporary
+  profileImageUrl = signal<string | null>(null);
+
+  // the actual file selected for upload
+  selectedFileForProfile = signal<File | null>(null);
 
   // Public getter for components
   profile = computed(() => this._profile());
@@ -34,30 +44,47 @@ export class ProfileStateService {
 
   email = computed(() => this._profile()?.email ?? '');
 
+  userTitle = computed(() => this._profile()?.userTitle ?? '');
+
+  /*
+  profilePicture = computed(() => this._profile()?.profilePicture ?? '');
+
+  // file selected by user (no preview logic)
+  selectedFileForProfile = signal<File | null>(null);
+
+  previewPicture = computed(() => {
+    const profileFile = this.selectedFileForProfile();
+    if (profileFile) {
+      return URL.createObjectURL(profileFile);
+    }
+    return this._profile()?.profilePicture ?? '';
+  });*/
 
 
 
   // Called after login or guard fetch
-  initProfile(profile: any) {
+  initProfile(profile: Profile) {
     this._profile.set(profile);
+    
+    //Set the real saved image URL
+    if (profile.profileImagePath) {
+      const fullImageUrl = `${environment.apiUrl}${profile.profileImagePath}`;
+      this.profileImageUrl.set(fullImageUrl);
+    }
+    
+    // reset preview
+    this.previewUrl.set(null);
   }
 
   // Called on logout
   clearProfile() {
     this._profile.set(null);
+     this.profileImageUrl.set(null);
+    this.previewUrl.set(null);
+    this.selectedFileForProfile.set(null);
+
   }
-
 }
-
-
-
-
-
-
-
-
-
-
 
 /* manages one logged in user's profile using signals *
 
