@@ -44,7 +44,7 @@ export class SignUp implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
       confirmPassword: new FormControl('', [Validators.required]),
-      securityQuestion: new FormControl('', [Validators.required]),
+      securityQuestion: new FormControl<string | null>(null, Validators.required), //fix for selection
       securityAnswer: new FormControl('', [Validators.required]),
     },
     { validators: this.passwordMatchValidator.bind(this) }, //this is now bound to the FormGroup body
