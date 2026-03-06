@@ -19,7 +19,10 @@ export interface Profile {
 
   //profile images
   profileImagePath: string | null;
-  
+
+  //skills
+  skills: string[];
+  selectedSkills: string[];
 
   securityQuestion: string;
 
@@ -29,4 +32,3 @@ export interface Profile {
   totalReviewPoints: number;
   averageReviewScore: number;
 }
-

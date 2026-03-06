@@ -46,32 +46,16 @@ export class ProfileStateService {
 
   userTitle = computed(() => this._profile()?.userTitle ?? '');
 
-  /*
-  profilePicture = computed(() => this._profile()?.profilePicture ?? '');
-
-  // file selected by user (no preview logic)
-  selectedFileForProfile = signal<File | null>(null);
-
-  previewPicture = computed(() => {
-    const profileFile = this.selectedFileForProfile();
-    if (profileFile) {
-      return URL.createObjectURL(profileFile);
-    }
-    return this._profile()?.profilePicture ?? '';
-  });*/
-
-
-
   // Called after login or guard fetch
   initProfile(profile: Profile) {
     this._profile.set(profile);
-    
+
     //Set the real saved image URL
     if (profile.profileImagePath) {
       const fullImageUrl = `${environment.apiUrl}${profile.profileImagePath}`;
       this.profileImageUrl.set(fullImageUrl);
     }
-    
+
     // reset preview
     this.previewUrl.set(null);
   }
@@ -79,10 +63,9 @@ export class ProfileStateService {
   // Called on logout
   clearProfile() {
     this._profile.set(null);
-     this.profileImageUrl.set(null);
+    this.profileImageUrl.set(null);
     this.previewUrl.set(null);
     this.selectedFileForProfile.set(null);
-
   }
 }
 

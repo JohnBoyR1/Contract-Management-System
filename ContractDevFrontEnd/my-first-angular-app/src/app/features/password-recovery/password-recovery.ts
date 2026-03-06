@@ -3,18 +3,18 @@ import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../core/services/user.service';
 import { ProfileStateService } from '../../core/shared/profile-state.service';
-import { Router, RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './login.html',
+  selector: 'app-password-recovery',
+  imports: [ReactiveFormsModule, CommonModule],
+  templateUrl: './password-recovery.html',
+  styleUrl: './password-recovery.css',
 })
-export class Login {
+export class PasswordRecovery {
   private userService = inject(UserService);
   private profileState = inject(ProfileStateService);
   private router = inject(Router);
@@ -26,21 +26,32 @@ export class Login {
   loggedIn = signal(false);
   loginError = signal('');
 
-  loginForm = new FormGroup({
+  passwordResetForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required]),
+    securityQuestion: new FormControl('', [Validators.required]),
+    securityAnswer: new FormControl('', [Validators.required]),
+    newPassword: new FormControl('', [Validators.required]),
+    reEnterNewPassword: new FormControl('', [Validators.required]),
   });
 
+  securityQuestions = signal([
+    'What is your mother’s maiden name?',
+    'What was the name of your first pet?',
+    'What city were you born in?',
+  ]);
+
   handleLogin() {
-    if (!this.loginForm.valid) return;
+    if (!this.passwordResetForm.valid) return;
 
     this.isLoading.set(true);
     this.loginError.set('');
 
     const formData = new FormData();
-    formData.append('email', this.loginForm.value.email!);
-    formData.append('password', this.loginForm.value.password!);
-
+    formData.append('email', this.passwordResetForm.value.email!);
+    formData.append('securityQuestion', this.passwordResetForm.value.securityQuestion!);
+    formData.append('securityAnswer', this.passwordResetForm.value.securityAnswer!);
+    formData.append('newPassword', this.passwordResetForm.value.newPassword!);
+    formData.append('reEnterNewPassword', this.passwordResetForm.value.reEnterNewPassword!);
     //fetch profile data form the backend
     this.authService.login(formData).subscribe({
       next: (res) => {

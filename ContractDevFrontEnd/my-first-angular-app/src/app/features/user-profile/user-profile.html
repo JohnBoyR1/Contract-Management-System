@@ -10,8 +10,15 @@
         </div>
         <div class="text-center">
           <div class="position-relative d-inline-block">
-            <img [src]="profile.profileImageUrl()" class="rounded-circle profile-pic" alt="Profile Picture" />
-            <button routerLink="/userProfileUploadImage" class="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle" >
+            <img
+              [src]="profile.profileImageUrl()"
+              class="rounded-circle profile-pic"
+              alt="Profile Picture"
+            />
+            <button
+              routerLink="/userProfileUploadImage"
+              class="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle"
+            >
               <i class="fas fa-camera"></i>
             </button>
           </div>
@@ -122,6 +129,43 @@
                             class="form-control phoneNumber"
                           />
                         </div>
+
+                        <!--Country DropDown Menu-->
+                        <div class="col-md-12 mb-4">
+                          <select
+                            class="form-control form-control-lg"
+                            [formControl]="skillsControl"
+                          >
+                            <option value="" disabled selected>Choose a skill...</option>
+                            @for (q of availableSkills; track $index) {
+                              <option [value]="q">{{ q }}</option>
+                            }
+                          </select>
+                          <label class="form-label">Skills</label>
+                          @if (
+                            profileForm.get('availableSkills')?.touched &&
+                            profileForm.get('availableSkills')?.hasError('required')
+                          ) {
+                            <div class="text-danger">Skills are required.</div>
+                          }
+                        </div>
+
+                        <!-- show chosen skills live -->
+                        <div class="col-md-12 mt-2">
+                          @for (s of selectedSkillsControl.value ?? []; track $index) {
+                            <div class="badge bg-secondary me-2">
+                              {{ s }}
+                              <button
+                                type="button"
+                                class="btn btn-sm btn-link text-white p-0 ms-2"
+                                (click)="removeSkill(s)"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          }
+                        </div>
+
                         <div class="col-12">
                           <label class="form-label">Bio</label>
                           <textarea formControlName="bio" class="form-control" rows="4">
@@ -253,7 +297,7 @@ Product designer with 5+ years of experience in creating user-centered digital s
                         </div>
                       </div>
                     </div>
-                    
+
                     <!-- Recent Activity --
                     <div>
                       <h5 class="mb-4">Recent Activity</h5>
