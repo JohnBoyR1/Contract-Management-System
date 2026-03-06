@@ -129,6 +129,8 @@ namespace ContractDevApi.Controllers
             var review = await _context.UserReviews.FirstOrDefaultAsync(x => x.UserAccountId == id);
             if (review == null) review = new UserReview();
 
+            var skills = await _context.UserSkills.Where(x => x.UserAccountId == id).Select(x => x.Skill!.SkillName).ToListAsync();
+
             var response = new ProfileResponseDto
             {
                 UserId = user.UserAccountId,
@@ -155,7 +157,8 @@ namespace ContractDevApi.Controllers
                 },
                 NumberOfReviews = review.NumberOfReviews,
                 TotalReviewPoints = review.TotalReviewPoints,
-                AverageReviewScore = review.AverageReviewScore
+                AverageReviewScore = review.AverageReviewScore,
+                Skills = skills
             };
 
             return Ok(response);
