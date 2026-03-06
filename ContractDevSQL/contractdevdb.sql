@@ -94,7 +94,7 @@ skill_name VARCHAR(50) unique not null
 insert into skills (skill_name) values
 ('HTML'), ('CSS'), ('JavaScript'), ('Angular'), ('React'), ('Bootstrap'), 
 ('PostgreSQL'), ('MySQL'), ('MongoDB'), ('AWS'), ('Docker'), ('Java'), 
-('Python'), ('C#'), ('C++'), ('C'), ('Rust'), ('Go'), ('TypeScript'), ('Frontend'), ('Backend'), ('Cloud Developer'), ('Full Stack'), ('Mobile Developer'), ('Database Developer'), ('Web Developer';
+('Python'), ('C#'), ('C++'), ('C'), ('Rust'), ('Go'), ('TypeScript'), ('Frontend'), ('Backend'), ('Cloud Developer'), ('Full Stack'), ('Mobile Developer'), ('Database Developer'), ('Web Developer');
 
 --User skils creation statement, this table will act as the bridge between a user having skills
 create table user_skills(
