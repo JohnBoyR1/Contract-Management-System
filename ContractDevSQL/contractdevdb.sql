@@ -46,7 +46,6 @@ add constraint check_x_link check (x_link = '' or x_link ilike 'x.com/%'),
 add constraint check_github_link check (github_link = '' or github_link ilike 'github.com/%'),
 add constraint check_linkedin_link check (linkedin_link = '' or linkedin_link ilike 'linkedin.com/in/%');
 
-
 --User review creation statement
 create table user_reviews(
 user_account_id integer not null primary key,
@@ -110,6 +109,3 @@ constraint fk_skill foreign key(skill_id)
 references skills(skill_id)
 on delete cascade
 );
-
-
-

@@ -55,10 +55,13 @@ namespace ContractDevApi.Controllers
             var profile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
             var social = await _context.SocialConnections.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
             var review = await _context.UserReviews.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
+            var skillIds = await _context.Skills.Where(x => dto.Skills.Contains(x.SkillName)).Select(x => x.SkillId).ToListAsync(); //Retrieve desired skill IDs from DB
+            var userSkills = await _context.UserSkills.Where(x => x.UserAccountId == dto.Id).Select(x => x.SkillId).ToListAsync(); //Retrieve all skills associated to user
 
             if (user == null) return NotFound("User Not Found");
             if (profile == null) return NotFound("Profile not found");
             if (social == null) return NotFound("Social Connections not found");
+            if (skillIds == null) return BadRequest("Skills given not found in database");
 
             if (dto.Username != null) profile.Username = dto.Username.ToLower();
             if (dto.Email != null) user.UserSignupEmail = dto.Email.ToLower();
@@ -76,6 +79,15 @@ namespace ContractDevApi.Controllers
             if (dto.XLink != null) social.XLink = dto.XLink;
             if (dto.GithubLink != null) social.GithubLink = dto.GithubLink;
             if (dto.LinkedinLink != null) social.LinkedinLink = dto.LinkedinLink;
+
+            var newSkillIds = skillIds.Except(userSkills).ToList();
+            var newUserSkills = newSkillIds.Select(id => new UserSkill
+            {
+                UserAccountId = dto.Id,
+                SkillId = id
+            });
+
+            _context.UserSkills.AddRange(newUserSkills);
 
             int result = await _context.SaveChangesAsync();
 

@@ -43,5 +43,7 @@ namespace ContractDevApi.DTOs
         public string? GithubLink { get; set; }
 
         public string? LinkedinLink { get; set; }
+
+        public List<string> Skills { get; set; } = new List<string>();
     }
 }
