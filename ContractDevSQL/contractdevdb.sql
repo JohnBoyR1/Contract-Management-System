@@ -34,7 +34,8 @@ user_social_email_link text default '' ,
 x_link text default '' ,
 github_link text default '' ,
 linkedin_link text default '',
-constraint fk_account foreign key(user_account_id)
+
+constraint fk_account foreign key(user_account_id)--Foreign Key constraint
 references user_accounts(user_account_id)
 on delete cascade--When the user account gets deleted, every data entry associated with that user_account_id will get deleted
 );
@@ -52,6 +53,7 @@ user_account_id integer not null primary key,
 number_of_reviews integer not null default 0,
 total_review_points float not null default 0,
 average_review_score float not null default 0,
+
 constraint fk_account foreign key(user_account_id)
 references user_accounts(user_account_id)
 on delete cascade
@@ -76,7 +78,38 @@ hide_phone_number boolean default false ,
 profile_picture_filepath varchar(512) not null,--Stores the filepath of the users profile picture
 profile_picture_extension varchar(5) not null,
 user_account_id integer not null,
+
 constraint fk_account foreign key(user_account_id)
 references user_accounts(user_account_id)
 on delete cascade
 );
+
+--Skills table creation statement, needed to associate each skill with an ID so that each user can be associated with a skill
+create table skills(
+skill_id SERIAL primary key,
+skill_name VARCHAR(50) unique not null
+);
+
+--Insert skills into skills table
+insert into skills (skill_name) values
+('HTML'), ('CSS'), ('JavaScript'), ('Angular'), ('React'), ('Bootstrap'), 
+('PostgreSQL'), ('MySQL'), ('MongoDB'), ('AWS'), ('Docker'), ('Java'), 
+('Python'), ('C#'), ('C++'), ('C'), ('Rust'), ('Go'), ('TypeScript'), ('Frontend'), ('Backend'), ('Cloud Developer'), ('Full Stack'), ('Mobile Developer'), ('Database Developer'), ('Web Developer');
+
+--User skils creation statement, this table will act as the bridge between a user having skills
+create table user_skills(
+user_account_id integer not null,
+skill_id integer not null,
+primary key(user_account_id, skill_id),
+
+constraint fk_account foreign key(user_account_id)
+references user_accounts(user_account_id)
+on delete cascade,
+
+constraint fk_skill foreign key(skill_id)
+references skills(skill_id)
+on delete cascade
+);
+
+
+
