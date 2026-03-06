@@ -178,49 +178,65 @@ namespace ContractDevApi.Controllers
             var users = await _context.UserAccounts.ToListAsync();
             var socials = await _context.SocialConnections.ToListAsync();
             var reviews = await _context.UserReviews.ToListAsync();
+            var skills =
+                from us in _context.UserSkills
+                join s in _context.Skills on us.SkillId equals s.SkillId
+                group s.SkillName by us.UserAccountId into g
+                select new
+                {
+                    UserAccountId = g.Key,
+                    Skills = g.ToList()
+                };
+
+
 
             var response =
-            from u in users
-            join p in profiles
-                on u.UserAccountId equals p.UserAccountId
-                into profileJoin
-            from p in profileJoin.DefaultIfEmpty()
-            join s in socials
-                on u.UserAccountId equals s.UserAccountId
-                into socialJoin
-            from s in socialJoin.DefaultIfEmpty()
-            join r in reviews
-                on u.UserAccountId equals r.UserAccountId
-                into reviewJoin
-            from r in reviewJoin.DefaultIfEmpty()
-            select new ProfileResponseDto
-            {
-                UserId = u.UserAccountId,
-                FirstName = p.FirstName,
-                LastName = p.LastName,
-                Username = p.Username,
-                Email = u.UserSignupEmail,
-                PhoneNumber = p.PhoneNumber,
-                Country = p.Country,
-                Description = p.Description,
-                UserTitle = p.UserTitle,
-                Bio = p.Bio,
-                AvailableForWork = p.AvailableForWork,
-                OfferingWork = p.OfferingWork,
-                DisplayUserName = p.UsernameDisplay,
-                HidePhoneNumber = p.HidePhoneNumber,
-                ProfileImagePath = p.ProfilePictureFilepath,
-                Socials = new Dictionary<string, string?> {
-                        { "facebook", s.FacebookLink },
-                        { "Social Email", s.UserSocialEmailLink },
-                        { "X", s.XLink },
-                        { "Github", s.GithubLink },
-                        { "LinkedIn", s.LinkedinLink }
-                },
-                NumberOfReviews = r?.NumberOfReviews ?? 0, 
-                TotalReviewPoints = r?.TotalReviewPoints ?? 0,
-                AverageReviewScore = r?.AverageReviewScore ?? 0
-            };
+                from u in users
+                join p in profiles
+                    on u.UserAccountId equals p.UserAccountId
+                    into profileJoin
+                from p in profileJoin.DefaultIfEmpty()
+                join s in socials
+                    on u.UserAccountId equals s.UserAccountId
+                    into socialJoin
+                from s in socialJoin.DefaultIfEmpty()
+                join r in reviews
+                    on u.UserAccountId equals r.UserAccountId
+                    into reviewJoin
+                from r in reviewJoin.DefaultIfEmpty()
+                join sk in skills
+                    on u.UserAccountId equals sk.UserAccountId
+                    into skillJoin
+                from sk in skillJoin.DefaultIfEmpty()
+                select new ProfileResponseDto
+                {
+                    UserId = u.UserAccountId,
+                    FirstName = p.FirstName,
+                    LastName = p.LastName,
+                    Username = p.Username,
+                    Email = u.UserSignupEmail,
+                    PhoneNumber = p.PhoneNumber,
+                    Country = p.Country,
+                    Description = p.Description,
+                    UserTitle = p.UserTitle,
+                    Bio = p.Bio,
+                    AvailableForWork = p.AvailableForWork,
+                    OfferingWork = p.OfferingWork,
+                    DisplayUserName = p.UsernameDisplay,
+                    HidePhoneNumber = p.HidePhoneNumber,
+                    ProfileImagePath = p.ProfilePictureFilepath,
+                    Socials = new Dictionary<string, string?> {
+                            { "facebook", s.FacebookLink },
+                            { "Social Email", s.UserSocialEmailLink },
+                            { "X", s.XLink },
+                            { "Github", s.GithubLink },
+                            { "LinkedIn", s.LinkedinLink }
+                    },
+                    NumberOfReviews = r?.NumberOfReviews ?? 0, 
+                    TotalReviewPoints = r?.TotalReviewPoints ?? 0,
+                    AverageReviewScore = r?.AverageReviewScore ?? 0,
+                    Skills = sk?.Skills ?? new List<string>()
+                };
 
             return Ok(response);
         }
