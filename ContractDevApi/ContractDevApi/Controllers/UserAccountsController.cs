@@ -256,7 +256,7 @@ namespace ContractDevApi.Controllers
             if (user == null) return NotFound($"User with id: {dto.Id} does not exist");
 
             //Check if password matches hashed password via BCrypt verification
-            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.OldPassword, user.HashedPassword);
+            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.CurrentPassword, user.HashedPassword);
 
             //If password does not pass verification, return error Status 401
             if (!validatePassword) return Unauthorized(new { Message = "Invalid Password" });
@@ -280,6 +280,39 @@ namespace ContractDevApi.Controllers
             return Ok(new { Message = "Password updated successfully" });
         }
 
+        [HttpPut("Recovery")]
+        public async Task<IActionResult> RecoveryAccount([FromForm] UserRecoveryDto dto)
+        {
+            //Checks UserRecoveryDto Model to ensure that all incoming values match the Model constraints
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+
+            //Ensure that user exists by email
+            var userByEmail = await _context.UserAccounts.FirstOrDefaultAsync(x => x.UserSignupEmail == dto.Email);
+            if (userByEmail == null) return NotFound("Email not found");
+
+            //Determine that question and answer match selected user
+            bool validSecQuestion = userByEmail.SecurityQuestion == dto.SecurityQuestion;
+            if (!validSecQuestion) return Unauthorized("Security Question or Security Answer does not match");
+
+            bool validSecAnswer = BCrypt.Net.BCrypt.Verify(dto.SecurityAnswer, userByEmail.SecurityAnswer);
+            if (!validSecAnswer) return Unauthorized("Security Question or Security Answer does not match");
+
+            //Valid user data - registering new password
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+
+            userByEmail.HashedPassword = hashedPassword;
+
+            int result = await _context.SaveChangesAsync();
+            if (result <= 0) return Problem("System error occured. Password Update Failed.");
+
+            return Ok("New password registered successfully.");
+        }
+
+
+        //-----------------------
+        //Delete - receives id, password, and security password, ensures that bearer token is owned by target user id
+        //cascade deletes user details from all associated tables on database
+        //-----------------------
         // DELETE: api/UserAccounts/Delete
         [Authorize]
         [HttpDelete("Delete")]

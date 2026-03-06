@@ -188,8 +188,6 @@ namespace ContractDevApi.Controllers
                     Skills = g.ToList()
                 };
 
-
-
             var response =
                 from u in users
                 join p in profiles
