@@ -76,28 +76,30 @@ All endpoints require a JWT Bearer Token - Exception: `Registration & Login`
 
 ### HTTP Methods
 
-| Address                          | Method | Description                                                   | Validation                                                                              | Authorization             | FromForm DTO         |
-| -------------------------------- | ------ | ------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------- | -------------------- |
-| /api/UserProfiles/ProfileGallery | GET    | Retrieves select data for all user profiles - profile gallery | Token format validation                                                                 | Bearer Token              | N/A                  |
-| /api/UserProfiles/ProfileDetails | GET    | Retrieves user profile                                        | Cross-Reference `sub` claim with `DTO.Id` to prevent IDOR attacks                       | Bearer Token (Owner Only) | [FromQuery] Id : int |
-| /api/UserAccounts/Register       | POST   | Creates new entries in User and Profile tables                | Model validation (FluentValidation for email format and password matching confirmation) | Anonymous                 | UserRegistrationDto  |
-| /api/UserAccounts/Login          | POST   | Authenticates credentials and returns a JWT                   | Model validation, valid email/password combination                                      | Anonymous                 | UserLoginDto         |
-| /api/UserAccounts/Validate       | POST   | Swagger UI development validation                             | Token format verification                                                               | Bearer Token              | N/A                  |
-| /api/UserAccounts/ChangePassword | PUT    | Updates user credentials                                      | Cross-Reference `sub` claim with `DTO.Id` to prevent IDOR attacks                       | Bearer Token (Owner Only) | UserPasswordDto      |
-| /api/UserProfiles/UpdateProfile  | PUT    | Updates user profile                                          | Cross-Reference `sub` claim with `DTO.Id` to prevent IDOR attacks                       | Bearer Token (Owner Only) | ProfileUpdateDto     |
-| api/UserProfiles/UploadFile      | PUT    | Updates user profile picture                                  | Cross-Reference `sub` claim with `DTO.Id` to prevent IDOR attacks                       | Bearer Token (Owner Only) | ProfileUploadDto     |
-| /api/UserAccounts/Delete         | DELETE | Deletes user information from database                        | Cross-Reference `sub` claim with `DTO.Id` to prevent IDOR attacks                       | Bearer Token (Owner Only) | UserDeletionDto      |
+| Address                          | Method | Description                                                   | Validation                                                                               | Authorization             | FromForm DTO         |
+| -------------------------------- | ------ | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------- | -------------------- |
+| /api/UserProfiles/ProfileGallery | GET    | Retrieves select data for all user profiles - profile gallery | Token format validation                                                                  | Bearer Token              | N/A                  |
+| /api/UserProfiles/ProfileDetails | GET    | Retrieves user profile                                        | Cross-Reference `sub` claim with `DTO.Id` to prevent IDOR attacks                        | Bearer Token (Owner Only) | [FromQuery] Id : int |
+| /api/UserAccounts/Register       | POST   | Creates new entries in User and Profile tables                | Model validation (FluentValidation for email format and password matching confirmation)  | Anonymous                 | UserRegistrationDto  |
+| /api/UserAccounts/Login          | POST   | Authenticates credentials and returns a JWT                   | Model validation, valid email/password combination                                       | Anonymous                 | UserLoginDto         |
+| /api/UserAccounts/Validate       | POST   | Swagger UI development validation                             | Token format verification                                                                | Bearer Token              | N/A                  |
+| /api/UserAccounts/ChangePassword | PUT    | Updates user credentials                                      | Cross-Reference `sub` claim with `DTO.Id` to prevent IDOR attacks                        | Bearer Token (Owner Only) | UserPasswordDto      |
+| api/UserAccounts/Recovery        | PUT    | Updates user credentials                                      | Model Validation (FluentValidation for email formate and password matching confirmation) | Anonymous                 | UserRecoveryDto      |
+| /api/UserProfiles/UpdateProfile  | PUT    | Updates user profile                                          | Cross-Reference `sub` claim with `DTO.Id` to prevent IDOR attacks                        | Bearer Token (Owner Only) | ProfileUpdateDto     |
+| api/UserProfiles/UploadFile      | PUT    | Updates user profile picture                                  | Cross-Reference `sub` claim with `DTO.Id` to prevent IDOR attacks                        | Bearer Token (Owner Only) | ProfileUploadDto     |
+| /api/UserAccounts/Delete         | DELETE | Deletes user information from database                        | Cross-Reference `sub` claim with `DTO.Id` to prevent IDOR attacks                        | Bearer Token (Owner Only) | UserDeletionDto      |
 
 ### Data Transfer Objects
 
-| DTO Name            | Properties                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| UserRegistrationDto | `Username : string`, `FirstName : string`, `LastName : string`, `Country : string`, `Description : string`, `Email : string`, `Password : string`, `ConfirmPassword : string`, `SecurityQuestion : string`, `SecurityAnswer : string`                                                                                                                                                                                                                                                                                                         |
-| UserLoginDto        | `Email : string`, `Password : string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| ProfileUpdateDto    | `Id : int`, `Username : string-nullable`, `Email : string-nullable`, `PhoneNumber : string-nullable`, `Country : string-nullable`, `Description : string-nullable`, `UserTitle : string-nullable`, `Bio : string-nullable`, `AvailableForWork : bool-nullable`, `OfferingWork : bool-nullable`, `DisplayUsername : bool-nullable`, `HidePhoneNumber : bool-nullable`, `FacebookLink : string-nullable`, `UserSocialEmailLink : string-nullable`, `XLink : string-nullable`, `GithubLink : string-nullable` , `LinkedinLink : string-nullable` |
-| UserPasswordDto     | `Id : int`, `OldPassword : string`, `NewPassword : string`, `ConfirmNewPassword : string`, `SecurityAnswer : string`                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| ProfileUploadDto    | `Id : int`, `File : IFormFile`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| UserDeletionDto     | `Id : int`, `Password : string`, `SecurityAnswer : string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| DTO Name            | Properties                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UserRegistrationDto | `Username : string`, `FirstName : string`, `LastName : string`, `Country : string`, `Description : string`, `Email : string`, `Password : string`, `ConfirmPassword : string`, `SecurityQuestion : string`, `SecurityAnswer : string`                                                                                                                                                                                                                                                                                                                                     |
+| UserLoginDto        | `Email : string`, `Password : string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ProfileUpdateDto    | `Id : int`, `Username : string-nullable`, `Email : string-nullable`, `PhoneNumber : string-nullable`, `Country : string-nullable`, `Description : string-nullable`, `UserTitle : string-nullable`, `Bio : string-nullable`, `AvailableForWork : bool-nullable`, `OfferingWork : bool-nullable`, `DisplayUsername : bool-nullable`, `HidePhoneNumber : bool-nullable`, `FacebookLink : string-nullable`, `UserSocialEmailLink : string-nullable`, `XLink : string-nullable`, `GithubLink : string-nullable` , `LinkedinLink : string-nullable` , `Skills` : `List<string>` |
+| UserPasswordDto     | `Id : int`, `OldPassword : string`, `NewPassword : string`, `ConfirmNewPassword : string`, `SecurityAnswer : string`                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ProfileUploadDto    | `Id : int`, `File : IFormFile`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| UserRecoveryDto     | `Email : string`, `SecurityQuestion : string`, `SecurityAnswer : string`, `NewPassword : string`, `ConfirmNewPassword : string`                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| UserDeletionDto     | `Id : int`, `Password : string`, `SecurityAnswer : string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
 ### Error Responses
 
@@ -118,41 +120,14 @@ All endpoints require a JWT Bearer Token - Exception: `Registration & Login`
 ### Sample Interaction (New User Registration)
 
 ```mermaid
-
-
-
 sequenceDiagram
-
-
-
 EndUser ->> Frontend: New User Registration
-
-
-
 Frontend ->> Backend: /api/UserAccounts/Register
-
-
-
 Note right of Backend: Internal validation of data (DTO Model)
-
-
-
 Backend ->> Database: Insert into UserAccounts, Insert into UserProfiles
-
-
-
 Database ->> Backend: Query Returned Successfully
-
-
-
 Backend ->> Frontend: Return DTO of User Details
-
-
-
 Frontend ->> EndUser: Registration Complete
-
-
-
 ```
 
 ## Swagger UI
