@@ -15,8 +15,10 @@ namespace ContractDevApi.DTOs
         public int Id { get; set; }
         public string? Username { get; set; }
 
+        [EmailAddress]
         public string? Email { get; set; }
 
+        [Phone]
         public string? PhoneNumber { get; set; }
 
         public string? Country { get; set; }
@@ -43,5 +45,7 @@ namespace ContractDevApi.DTOs
         public string? GithubLink { get; set; }
 
         public string? LinkedinLink { get; set; }
+
+        public List<string> Skills { get; set; } = new List<string>();
     }
 }

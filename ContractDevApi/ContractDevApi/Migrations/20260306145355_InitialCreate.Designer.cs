@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ContractDevApi.Migrations
 {
     [DbContext(typeof(ContractDevContext))]
-    [Migration("20260224160217_InitialCreate")]
+    [Migration("20260306145355_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,6 +25,26 @@ namespace ContractDevApi.Migrations
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "title", new[] { "developer", "client", "both" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("ContractDevApi.Models.Skill", b =>
+                {
+                    b.Property<int>("SkillId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("skill_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SkillId"));
+
+                    b.Property<string>("SkillName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("skill_name");
+
+                    b.HasKey("SkillId")
+                        .HasName("pk_skills");
+
+                    b.ToTable("skills", (string)null);
+                });
 
             modelBuilder.Entity("ContractDevApi.Models.SocialConnection", b =>
                 {
@@ -230,6 +250,29 @@ namespace ContractDevApi.Migrations
                     b.ToTable("user_reviews", (string)null);
                 });
 
+            modelBuilder.Entity("ContractDevApi.Models.UserSkill", b =>
+                {
+                    b.Property<int>("UserAccountId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_account_id");
+
+                    b.Property<int>("SkillId")
+                        .HasColumnType("integer")
+                        .HasColumnName("skill_id");
+
+                    b.Property<int?>("Skills")
+                        .HasColumnType("integer")
+                        .HasColumnName("skills");
+
+                    b.HasKey("UserAccountId", "SkillId")
+                        .HasName("pk_user_skills");
+
+                    b.HasIndex("Skills")
+                        .HasDatabaseName("ix_user_skills_skills");
+
+                    b.ToTable("user_skills", (string)null);
+                });
+
             modelBuilder.Entity("ContractDevApi.Models.SocialConnection", b =>
                 {
                     b.HasOne("ContractDevApi.Models.UserAccount", "UserAccount")
@@ -262,6 +305,25 @@ namespace ContractDevApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_user_reviews_user_accounts_user_account_id");
+
+                    b.Navigation("UserAccount");
+                });
+
+            modelBuilder.Entity("ContractDevApi.Models.UserSkill", b =>
+                {
+                    b.HasOne("ContractDevApi.Models.Skill", "Skill")
+                        .WithMany()
+                        .HasForeignKey("Skills")
+                        .HasConstraintName("fk_user_skills_skills_skills");
+
+                    b.HasOne("ContractDevApi.Models.UserAccount", "UserAccount")
+                        .WithMany()
+                        .HasForeignKey("UserAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_skills_user_accounts_user_account_id");
+
+                    b.Navigation("Skill");
 
                     b.Navigation("UserAccount");
                 });
