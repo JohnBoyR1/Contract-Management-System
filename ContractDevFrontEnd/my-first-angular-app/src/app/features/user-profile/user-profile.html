@@ -52,8 +52,8 @@
                       <i class="fas fa-lock me-2"></i>Security
                     </a>
 
-                    <a class="nav-link" href="javascript:void(0)">
-                      <i class="fas fa-bell me-2"></i>Notifications
+                    <a class="nav-link" routerLink="/social-media-links" routerLinkActive="active">
+                      <i class="fas fa-bell me-2"></i>Social Media Links
                     </a>
 
                     <a class="nav-link" routerLink="/billing-details" routerLinkActive="active">
@@ -142,12 +142,10 @@
                             }
                           </select>
                           <label class="form-label">Skills</label>
-                          @if (
-                            profileForm.get('availableSkills')?.touched &&
-                            profileForm.get('availableSkills')?.hasError('required')
-                          ) {
+                           @if (skillsControl.touched && skillsControl.hasError('required')) {
                             <div class="text-danger">Skills are required.</div>
                           }
+                          
                         </div>
 
                         <!-- show chosen skills live -->
@@ -297,23 +295,6 @@ Product designer with 5+ years of experience in creating user-centered digital s
                         </div>
                       </div>
                     </div>
-
-                    <!-- Recent Activity --
-                    <div>
-                      <h5 class="mb-4">Recent Activity</h5>
-                      <div class="activity-item mb-3">
-                        <h6 class="mb-1">Updated profile picture</h6>
-                        <p class="text-muted small mb-0">2 hours ago</p>
-                      </div>
-                      <div class="activity-item mb-3">
-                        <h6 class="mb-1">Changed password</h6>
-                        <p class="text-muted small mb-0">Yesterday</p>
-                      </div>
-                      <div class="activity-item">
-                        <h6 class="mb-1">Updated billing information</h6>
-                        <p class="text-muted small mb-0">3 days ago</p>
-                      </div>
-                    </div>-->
                   </div>
                 </form>
               </div>

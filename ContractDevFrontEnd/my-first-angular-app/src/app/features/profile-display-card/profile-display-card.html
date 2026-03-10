@@ -29,50 +29,36 @@
               </button>
             </div>
             <!-- Register buttons -->
-            <div class="text-center">
-              <button
-                type="button"
-                data-mdb-button-init
-                data-mdb-ripple-init
-                class="btn btn-link btn-floating mx-1"
-              >
+             <div class="text-center">
+                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.facebookLink())">
+
                 <i class="fab fa-facebook-f"></i>
-              </button>
+                </button>
 
-              <button
-                type="button"
-                data-mdb-button-init
-                data-mdb-ripple-init
-                class="btn btn-link btn-floating mx-1"
-              >
-                <i class="fab fa-google"></i>
-              </button>
+                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.userSocialEmailLink())">
+                <i class="bi bi-envelope-at"></i>
+                </button>
 
-              <button
-                type="button"
-                data-mdb-button-init
-                data-mdb-ripple-init
-                class="btn btn-link btn-floating mx-1"
-              >
-                <i class="fab fa-twitter"></i>
-              </button>
+                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.xLink())">
+                <i class="bi bi-twitter-x"></i>
+                </button>
 
-              <button
-                type="button"
-                data-mdb-button-init
-                data-mdb-ripple-init
-                class="btn btn-link btn-floating mx-1"
-              >
+                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.githubLink())">
                 <i class="fab fa-github"></i>
-              </button>
-              <button
-                type="button"
-                data-mdb-button-init
-                data-mdb-ripple-init
-                class="btn btn-link btn-floating mx-1"
-              >
+                </button>
+                <button
+                    type="button"
+                    data-mdb-button-init
+                    data-mdb-ripple-init
+                    class="btn btn-link btn-floating mx-1"
+                    (click)="openLink(this.profile.linkedinLink())"
+                >
+                    <!---- <i class="bi bi-tools"></i>-->
+                    <i class="bi bi-linkedin"></i>
+                </button>
+                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.xLink())">
                 <i class="bi bi-tools"></i>
-              </button>
+                </button>
             </div>
           </div>
         </div>

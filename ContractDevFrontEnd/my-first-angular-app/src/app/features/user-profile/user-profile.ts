@@ -1,6 +1,6 @@
 import { Component, signal, computed } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 //input signals
 import { ProfileStateService } from '../../core/shared/profile-state.service';
 import { UserService } from '../../core/services/user.service';
@@ -50,11 +50,19 @@ export class UserProfile {
       displayUserName: [false],
       hidePhoneNumber: [false],
       profileImagePath: [''],
-      skills: [''],
-      selectedSkills: this.fb.control<string[]>([]),
+
+      //social media links
+      facebookLink: [''],
+      userSocialEmailLink: [''],
+      xLink: [''],
+      gitHubLink: [''],
+      linkedinLink: [''],
+      
+      skills: this.fb.control<string>(''),
+      selectedSkills: this.fb.control<string[]>([]),// backend expects List<String>
     });
   }
-  // skill set in drop down menu
+  //skill set in drop down menu
   get skillsControl() {
     return this.profileForm.get('skills') as FormControl<string>;
   }
@@ -107,11 +115,11 @@ export class UserProfile {
   ngOnInit() {
     //handle the selection
     this.skillsControl.valueChanges.subscribe((skill) => {
-      if (!skill) return;
+      if (!skill || skill.trim() == '') return;
 
       const current = this.selectedSkillsControl.value ?? [];
 
-      // Add the skill to our 'selected' list if it's not already there
+      // Add the skill to the 'selected' list if it's not already there
       if (!current.includes(skill)) {
         this.selectedSkillsControl.setValue([...current, skill]);
       }
@@ -156,13 +164,15 @@ export class UserProfile {
     // append all text fields (underscore instead of key (We only care about the values))
     Object.entries(raw).forEach(([key, value]) => {
       if (value !== null && value !== '') {
-        // selectedSkills = []
+        // selectedSkills = [   ]
         if (key === 'selectedSkills') {
-          formData.append('selectedSkills', JSON.stringify(value ?? [])); //check backend
+          (value as string[]).forEach(skill => {  
+            formData.append('skills', skill); // <-- backend expects "Skills"
+          });
           return;
         }
 
-        formData.append(key, value as any);
+          formData.append(key, value as any);
       }
     });
 
@@ -175,5 +185,12 @@ export class UserProfile {
         this.profile.initProfile(fullProfile);
       });
     });
+    console.log('--- FORM DATA SENT TO BACKEND ---');
+    for (const pair of formData.entries()) {
+      console.log(pair[0] + ':', pair[1]);
+    }
+    console.log('---------------------------------');
+
+
   }
 }

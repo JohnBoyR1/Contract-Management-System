@@ -7,6 +7,7 @@ import { signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
 
+
 @Component({
   selector: 'app-profile-display-card',
   imports: [CommonModule],
@@ -18,7 +19,7 @@ export class ProfileDisplayCard  {
 
   constructor(
     private router: Router,
-    //public profile: ProfileStateService
+    public profile: ProfileStateService
   ){}
   @Input() user!: Profile;
 
@@ -53,6 +54,12 @@ export class ProfileDisplayCard  {
     } else if(this.user.availableForWork && this.user.offeringWork){
       return "none";
     }
+  }
+
+  //a click handler
+  openLink(url: string) {
+    if (!url) return;
+    window.open(url, '_blank');
   }
 
   openChat() {

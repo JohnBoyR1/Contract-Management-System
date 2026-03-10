@@ -46,6 +46,15 @@ export class ProfileStateService {
 
   userTitle = computed(() => this._profile()?.userTitle ?? '');
 
+  //social media links
+  facebookLink = computed(() => this._profile()?.socials?.["facebook"] ?? "");
+  userSocialEmailLink = computed(() => this._profile()?.socials?.["Social Email"] ?? "");
+  xLink = computed(() => this._profile()?.socials?.["X"] ?? "");
+  githubLink = computed(() => this._profile()?.socials?.["Github"] ?? "");
+  linkedinLink = computed(() => this._profile()?.socials?.["LinkedIn"] ?? "");
+
+  skills = computed(() => this._profile()?.skills ?? '');
+
   // Called after login or guard fetch
   initProfile(profile: Profile) {
     this._profile.set(profile);
@@ -69,96 +78,3 @@ export class ProfileStateService {
   }
 }
 
-/* manages one logged in user's profile using signals *
-
-import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Profile } from '../models/profile.models';
-
-@Injectable({ providedIn: 'root' })
-export class ProfileStateService {
-  constructor(private http: HttpClient) {}
-
-  //need userId
-  userId = '';
-
-  //signals restored from saved state(profile settings)
-  //toggle buttons
-  availableForWork = signal(false);
-  offeringWork = signal(false);
-  displayUserName = signal(false);
-  hidePhoneNumber = signal(false);
-  //string inputs
-  phoneNumber = signal(''); //store the actual number
-  firstName = signal(''); //store the actual firstName
-  lastName = signal(''); //store the actual lastName
-  username = signal(''); //store the actual username
-  email = signal(''); //store the actual email
-  country = signal(''); //store the 2 character country code
-  description = signal(''); //radio btn choice "developer" | "client" | "Both"
-  bio = signal(''); //text area (brief description about user)
-
-  //####indicates wheather a profile has been loaded into signals
-  isProfileLoaded = signal(false);
-
-  //Once retrieve user's profile from backend, back end returns a profile object
-  //then initialise an object and loads it into signals
-  initProfile(profile: Profile | null) {
-    if (!profile) {
-      this.isProfileLoaded.set(false);
-      return;
-    }
-
-    //user id //because it does not change it is not a signal
-    this.userId = String(profile.userId ?? this.userId);
-    //toggles
-    this.availableForWork.set(profile.availableForWork);
-    this.offeringWork.set(Boolean(profile.offeringWork));
-    this.displayUserName.set(Boolean(profile.displayUserName));
-    this.hidePhoneNumber.set(Boolean(profile.hidePhoneNumber));
-
-    //profile information fields
-    this.phoneNumber.set(profile.phoneNumber ?? '');
-    this.firstName.set(profile.firstName ?? '');
-    this.lastName.set(profile.lastName ?? '');
-    this.username.set(profile.username ?? '');
-    this.email.set(profile.email ?? '');
-    this.country.set(profile.country ?? '');
-    //radio btn choice "developer" | "client" | "Both"
-    this.description.set(profile.description ?? '');
-    this.bio.set(profile.bio ?? '');
-
-    this.isProfileLoaded.set(true);
-  }
-
-  updateProfileBackend(changes: any) {
-    return this.http.patch(`/users/${this.userId}/profile`, changes).subscribe(() => {
-      // After saving, force a fresh GET from backend
-      this.http.get<Profile>(`/users/${this.userId}/profile`).subscribe((fullProfile) => {
-        console.log('FULL PROFILE FROM BACKEND:', fullProfile);
-        this.initProfile(fullProfile);
-      });
-    });
-  }
-
-  clearProfile() {
-    this.userId = '';
-    this.availableForWork.set(false);
-    this.offeringWork.set(false);
-    this.displayUserName.set(false);
-    this.hidePhoneNumber.set(false);
-    this.phoneNumber.set('');
-    this.firstName.set('');
-    this.lastName.set('');
-    this.username.set('');
-    this.email.set('');
-    this.country.set('');
-    this.description.set('');
-    this.bio.set('');
-    this.isProfileLoaded.set(false);
-  }
-
-  hasProfileLoaded(): boolean {
-    return this.isProfileLoaded();
-  }
-}*/
