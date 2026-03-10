@@ -2,13 +2,17 @@
 
 namespace ContractDevApi.DTOs
 {
-    public class UserPasswordDto
+    public class UserRecoveryDto
     {
         [Required]
-        public int Id { get; set; }
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
 
         [Required]
-        public string CurrentPassword { get; set; } = string.Empty;
+        public string SecurityQuestion { get; set; } = string.Empty;
+
+        [Required]
+        public string SecurityAnswer { get; set; } = string.Empty;
 
         [Required]
         public string NewPassword { get; set; } = string.Empty;
@@ -16,8 +20,5 @@ namespace ContractDevApi.DTOs
         [Required]
         [Compare("NewPassword", ErrorMessage = "Passwords do not match.")]
         public string ConfirmNewPassword { get; set; } = string.Empty;
-
-        [Required]
-        public string SecurityAnswer { get; set; } = string.Empty;
     }
 }

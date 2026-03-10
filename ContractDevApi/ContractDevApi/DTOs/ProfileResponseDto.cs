@@ -49,5 +49,7 @@ namespace ContractDevApi.DTOs
         public float TotalReviewPoints { get; set; }
 
         public float AverageReviewScore { get; set; }
+
+        public List<string> Skills { get; set; } = new List<string>();
     }
 }

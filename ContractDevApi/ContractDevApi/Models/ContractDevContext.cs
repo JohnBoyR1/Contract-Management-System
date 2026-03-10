@@ -26,12 +26,15 @@ namespace ContractDevApi.Models
 
         public DbSet<SocialConnection> SocialConnections { get; set; }
 
+        public DbSet<UserSkill> UserSkills { get; set; }
+
+        public DbSet<Skill> Skills { get; set; }
+
         //-----------------------
         //Additional constraint mapping for database tables that Entity Framework requires for valid migrations
         //-----------------------
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
 
             //Map database enum to model enum Title
             modelBuilder.HasPostgresEnum<Title>(
@@ -87,6 +90,21 @@ namespace ContractDevApi.Models
             {
                 entity.ToTable("user_reviews");
             });
+
+            modelBuilder.Entity<Skill>(entity =>
+            {
+                entity.ToTable("skills");
+            });
+
+            modelBuilder.Entity<UserSkill>(entity =>
+            {
+                entity.ToTable("user_skills");
+            });
+
+            modelBuilder.Entity<UserSkill>().HasKey(entity => new { entity.UserAccountId, entity.SkillId });
+
+            base.OnModelCreating(modelBuilder);
+
         }
     }
 }
