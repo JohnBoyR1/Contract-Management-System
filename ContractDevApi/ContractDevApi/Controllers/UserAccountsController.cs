@@ -256,7 +256,7 @@ namespace ContractDevApi.Controllers
             if (user == null) return NotFound($"User with id: {dto.Id} does not exist");
 
             //Check if password matches hashed password via BCrypt verification
-            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.OldPassword, user.HashedPassword);
+            bool validatePassword = BCrypt.Net.BCrypt.Verify(dto.CurrentPassword, user.HashedPassword);
 
             //If password does not pass verification, return error Status 401
             if (!validatePassword) return Unauthorized(new { Message = "Invalid Password" });
@@ -389,5 +389,48 @@ namespace ContractDevApi.Controllers
         //    var authenticatedUserId = GetAuthenticatedUserId();
         //    return authenticatedUserId.HasValue && authenticatedUserId.Value == requestedUserId;
         //}
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Jeán input for password recovery----------------
+
+        [HttpPost("RecoverAccount")]
+        public async Task<IActionResult> RecoverAccount([FromForm] UserRecoveryDto dto)
+        {
+            // Validate incoming model
+            if (!ModelState.IsValid)
+                return ValidationProblem(ModelState);
+
+            // Find user by email
+            var user = await _context.UserAccounts
+                .FirstOrDefaultAsync(u => u.UserSignupEmail == dto.Email.ToLower());
+
+            if (user == null)
+                return NotFound(new { Message = "No account found with that email." });
+
+            // Validate security question
+            if (user.SecurityQuestion != dto.SecurityQuestion)
+                return Unauthorized(new { Message = "Incorrect security question." });
+
+            // Validate security answer (hashed)
+            bool answerMatches = BCrypt.Net.BCrypt.Verify(
+                dto.SecurityAnswer.ToLower(),
+                user.SecurityAnswer
+            );
+
+            if (!answerMatches)
+                return Unauthorized(new { Message = "Incorrect security answer." });
+
+            // Hash new password
+            string newHashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+
+            // Update password
+            user.HashedPassword = newHashedPassword;
+
+            int result = await _context.SaveChangesAsync();
+
+            if (result <= 0)
+                return Problem("System error occurred. Password update failed.");
+
+            return Ok(new { Message = "Password reset successfully." });
+        }
+
     }
 }

@@ -16,6 +16,19 @@ namespace ContractDevApi.Migrations
                 .Annotation("Npgsql:Enum:public.title", "developer,client,both");
 
             migrationBuilder.CreateTable(
+                name: "skills",
+                columns: table => new
+                {
+                    skill_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    skill_name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_skills", x => x.skill_id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "user_accounts",
                 columns: table => new
                 {
@@ -109,6 +122,30 @@ namespace ContractDevApi.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "user_skills",
+                columns: table => new
+                {
+                    user_account_id = table.Column<int>(type: "integer", nullable: false),
+                    skill_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_user_skills", x => new { x.user_account_id, x.skill_id });
+                    table.ForeignKey(
+                        name: "fk_user_skills_skills_skill_id",
+                        column: x => x.skill_id,
+                        principalTable: "skills",
+                        principalColumn: "skill_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_user_skills_user_accounts_user_account_id",
+                        column: x => x.user_account_id,
+                        principalTable: "user_accounts",
+                        principalColumn: "user_account_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "ix_user_accounts_user_signup_email",
                 table: "user_accounts",
@@ -119,6 +156,11 @@ namespace ContractDevApi.Migrations
                 name: "ix_user_profiles_user_account_id",
                 table: "user_profiles",
                 column: "user_account_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_user_skills_skill_id",
+                table: "user_skills",
+                column: "skill_id");
         }
 
         /// <inheritdoc />
@@ -132,6 +174,12 @@ namespace ContractDevApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "user_reviews");
+
+            migrationBuilder.DropTable(
+                name: "user_skills");
+
+            migrationBuilder.DropTable(
+                name: "skills");
 
             migrationBuilder.DropTable(
                 name: "user_accounts");

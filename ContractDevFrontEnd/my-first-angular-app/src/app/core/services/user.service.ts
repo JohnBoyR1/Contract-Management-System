@@ -68,6 +68,11 @@ export class UserService {
     return this.http.put<void>(`${this.apiUrl}/UserAccounts/ChangePassword`, data);
   }
 
+  //password recovery
+  accountRecovery(data: FormData): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/UserAccounts/RecoverAccount`, data);/// I know this is not correct
+  }
+
   //for the fun part calling all the profiles
   getAllProfiles(): Observable<Profile[]> {
     return this.http.get<Profile[]>(`${this.apiUrl}/UserProfiles/ProfileGallery`); // backend to return profile

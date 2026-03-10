@@ -31,7 +31,7 @@ export class PasswordRecovery {
     securityQuestion: new FormControl('', [Validators.required]),
     securityAnswer: new FormControl('', [Validators.required]),
     newPassword: new FormControl('', [Validators.required]),
-    reEnterNewPassword: new FormControl('', [Validators.required]),
+    confirmNewPassword: new FormControl('', [Validators.required]),
   });
 
   securityQuestions = signal([
@@ -46,46 +46,39 @@ export class PasswordRecovery {
     this.isLoading.set(true);
     this.loginError.set('');
 
+    const raw = this.passwordResetForm.value;
+
     const formData = new FormData();
-    formData.append('email', this.passwordResetForm.value.email!);
-    formData.append('securityQuestion', this.passwordResetForm.value.securityQuestion!);
-    formData.append('securityAnswer', this.passwordResetForm.value.securityAnswer!);
-    formData.append('newPassword', this.passwordResetForm.value.newPassword!);
-    formData.append('reEnterNewPassword', this.passwordResetForm.value.reEnterNewPassword!);
+
+    const payload = {
+      Email: raw.email!,
+      SecurityQuestion: raw.securityQuestion!,
+      SecurityAnswer: raw.securityAnswer!,
+      NewPassword: raw.newPassword!,
+      ConfirmNewPassword: raw.confirmNewPassword!
+    };
+
+    //appending payload to a formdata
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value !== null && value !== '') {
+        formData.append(key, value as any);
+      }
+    });
+
     //fetch profile data form the backend
-    this.authService.login(formData).subscribe({
-      next: (res) => {
-        //console.log("Status:", res.status);
-        //console.log("Message: ", res.body);
+    this.userService.accountRecovery(formData).subscribe({
+      next: () => {
+        alert('Security settings updated.');
+        this.router.navigate(['/login']);
 
-        const userId = this.authService.getCurrentUserId();
-
-        //update the profile data
-        if (!userId) {
-          this.loginError.set('Could not decode user ID');
-          this.isLoading.set(false);
-          return;
-        }
-        //fetch profile and update profile signals
-        this.userService.getProfile(userId).subscribe({
-          next: (profile) => {
-            this.profileState.initProfile(profile);
-            //navigate to the home page
-            this.isLoading.set(false);
-            this.loggedIn.set(true);
-            this.router.navigate(['/home']);
-          },
-          error: (err) => {
-            this.loginError.set('Failed to load profile');
-            this.isLoading.set(false);
-            console.error('?', err.status, err.error);
-          },
-        });
+       
       },
-      error: () => {
-        this.loginError.set('Invalid email or password');
+      error: (err) => {
+        this.loginError.set('Failed to load profile');
         this.isLoading.set(false);
+        console.error('?', err.status, err.error);
       },
     });
+
   }
 }
