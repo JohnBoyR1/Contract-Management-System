@@ -39,23 +39,20 @@ export class UserProfileSecurity {
   ngOnInit() {
     const userId = this.authService.getCurrentUserId();
 
-    this.userService.getProfile(userId).subscribe(profile => {
+    this.userService.getProfile(userId).subscribe((profile) => {
       this.securityForm.patchValue({
-        securityQuestion: profile.securityQuestion
+        securityQuestion: profile.securityQuestion,
       });
     });
-
-    
   }
 
   //displaying the security question that the account holder used on sign up
-  displaySecurityQuestion(){
-    const userId =  this.authService.getCurrentUserId();
-     
-    this.userService.getProfile(userId).subscribe(profile => {
-        return profile.securityQuestion;
-     
-      });
+  displaySecurityQuestion() {
+    const userId = this.authService.getCurrentUserId();
+
+    this.userService.getProfile(userId).subscribe((profile) => {
+      return profile.securityQuestion;
+    });
   }
 
   nameDisplay() {
@@ -76,10 +73,10 @@ export class UserProfileSecurity {
     //payload to change password
     const payload = {
       Id: this.authService.getCurrentUserId(),
-      oldPassword: raw.currentPassword,
-      newPassword: raw.newPassword,
-      confirmNewPassword: raw.confirmNewPassword,
-      securityAnswer: raw.securityAnswer,
+      CurrentPassword: raw.currentPassword,
+      NewPassword: raw.newPassword,
+      ConfirmNewPassword: raw.confirmNewPassword,
+      SecurityAnswer: raw.securityAnswer,
     };
 
     //appending payload to a formData
