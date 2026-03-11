@@ -1,12 +1,14 @@
 import { Component, computed } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ProfileStateService } from '../../core/shared/profile-state.service';
+
+import { ProfileSkillsModal } from '../../core/shared/components/profile-skills-modal/profile-skills-modal';
 //importing signals
 
 
 @Component({
   selector: 'app-profile-card',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, ProfileSkillsModal],
   templateUrl: './profile-card.html',
   styleUrl: './profile-card.css',
 })
@@ -15,6 +17,7 @@ export class ProfileCard {
   constructor(
     public profile: ProfileStateService,
     private router: Router,
+    
   ){}
 
   

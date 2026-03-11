@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rUyHTAnDBow=",
+  "dgSpecHash": "s0PsDjTN/lQ=",
   "success": true,
-  "projectFilePath": "C:\\Users\\walco\\Desktop\\git_angular_laptop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
+  "projectFilePath": "C:\\Users\\walco\\Desktop\\ContractDev\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\walco\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\walco\\.nuget\\packages\\efcore.namingconventions\\10.0.1\\efcore.namingconventions.10.0.1.nupkg.sha512",

@@ -1,4 +1,5 @@
 <!--http://localhost:4200/profileDisplaycard-->
+<app-profile-skills-modal></app-profile-skills-modal>
 <div class="col-12 display-card">
   <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
     <div class="card-body p-3">
@@ -56,7 +57,7 @@
                     <!---- <i class="bi bi-tools"></i>-->
                     <i class="bi bi-linkedin"></i>
                 </button>
-                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.xLink())">
+                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" data-bs-toggle="modal" data-bs-target="#skills-modal">
                 <i class="bi bi-tools"></i>
                 </button>
             </div>
