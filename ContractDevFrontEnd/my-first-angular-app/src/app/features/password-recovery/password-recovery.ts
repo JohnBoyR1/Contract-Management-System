@@ -55,7 +55,7 @@ export class PasswordRecovery {
       SecurityQuestion: raw.securityQuestion!,
       SecurityAnswer: raw.securityAnswer!,
       NewPassword: raw.newPassword!,
-      ConfirmNewPassword: raw.confirmNewPassword!
+      ConfirmNewPassword: raw.confirmNewPassword!,
     };
 
     //appending payload to a formdata
@@ -70,15 +70,12 @@ export class PasswordRecovery {
       next: () => {
         alert('Security settings updated.');
         this.router.navigate(['/login']);
-
-       
       },
       error: (err) => {
-        this.loginError.set('Failed to load profile');
-        this.isLoading.set(false);
-        console.error('?', err.status, err.error);
+        // this.loginError.set('Failed to load profile');
+        //this.isLoading.set(false);
+        console.error('Incorrect information', err.status, err.error);
       },
     });
-
   }
 }

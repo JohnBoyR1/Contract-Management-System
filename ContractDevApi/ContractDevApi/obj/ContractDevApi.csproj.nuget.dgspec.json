@@ -1,31 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\walco\\Desktop\\ContractDev\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj": {}
+    "C:\\Users\\walco\\Desktop\\git_angular_laptop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\walco\\Desktop\\ContractDev\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj": {
+    "C:\\Users\\walco\\Desktop\\git_angular_laptop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\walco\\Desktop\\ContractDev\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
+        "projectUniqueName": "C:\\Users\\walco\\Desktop\\git_angular_laptop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
         "projectName": "ContractDevApi",
-        "projectPath": "C:\\Users\\walco\\Desktop\\ContractDev\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
+        "projectPath": "C:\\Users\\walco\\Desktop\\git_angular_laptop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
         "packagesPath": "C:\\Users\\walco\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\walco\\Desktop\\ContractDev\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\obj\\",
+        "outputPath": "C:\\Users\\walco\\Desktop\\git_angular_laptop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\walco\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\walco\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

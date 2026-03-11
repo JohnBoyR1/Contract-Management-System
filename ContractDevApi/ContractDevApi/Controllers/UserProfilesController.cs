@@ -89,9 +89,13 @@ namespace ContractDevApi.Controllers
 
             _context.UserSkills.AddRange(newUserSkills);
 
-            int result = await _context.SaveChangesAsync();
+            //Try to update database -- if unsuccessful return error
+            try {
+                await _context.SaveChangesAsync();
+            } catch(DbUpdateException e) {
+                return Problem("System error occured. User Profile Update Failed.");
+            }
 
-            if (result <= 0) return Problem("System error occured. User Profile Update Failed.");
 
             return Ok(new { message = "Profile updated successfully" });
         }
@@ -327,9 +331,13 @@ namespace ContractDevApi.Controllers
                 };
             }
             
-            int result = await _context.SaveChangesAsync();
+            //Try to update database -- if unsuccessful return error
+            try {
+                await _context.SaveChangesAsync();
+            } catch(DbUpdateException e) {
+                return Problem("System error occured. User Profile Update Failed.");
+            }
 
-            if (result <= 0) return Problem("System error occured. User Profile Image Upload Failed.");
 
             return Ok(new {path = dbRelativePath});
         }
