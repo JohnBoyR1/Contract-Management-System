@@ -41,10 +41,10 @@ on delete cascade--When the user account gets deleted, every data entry associat
 );
 
 alter table social_connections--Constraints to check if the social media links are empty or are the valid social media links 
-add constraint check_facebook_link check (facebook_link = '' or facebook_link ilike 'facebook.com/%'),
-add constraint check_x_link check (x_link = '' or x_link ilike 'x.com/%'),
-add constraint check_github_link check (github_link = '' or github_link ilike 'github.com/%'),
-add constraint check_linkedin_link check (linkedin_link = '' or linkedin_link ilike 'linkedin.com/in/%');
+add constraint check_facebook_link check (facebook_link = '' or facebook_link ilike '%facebook.com/%'),
+add constraint check_x_link check (x_link = '' or x_link ilike '%x.com/%'),
+add constraint check_github_link check (github_link = '' or github_link ilike '%github.com/%'),
+add constraint check_linkedin_link check (linkedin_link = '' or linkedin_link ilike '%linkedin.com/in/%');
 
 --User review creation statement
 create table user_reviews(
