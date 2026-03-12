@@ -1,15 +1,14 @@
 export interface Profile {
   userId: number;
 
+  userTitle: string;
   firstName: string;
   lastName: string;
   username: string;
-  email: string;
   phoneNumber: string;
+  email: string;
   country: string;
-
   description: string;
-  userTitle: string;
   bio: string;
 
   availableForWork: boolean;
@@ -19,7 +18,10 @@ export interface Profile {
 
   //profile images
   profileImagePath: string | null;
-  
+
+  //skills
+  skills: string[];
+  selectedSkills: string[];
 
   securityQuestion: string;
 
@@ -28,5 +30,11 @@ export interface Profile {
   numberOfReviews: number;
   totalReviewPoints: number;
   averageReviewScore: number;
+  //social media links
+  facebookLink: string;
+  userSocialEmailLink: string;
+  xLink: string;
+  gitHubLink: string;
+  linkedinLink: string;
+  
 }
-

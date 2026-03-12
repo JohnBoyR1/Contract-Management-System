@@ -43,7 +43,7 @@ export class UserService {
 
   getProfile(id: number): Observable<Profile> {
     //return this.http.get<Profile>(`${this.apiUrl}/UserProfiles/ProfileDetails?id=${id}`); // ?id=${id} form query
-    return this.http.get<Profile>(`${this.apiUrl}/UserProfiles/ProfileDetails`, { params: { id }});
+    return this.http.get<Profile>(`${this.apiUrl}/UserProfiles/ProfileDetails`, { params: { id } });
   }
 
   // -----------------------------
@@ -68,6 +68,13 @@ export class UserService {
     return this.http.put<void>(`${this.apiUrl}/UserAccounts/ChangePassword`, data);
   }
 
+  //password recovery
+  accountRecovery(data: FormData): Observable<string> {
+    return this.http.post(`${this.apiUrl}/UserAccounts/RecoverAccount`, data, {
+      responseType: 'text', // This prevents the JSON parser from running
+    }); /// I know this is not correct
+  }
+
   //for the fun part calling all the profiles
   getAllProfiles(): Observable<Profile[]> {
     return this.http.get<Profile[]>(`${this.apiUrl}/UserProfiles/ProfileGallery`); // backend to return profile
@@ -75,6 +82,9 @@ export class UserService {
 
   //delete profile
   deleteUserAccount(data: FormData): Observable<void> {
-    return this.http.request<void>( 'Delete',`${this.apiUrl}/UserAccounts/Delete`, { body: data, responseType: 'json'});
+    return this.http.request<void>('Delete', `${this.apiUrl}/UserAccounts/Delete`, {
+      body: data,
+      responseType: 'json',
+    });
   }
 }

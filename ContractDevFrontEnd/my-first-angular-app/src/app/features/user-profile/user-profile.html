@@ -10,8 +10,15 @@
         </div>
         <div class="text-center">
           <div class="position-relative d-inline-block">
-            <img [src]="profile.profileImageUrl()" class="rounded-circle profile-pic" alt="Profile Picture" />
-            <button routerLink="/userProfileUploadImage" class="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle" >
+            <img
+              [src]="profile.profileImageUrl()"
+              class="rounded-circle profile-pic"
+              alt="Profile Picture"
+            />
+            <button
+              routerLink="/userProfileUploadImage"
+              class="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle"
+            >
               <i class="fas fa-camera"></i>
             </button>
           </div>
@@ -45,8 +52,8 @@
                       <i class="fas fa-lock me-2"></i>Security
                     </a>
 
-                    <a class="nav-link" href="javascript:void(0)">
-                      <i class="fas fa-bell me-2"></i>Notifications
+                    <a class="nav-link" routerLink="/social-media-links" routerLinkActive="active">
+                      <i class="fas fa-bell me-2"></i>Social Media Links
                     </a>
 
                     <a class="nav-link" routerLink="/billing-details" routerLinkActive="active">
@@ -122,6 +129,41 @@
                             class="form-control phoneNumber"
                           />
                         </div>
+
+                        <!--Country DropDown Menu-->
+                        <div class="col-md-12 mb-4">
+                          <select
+                            class="form-control form-control-lg"
+                            [formControl]="skillsControl"
+                          >
+                            <option value="" disabled selected>Choose a skill...</option>
+                            @for (q of availableSkills; track $index) {
+                              <option [value]="q">{{ q }}</option>
+                            }
+                          </select>
+                          <label class="form-label">Skills</label>
+                           @if (skillsControl.touched && skillsControl.hasError('required')) {
+                            <div class="text-danger">Skills are required.</div>
+                          }
+                          
+                        </div>
+
+                        <!-- show chosen skills live -->
+                        <div class="col-md-12 mt-2">
+                          @for (s of selectedSkillsControl.value ?? []; track $index) {
+                            <div class="badge bg-secondary me-2">
+                              {{ s }}
+                              <button
+                                type="button"
+                                class="btn btn-sm btn-link text-white p-0 ms-2"
+                                (click)="removeSkill(s)"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          }
+                        </div>
+
                         <div class="col-12">
                           <label class="form-label">Bio</label>
                           <textarea formControlName="bio" class="form-control" rows="4">
@@ -253,23 +295,6 @@ Product designer with 5+ years of experience in creating user-centered digital s
                         </div>
                       </div>
                     </div>
-                    
-                    <!-- Recent Activity --
-                    <div>
-                      <h5 class="mb-4">Recent Activity</h5>
-                      <div class="activity-item mb-3">
-                        <h6 class="mb-1">Updated profile picture</h6>
-                        <p class="text-muted small mb-0">2 hours ago</p>
-                      </div>
-                      <div class="activity-item mb-3">
-                        <h6 class="mb-1">Changed password</h6>
-                        <p class="text-muted small mb-0">Yesterday</p>
-                      </div>
-                      <div class="activity-item">
-                        <h6 class="mb-1">Updated billing information</h6>
-                        <p class="text-muted small mb-0">3 days ago</p>
-                      </div>
-                    </div>-->
                   </div>
                 </form>
               </div>

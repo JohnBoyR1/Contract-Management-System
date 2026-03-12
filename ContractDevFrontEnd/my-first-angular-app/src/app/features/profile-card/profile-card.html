@@ -9,12 +9,12 @@
                             <i class="fas fa-user me-2"></i>Personal Info
                         </a>
 
-                        <a class="nav-link" href="javascript:void(0)">
+                        <a class="nav-link" routerLink="/userProfileSecurity" routerLinkActive="active">
                             <i class="fas fa-lock me-2"></i>Security
                         </a>
 
-                        <a class="nav-link" href="javascript:void(0)">
-                            <i class="fas fa-bell me-2"></i>Notifications
+                        <a class="nav-link" routerLink="/social-media-links" routerLinkActive="active">
+                            <i class="fas fa-bell me-2"></i>Social Media Links
                         </a>
 
                         <a class="nav-link" routerLink="/billing-details" routerLinkActive="active">
@@ -56,24 +56,39 @@
                                     </div>
                                     <!-- Register buttons -->
                                     <div class="text-center">
-                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.facebookLink())">
+
                                         <i class="fab fa-facebook-f"></i>
                                         </button>
 
-                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
-                                        <i class="fab fa-google"></i>
+                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.userSocialEmailLink())">
+                                        <i class="bi bi-envelope-at"></i>
                                         </button>
 
-                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
-                                        <i class="fab fa-twitter"></i>
+                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.xLink())">
+                                        <i class="bi bi-twitter-x"></i>
                                         </button>
 
-                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.githubLink())">
                                         <i class="fab fa-github"></i>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            data-mdb-button-init
+                                            data-mdb-ripple-init
+                                            class="btn btn-link btn-floating mx-1"
+                                            (click)="openLink(this.profile.linkedinLink())"
+                                        >
+                                           <!---- <i class="bi bi-tools"></i>-->
+                                           <i class="bi bi-linkedin"></i>
+                                        </button>
+                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" data-bs-toggle="modal" data-bs-target="#skills-modal">
+                                        <i class="bi bi-tools"></i>
                                         </button>
                                     </div>
                                 </div>
                             </div>
+                            <app-profile-skills-modal></app-profile-skills-modal>
                             <div class="mb-4">
                                 <div class="row g-3">
                                     <div class="col-md-6">

@@ -257,15 +257,11 @@ namespace ContractDevApi.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("skill_id");
 
-                    b.Property<int?>("Skills")
-                        .HasColumnType("integer")
-                        .HasColumnName("skills");
-
                     b.HasKey("UserAccountId", "SkillId")
                         .HasName("pk_user_skills");
 
-                    b.HasIndex("Skills")
-                        .HasDatabaseName("ix_user_skills_skills");
+                    b.HasIndex("SkillId")
+                        .HasDatabaseName("ix_user_skills_skill_id");
 
                     b.ToTable("user_skills", (string)null);
                 });
@@ -310,8 +306,10 @@ namespace ContractDevApi.Migrations
                 {
                     b.HasOne("ContractDevApi.Models.Skill", "Skill")
                         .WithMany()
-                        .HasForeignKey("Skills")
-                        .HasConstraintName("fk_user_skills_skills_skills");
+                        .HasForeignKey("SkillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_skills_skills_skill_id");
 
                     b.HasOne("ContractDevApi.Models.UserAccount", "UserAccount")
                         .WithMany()

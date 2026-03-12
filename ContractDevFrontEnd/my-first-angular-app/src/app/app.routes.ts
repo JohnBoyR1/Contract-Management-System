@@ -14,6 +14,8 @@ import { ProfileDisplayCard } from './features/profile-display-card/profile-disp
 import { UserProfileSecurity } from './features/user-profile-security/user-profile-security';
 import { UserProfileDeletion } from './features/user-profile-deletion/user-profile-deletion';
 import { UserProfileUploadImage } from './features/user-profile-upload-image/user-profile-upload-image';
+import { PasswordRecovery } from './features/password-recovery/password-recovery';
+import { SocialMediaLinks } from './features/social-media-links/social-media-links';
 
 export const routes: Routes = [
   //public routes
@@ -27,6 +29,8 @@ export const routes: Routes = [
   { path: 'userProfileSecurity', component: UserProfileSecurity },
   { path: 'userProfileDeletion', component: UserProfileDeletion },
   { path: 'userProfileUploadImage', component: UserProfileUploadImage },
+  { path: 'password-recovery', component: PasswordRecovery },
+  { path: 'social-media-links', component: SocialMediaLinks},
 
   //protectd routes (locked by auth.guard.ts)
   { path: 'user-profile', component: UserProfile, canActivate: [authGuard] },

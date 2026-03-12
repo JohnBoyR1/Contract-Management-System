@@ -144,11 +144,13 @@ namespace ContractDevApi.Controllers
                 UserAccount = user
             };
 
-            //Saving changes to physical database - result stores integer value of status received from database
-            int result = await _context.SaveChangesAsync();
+            //Try to update database -- if unsuccessful return error
+            try {
+                await _context.SaveChangesAsync();
+            } catch(DbUpdateException e) {
+                return Problem("System error occured. User Profile Update Failed.");
+            }
 
-            //If result is 0 or -1 (status codes for system error) sends returns error back to Front-End
-            if (result <= 0) return Problem("System error occured. User Registration Failed.");
 
             //if all above is successful - return HTTP Status 200, Message, and UserAccountId as latter is expected in Front-End
             return Ok(new
@@ -271,48 +273,17 @@ namespace ContractDevApi.Controllers
             //Overrite old hashed password with new password
             user.HashedPassword = newHashedPassword;
 
-            //Saving changes to physical database - result stores integer value of status received from database
-            int result = await _context.SaveChangesAsync();
+            //Try to update database -- if unsuccessful return error
+            try {
+                await _context.SaveChangesAsync();
+            } catch(DbUpdateException e) {
+                return Problem("System error occured. User Profile Update Failed.");
+            }
 
-            //If result is 0 or -1 (status codes for system error) sends returns error back to Front-End
-            if (result <= 0) return Problem("System error occured. Password Update Failed.");
 
             return Ok(new { Message = "Password updated successfully" });
         }
 
-        [HttpPut("Recovery")]
-        public async Task<IActionResult> RecoveryAccount([FromForm] UserRecoveryDto dto)
-        {
-            //Checks UserRecoveryDto Model to ensure that all incoming values match the Model constraints
-            if (!ModelState.IsValid) return ValidationProblem(ModelState);
-
-            //Ensure that user exists by email
-            var userByEmail = await _context.UserAccounts.FirstOrDefaultAsync(x => x.UserSignupEmail == dto.Email);
-            if (userByEmail == null) return NotFound("Email not found");
-
-            //Determine that question and answer match selected user
-            bool validSecQuestion = userByEmail.SecurityQuestion == dto.SecurityQuestion;
-            if (!validSecQuestion) return Unauthorized("Security Question or Security Answer does not match");
-
-            bool validSecAnswer = BCrypt.Net.BCrypt.Verify(dto.SecurityAnswer, userByEmail.SecurityAnswer);
-            if (!validSecAnswer) return Unauthorized("Security Question or Security Answer does not match");
-
-            //Valid user data - registering new password
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
-
-            userByEmail.HashedPassword = hashedPassword;
-
-            int result = await _context.SaveChangesAsync();
-            if (result <= 0) return Problem("System error occured. Password Update Failed.");
-
-            return Ok("New password registered successfully.");
-        }
-
-
-        //-----------------------
-        //Delete - receives id, password, and security password, ensures that bearer token is owned by target user id
-        //cascade deletes user details from all associated tables on database
-        //-----------------------
         // DELETE: api/UserAccounts/Delete
         [Authorize]
         [HttpDelete("Delete")]
@@ -353,9 +324,13 @@ namespace ContractDevApi.Controllers
             _context.UserAccounts.Remove(userAccount);
             _context.UserProfiles.Remove(userProfile);
 
-            int result = await _context.SaveChangesAsync();
+            //Try to update database -- if unsuccessful return error
+            try {
+                await _context.SaveChangesAsync();
+            } catch(DbUpdateException e) {
+                return Problem("System error occured. User Profile Update Failed.");
+            }
 
-            if (result <= 0) return Problem("System error occured. User Account Deletion Failed.");
 
             return Ok(new { Message = "Account and Profile successfully deleted"});
         }
@@ -422,5 +397,81 @@ namespace ContractDevApi.Controllers
         //    var authenticatedUserId = GetAuthenticatedUserId();
         //    return authenticatedUserId.HasValue && authenticatedUserId.Value == requestedUserId;
         //}
+        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Jeán input for password recovery----------------
+
+        [HttpPost("RecoverAccount")]
+        public async Task<IActionResult> RecoverAccount([FromForm] UserRecoveryDto dto)
+        {
+            // Validate incoming model
+            if (!ModelState.IsValid)
+                return ValidationProblem(ModelState);
+
+            // Find user by email
+            var user = await _context.UserAccounts
+                .FirstOrDefaultAsync(u => u.UserSignupEmail == dto.Email.ToLower());
+
+            if (user == null)
+                return NotFound(new { Message = "No account found with that email." });
+
+            // Validate security question
+            if (user.SecurityQuestion != dto.SecurityQuestion)
+                return Unauthorized(new { Message = "Incorrect security question." });
+
+            // Validate security answer (hashed)
+            bool answerMatches = BCrypt.Net.BCrypt.Verify(
+                dto.SecurityAnswer.ToLower(),
+                user.SecurityAnswer
+            );
+
+            if (!answerMatches)
+                return Unauthorized(new { Message = "Incorrect security answer." });
+
+            // Hash new password
+            string newHashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+
+            // Update password
+            user.HashedPassword = newHashedPassword;
+
+            int result = await _context.SaveChangesAsync();
+
+            if (result <= 0)
+                return Problem("System error occurred. Password update failed.");
+
+            return Ok(new { Message = "Password reset successfully." });
+        }*/
+
+        [HttpPost("RecoverAccount")]
+        public async Task<IActionResult> RecoveryAccount([FromForm] UserRecoveryDto dto)
+        {
+            //Checks UserRecoveryDto Model to ensure that all incoming values match the Model constraints
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+
+            //Ensure that user exists by email
+            var userByEmail = await _context.UserAccounts.FirstOrDefaultAsync(x => x.UserSignupEmail == dto.Email);
+            if (userByEmail == null) return NotFound("Email not found");
+
+            //Determine that question and answer match selected user
+            bool validSecQuestion = userByEmail.SecurityQuestion == dto.SecurityQuestion;
+            if (!validSecQuestion) return Unauthorized("Security Question or Security Answer does not match");
+
+            bool validSecAnswer = BCrypt.Net.BCrypt.Verify(dto.SecurityAnswer, userByEmail.SecurityAnswer);
+            if (!validSecAnswer) return Unauthorized("Security Question or Security Answer does not match");
+
+            //Valid user data - registering new password
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+
+            userByEmail.HashedPassword = hashedPassword;
+
+            //Try to update database -- if unsuccessful return error
+            try {
+                await _context.SaveChangesAsync();
+            } catch(DbUpdateException e) {
+                return Problem("System error occured. User Profile Update Failed.");
+            }
+
+
+            return Ok("New password registered successfully.");
+        }
+
     }
 }

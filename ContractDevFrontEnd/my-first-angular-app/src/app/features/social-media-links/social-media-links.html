@@ -19,7 +19,7 @@
               <i class="fas fa-camera"></i>
             </button>-->
           </div>
-          <h3 class="mt-3 mb-1">{{ nameDisplay() }}</h3>
+          <h3 class="mt-3 mb-1"></h3><!--{{ nameDisplay() }}-->
           <p class="text-muted mb-3">{{ this.profile.userTitle() }}</p>
           <div class="d-flex justify-content-center gap-2 mb-4">
             <button class="btn btn-outline-primary">
@@ -67,79 +67,66 @@
               <!-- Content Area -->
               <div class="col-lg-9">
                 <!-- update profile through form submission (submit button will call this)-->
-                <form [formGroup]="securityForm" (ngSubmit)="saveSecurity()">
+                <form [formGroup]="socialForm" (ngSubmit)="saveSocialForm()">
                   <div class="p-4">
                     <!-- Personal Information -->
                     <div class="mb-4">
-                      <h5 class="mb-4">Security Information</h5>
+                      <h5 class="mb-4">social Media Links</h5>
                       <div class="row g-3">
                         <div class="col-md-6">
-                          <label class="form-label">Current Password</label>
+                          <label class="form-label">Facebook Link</label>
                           <input
-                            formControlName="currentPassword"
-                            type="password"
+                            formControlName="facebookLink"
+                            type="socialLink"
                             class="form-control"
                             value=""
                           />
                         </div>
                         <div class="col-md-6">
-                          <label class="form-label">New Password</label>
+                          <label class="form-label">Social Email Link</label>
                           <input
-                            formControlName="newPassword"
-                            type="password"
+                            formControlName="userSocialEmailLink"
+                            type="socialLink"
                             class="form-control"
                             value=""
                           />
                         </div>
                         <div class="col-md-6">
-                          <label class="form-label">Confirm New Password</label>
+                          <label class="form-label">X Link</label>
                           <input
-                            formControlName="confirmNewPassword"
-                            type="password"
+                            formControlName="xLink"
+                            type="socialLink"
                             class="form-control"
                             value=""
                           />
                         </div>
-                        <div class="col-md-6">
-                          <label class="form-label">Security Question: </label>
-                          <input class="form-control"  type="text" formControlName="securityQuestion" value=""  readonly/>
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">Security Questions: Answer</label>
+                         <div class="col-md-6">
+                          <label class="form-label">GitHub Link</label>
                           <input
-                            formControlName="securityAnswer"
-                            type="text"
+                            formControlName="gitHubLink"
+                            type="socialLink"
                             class="form-control"
                             value=""
                           />
                         </div>
+                         <div class="col-md-6">
+                          <label class="form-label">Linkedin Link</label>
+                          <input
+                            formControlName="linkedinLink"
+                            type="socialLink"
+                            class="form-control"
+                            value=""
+                          />
+                        </div>
+                        
+                        
                       </div>
                     </div>
 
                     <!-- Settings Cards -->
                     <div class="row g-4 mb-4">
                       <div class="col-md-6">
-                        <div class="settings-card card">
-                          <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                              <div>
-                                <h6 class="mb-1">Delete User Account</h6>
-                                <p class="text-muted mb-0 small">
-                                  Only if you want to delete your account
-                                </p>
-                              </div>
-                              <div>
-                                <button
-                                  type="button"
-                                  class="btn btn-danger"
-                                  routerLink="/userProfileDeletion"
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        
                       </div>
                       <div class="col-md-6">
                         <div class="settings-card card">
@@ -169,3 +156,4 @@
     </div>
   </div>
 </div>
+

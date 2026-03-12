@@ -5,11 +5,13 @@ import { Profile } from '../../core/models/profile.models';
 import { ProfileStateService } from '../../core/shared/profile-state.service';
 import { signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
+import { ProfileSkillsModal } from '../../core/shared/components/profile-skills-modal/profile-skills-modal';
+
 
 
 @Component({
   selector: 'app-profile-display-card',
-  imports: [CommonModule],
+  imports: [CommonModule, ProfileSkillsModal],
   templateUrl: './profile-display-card.html',
   styleUrl: './profile-display-card.css',
 })
@@ -18,7 +20,7 @@ export class ProfileDisplayCard  {
 
   constructor(
     private router: Router,
-    //public profile: ProfileStateService
+    public profile: ProfileStateService
   ){}
   @Input() user!: Profile;
 
@@ -53,6 +55,12 @@ export class ProfileDisplayCard  {
     } else if(this.user.availableForWork && this.user.offeringWork){
       return "none";
     }
+  }
+
+  //a click handler
+  openLink(url: string) {
+    if (!url) return;
+    window.open(url, '_blank');
   }
 
   openChat() {

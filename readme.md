@@ -82,6 +82,15 @@ dotnet tool update --global dotnet-ef
     dotnet ef database update
 
 
+*   -This is to make it easier from now on delete current database, delete all files in Migrations folder. 
+    -Create new "ContractDevDb" database, right click database and select query tool.
+    -Copy and Paste the contractdevdb.sql in the git repository folder where the project lies into the querytool and execute script.
+    -Open terminal in vs code in ContractDevApi\ContractDevApi> dotnet ef migrations add InitialCreate
+    -deleted everything inside of the up and down methods (leave the empty methods{}) of  ......._InitialCreate.cs file in the Migrations folder.
+    -ContractDevApi\ContractDevApi> dotnet ef database update
+
+
+
 
 
 

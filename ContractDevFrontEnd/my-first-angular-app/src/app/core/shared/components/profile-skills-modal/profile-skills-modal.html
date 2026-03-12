@@ -1,0 +1,23 @@
+
+<div class="modal fade" id="skills-modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Skills-{{ isdisplayUserName() }}</h5>
+       
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <ul class="list-group">
+          @for (skill of selectedSkills(); track skill) {
+            <li class="list-group-item">{{ skill }}</li>
+          }
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
