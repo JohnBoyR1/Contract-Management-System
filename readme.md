@@ -18,7 +18,7 @@ ASP.NET API
 - Packages: Entity Framework Core-Design-Tools, NPGSQL, Swashbuckle
 
 Angular
-- version 19
+- version 21.1.4
 - TypesScript
 - RxJS 7.8 +
 - Zone.js 0.14
