@@ -148,7 +148,7 @@ namespace ContractDevApi.Controllers
             try {
                 await _context.SaveChangesAsync();
             } catch(DbUpdateException e) {
-                return Problem("System error occured. User Profile Update Failed.");
+                return Problem("System error occured. User Profile Update Failed."+e.Message);
             }
 
 
@@ -277,7 +277,7 @@ namespace ContractDevApi.Controllers
             try {
                 await _context.SaveChangesAsync();
             } catch(DbUpdateException e) {
-                return Problem("System error occured. User Profile Update Failed.");
+                return Problem("System error occured. User Profile Update Failed."+e.Message);
             }
 
 
@@ -328,7 +328,7 @@ namespace ContractDevApi.Controllers
             try {
                 await _context.SaveChangesAsync();
             } catch(DbUpdateException e) {
-                return Problem("System error occured. User Profile Update Failed.");
+                return Problem("System error occured. User Profile Update Failed."+e.Message);
             }
 
 
@@ -466,7 +466,7 @@ namespace ContractDevApi.Controllers
             try {
                 await _context.SaveChangesAsync();
             } catch(DbUpdateException e) {
-                return Problem("System error occured. User Profile Update Failed.");
+                return Problem("System error occured. User Profile Update Failed."+e.Message);
             }
 
 
