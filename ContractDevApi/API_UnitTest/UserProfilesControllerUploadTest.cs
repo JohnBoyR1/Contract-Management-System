@@ -158,4 +158,33 @@ public class UserProfilesControllerUploadTest
         Assert.That(badResult, Is.Not.Null, "Excepted BadRequestObjectResult for invalid file upload");
         Assert.That(badResult!.StatusCode ?? StatusCodes.Status400BadRequest, Is.EqualTo(StatusCodes.Status400BadRequest));
     }
+
+    [Test]
+    public async Task UploadEmptyFile()
+    {
+        //Arrange
+        //Building in-memory text file 
+        byte[] data = [];
+        await using var stream = new MemoryStream(data);
+        IFormFile file = new FormFile(stream, 0, data.Length, "File", "empty.txt")
+        {
+            Headers = new HeaderDictionary(),
+            ContentType = "text/plain"
+        };
+
+        //User will always be 1 as they are the only user in the in memory database
+        ProfileUploadDto uploadDto = new ProfileUploadDto
+        {
+            Id = 1,
+            File = file  
+        };
+
+        //Act
+        IActionResult response = await _profileController.UploadFile(uploadDto);
+
+        //Assert
+        var badResult = response as BadRequestObjectResult;
+        Assert.That(badResult, Is.Not.Null, "Excepted BadRequestObjectResult for invalid file upload");
+        Assert.That(badResult!.StatusCode ?? StatusCodes.Status400BadRequest, Is.EqualTo(StatusCodes.Status400BadRequest));
+    }
 }
