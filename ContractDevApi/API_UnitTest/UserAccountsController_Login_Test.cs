@@ -1,4 +1,7 @@
-﻿using ContractDevApi.Controllers;
+﻿using System.Configuration;
+using System.Text;
+using System.Text.Json;
+using ContractDevApi.Controllers;
 using ContractDevApi.DTOs;
 using ContractDevApi.Models;
 using ContractDevApi.Services;
@@ -129,4 +132,29 @@ public class Tests
         Assert.That(problemDetails!.Errors.ContainsKey("Email"), Is.True);
         Assert.That(problemDetails.Errors.ContainsKey("Password"), Is.True);
     }
+
+    //--------
+    //NOTE FOR REPORT:
+    //Because C# model binding exists, we cannot pass non UserLoginDto objects to the Login method,
+    //We can neither assign non string values to email or password for the same reason
+    //Simply put the code will not compile due to errors raised
+    //In-order to test sending non string values or non UserLoginDto object to the login endpoint we must use an HTTP Request via Integration Testing
+    //Development EndPoint testing tool - Swagger - can be used to check this
+    //--------
+    // [Test]
+    // public async Task LoginInvalidFields()
+    // {
+    //     //Arrange
+    //     var json = JsonSerializer.Serialize(new {Email = 123, Password = false});
+    //     var jsonContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+    //     //The api controller normally validates the following model state through the normal ASP.NET API pipeline
+    //     //Requires that we define the model error here since we're testing and not using the full ASP.NET API pipeline
+    //     _controller.ModelState.AddModelError("Email", "Email is required");
+    //     _controller.ModelState.AddModelError("Password", "Password is required");
+
+    //     //Act
+    //     IActionResult response = await _controller.Login(json);
+        
+    // }
 }
