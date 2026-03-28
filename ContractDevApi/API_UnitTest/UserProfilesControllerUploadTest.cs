@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace API_UnitTest;
 
@@ -186,5 +185,34 @@ public class UserProfilesControllerUploadTest
         var badResult = response as BadRequestObjectResult;
         Assert.That(badResult, Is.Not.Null, "Excepted BadRequestObjectResult for invalid file upload");
         Assert.That(badResult!.StatusCode ?? StatusCodes.Status400BadRequest, Is.EqualTo(StatusCodes.Status400BadRequest));
+    }
+
+    [Test]
+    public async Task UploadInvalidAccount()
+    {
+        //Arrange
+        //Building in-memory png file 
+        byte[] pngData = [1,2,3,4,5,6,7,8,9,0];
+        await using var stream = new MemoryStream(pngData);
+        IFormFile file = new FormFile(stream, 0, pngData.Length, "File", "pfp.png")
+        {
+            Headers = new HeaderDictionary(),
+            ContentType = "image/png"
+        };
+
+        //User will always be 1 as they are the only user in the in memory database
+        //Invalid test targets user that is not user 1 - NOTE: even if user 2 does not exist, UploadFile method will determine that token encoded user id does not match given id
+        ProfileUploadDto uploadDto = new ProfileUploadDto
+        {
+            Id = 2,
+            File = file  
+        };
+
+        //Act
+        IActionResult response = await _profileController.UploadFile(uploadDto);
+
+        //Assert
+        var forbiddenResult = response as ForbidResult;
+        Assert.That(forbiddenResult, Is.Not.Null, "Expected ForbidResult for mismatched User ID");
     }
 }
