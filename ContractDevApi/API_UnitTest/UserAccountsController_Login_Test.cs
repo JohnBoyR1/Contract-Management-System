@@ -1,7 +1,4 @@
-﻿using System.Configuration;
-using System.Text;
-using System.Text.Json;
-using ContractDevApi.Controllers;
+﻿using ContractDevApi.Controllers;
 using ContractDevApi.DTOs;
 using ContractDevApi.Models;
 using ContractDevApi.Services;
@@ -92,6 +89,28 @@ public class Tests
         //Arrange
         string invalidEmail = "invalid@fake.qwerty";
         string validPassword = "applesauce";
+
+        UserLoginDto loginDto = new UserLoginDto()
+        {
+          Email = invalidEmail,
+          Password = validPassword  
+        };
+
+        //Act
+        IActionResult response = await _controller.Login(loginDto);
+
+        //Assert
+        var unathorizedResult = response as UnauthorizedObjectResult;
+        Assert.That(unathorizedResult, Is.Not.Null, "Excepted Unauthorized for invalid login");
+        Assert.That(unathorizedResult!.StatusCode ?? StatusCodes.Status401Unauthorized, Is.EqualTo(StatusCodes.Status401Unauthorized));
+    }
+
+    [Test]
+    public async Task LoginInvalidPassword()
+    {
+        //Arrange
+        string invalidEmail = "test@gmail.com";
+        string validPassword = "wrongPw123";
 
         UserLoginDto loginDto = new UserLoginDto()
         {
