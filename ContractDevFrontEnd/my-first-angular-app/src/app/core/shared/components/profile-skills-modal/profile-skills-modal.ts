@@ -1,5 +1,6 @@
-import { Component, inject, computed } from '@angular/core';
-import { ProfileStateService } from '../../profile-state.service';
+import { Component, inject, Input, computed } from '@angular/core';
+
+import { Profile } from '../../../models/profile.models';
 
 @Component({
   selector: 'app-profile-skills-modal',
@@ -9,19 +10,17 @@ import { ProfileStateService } from '../../profile-state.service';
   styleUrl: './profile-skills-modal.css',
 })
 export class ProfileSkillsModal {
+  //view individual users
+  @Input() user!: Profile;
 
-  profile = inject(ProfileStateService);
-
-  selectedSkills = this.profile.skills;
-
-   //put firstName and lastName together
-  fullName = computed(() => `${this.profile.firstName()} ${this.profile.lastName()}`);
-  
-  // display name 
   isdisplayUserName() {
-    //inline if statement
-    return this.profile.displayUserName() ? this.profile.username() : this.fullName();
-    
+     //inline if statement
+   // return this.user.displayUserName ? this.user.username : this.fullName;
+   return this.user.lastName; 
+  }
+
+  selectedSkills(){
+    return this.user?.skills ?? []; 
   }
   
 

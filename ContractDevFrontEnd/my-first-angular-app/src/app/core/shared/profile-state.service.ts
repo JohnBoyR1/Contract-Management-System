@@ -13,6 +13,9 @@ export class ProfileStateService {
   //check this .....(for profile image) temporary
   profileImageUrl = signal<string | null>(null);
 
+  // the actual profile userId 
+  userId = computed(() => this._profile()?.userId ?? 0);
+
   // the actual file selected for upload
   selectedFileForProfile = signal<File | null>(null);
 
@@ -53,7 +56,8 @@ export class ProfileStateService {
   githubLink = computed(() => this._profile()?.socials?.["Github"] ?? "");
   linkedinLink = computed(() => this._profile()?.socials?.["LinkedIn"] ?? "");
 
-  skills = computed(() => this._profile()?.skills ?? '');
+  //skills = computed(() => this._profile()?.skills ?? '');
+  skills = computed(() => this._profile()?.skills ?? []);
 
   // Called after login or guard fetch
   initProfile(profile: Profile) {

@@ -1,8 +1,8 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, Input } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ProfileStateService } from '../../core/shared/profile-state.service';
-
 import { ProfileSkillsModal } from '../../core/shared/components/profile-skills-modal/profile-skills-modal';
+
 //importing signals
 
 
@@ -19,7 +19,7 @@ export class ProfileCard {
     private router: Router,
     
   ){}
-
+ 
   
   
   //put firstName and lastName together
@@ -41,6 +41,12 @@ export class ProfileCard {
 
   ngOnInit() {
     console.log("ProfileCard image:", this.profile.profileImageUrl());
+    console.log(this.profile.userId());
+    
+  }
+
+  getProfile() {
+    return this.profile.profile();
   }
   
   //display phone number

@@ -32,6 +32,7 @@ export class ProfileDisplayCard  {
     } else {
       this.profileImageUrl.set(null);
     }
+    
   }
 
   
@@ -43,16 +44,18 @@ export class ProfileDisplayCard  {
     return this.user.displayUserName ? this.user.username : `${this.user.firstName} ${this.user.lastName}`;
   }
 
-
+  displayUserSkills(){
+    return this.user.selectedSkills;
+  }
 
   workStatus(){
-    if(this.user.availableForWork && this.user.offeringWork){
+    if(this.user?.availableForWork && this.user?.offeringWork){
       return "both";
-    }else if (this.user.availableForWork){
+    }else if (this.user?.availableForWork){
       return "available";
-    }else if (this.user.offeringWork) {
+    }else if (this.user?.offeringWork) {
       return "offering";
-    } else if(this.user.availableForWork && this.user.offeringWork){
+    } else if(this.user?.availableForWork && this.user?.offeringWork){
       return "none";
     }
   }
