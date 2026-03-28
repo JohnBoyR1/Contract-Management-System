@@ -36,9 +36,22 @@ public class Tests
         var jwtService = new JwtService(configuration);
         _controller = new UserAccountsController(_context, jwtService);
 
-        // _controller.RegisterUserAccount(new UserRegistrationDto {
-            
-        // });
+        UserRegistrationDto newUser = new UserRegistrationDto(){
+            Username = "Test User",
+            FirstName = "Test",
+            LastName = "User",
+            Country = "US",
+            Description = "developer",
+            Email = "test@gmail.com",
+            Password = "applesauce",
+            ConfirmPassword = "applesauce",
+            SecurityQuestion = "test question",
+            SecurityAnswer = "applesauce"
+        };
+
+        var response = _controller.RegisterUserAccount(newUser);
+
+        Console.WriteLine(response);
     }
 
     [TearDown]
