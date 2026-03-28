@@ -23,9 +23,9 @@ public class Tests
 
         var configValues = new Dictionary<string, string?>
         {
-            ["Jwt:Key"] = "this-is-a-test-key-that-is-long-enough-for-hs256",
-            ["Jwt:Issuer"] = "test-issuer",
-            ["Jwt:Audience"] = "test-audience",
+            ["Jwt:Key"] = "supersecretkey1234567890!@#$%^&*()",
+            ["Jwt:Issuer"] = "https://localhost:7186",
+            ["Jwt:Audience"] = "http://localhost:4200",
             ["Jwt:ExpiresInMinutes"] = "60"
         };
 
@@ -34,11 +34,11 @@ public class Tests
             .Build();
 
         var jwtService = new JwtService(configuration);
-        _controller = new UserAccountsController(context, jwtService);
+        _controller = new UserAccountsController(_context, jwtService);
 
-        _controller.RegisterUserAccount(new UserRegistrationDto {
-
-        });
+        // _controller.RegisterUserAccount(new UserRegistrationDto {
+            
+        // });
     }
 
     [TearDown]
