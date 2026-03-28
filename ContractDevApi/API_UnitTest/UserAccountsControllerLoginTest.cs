@@ -2,6 +2,8 @@
 using ContractDevApi.DTOs;
 using ContractDevApi.Models;
 using ContractDevApi.Services;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,9 +11,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace API_UnitTest;
 
-public class Tests
+public class UserProfilesControllerLoginTest
 {
-    private UserAccountsController _controller = null!;
+    private UserAccountsController _userController = null!;
     private ContractDevContext _context = null!;
 
     [SetUp]
@@ -36,7 +38,7 @@ public class Tests
             .Build();
 
         var jwtService = new JwtService(configuration);
-        _controller = new UserAccountsController(_context, jwtService);
+        _userController = new UserAccountsController(_context, jwtService);
 
         UserRegistrationDto newUser = new UserRegistrationDto(){
             Username = "Test User",
@@ -51,7 +53,7 @@ public class Tests
             SecurityAnswer = "applesauce"
         };
 
-        var response = await _controller.RegisterUserAccount(newUser);
+        var response = await _userController.RegisterUserAccount(newUser);
 
     }
 
@@ -59,6 +61,44 @@ public class Tests
     public void TearDown()
     {
         _context.Dispose();
+    }
+
+    [Test]
+    public async Task ValidateTokenAuthenticatedUser()
+    {
+        // Arrange
+        UserLoginDto loginDto = new UserLoginDto
+        {
+            Email = "test@gmail.com",
+            Password = "applesauce"
+        };
+
+        IActionResult loginResponse = await _userController.Login(loginDto);
+        var okLoginResult = loginResponse as OkObjectResult;
+        Assert.That(okLoginResult, Is.Not.Null, "Expected OkObjectResult for valid login");
+
+        var tokenProperty = okLoginResult!.Value?.GetType().GetProperty("token");
+        string token = tokenProperty?.GetValue(okLoginResult.Value)?.ToString() ?? string.Empty;
+        Assert.That(token, Is.Not.Empty, "Expected token in login response");
+
+        var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+        var principal = new ClaimsPrincipal(new ClaimsIdentity(jwt.Claims, "TestAuth"));
+
+        _userController.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = principal
+            }
+        };
+
+        // Act
+        IActionResult validateResponse = await _userController.ValidateToken();
+
+        // Assert
+        var okValidateResult = validateResponse as OkObjectResult;
+        Assert.That(okValidateResult, Is.Not.Null, "Expected OkObjectResult for valid token");
+        Assert.That(okValidateResult!.StatusCode ?? StatusCodes.Status200OK, Is.EqualTo(StatusCodes.Status200OK));
     }
 
     [Test]
@@ -75,12 +115,18 @@ public class Tests
         };
 
         //Act
-        IActionResult response = await _controller.Login(loginDto);
+        IActionResult response = await _userController.Login(loginDto);
 
         //Assert
         var okResult = response as OkObjectResult;
         Assert.That(okResult, Is.Not.Null, "Expected OkObjectResult for valid login");
         Assert.That(okResult!.StatusCode ?? StatusCodes.Status200OK, Is.EqualTo(StatusCodes.Status200OK));
+        Assert.That(okResult, Is.Not.Null, "Expected OkObjectResult from Login during test setup");
+
+        //Verify that token is present in the response
+        var tokenProperty = okResult!.Value?.GetType().GetProperty("token");
+        string token = tokenProperty?.GetValue(okResult.Value)?.ToString() ?? string.Empty;
+        Assert.That(token, Is.Not.Empty, "Expected JWT token from Login during test setup");
     }
 
     [Test]
@@ -97,7 +143,7 @@ public class Tests
         };
 
         //Act
-        IActionResult response = await _controller.Login(loginDto);
+        IActionResult response = await _userController.Login(loginDto);
 
         //Assert
         var unathorizedResult = response as UnauthorizedObjectResult;
@@ -119,7 +165,7 @@ public class Tests
         };
 
         //Act
-        IActionResult response = await _controller.Login(loginDto);
+        IActionResult response = await _userController.Login(loginDto);
 
         //Assert
         var unathorizedResult = response as UnauthorizedObjectResult;
@@ -135,11 +181,11 @@ public class Tests
 
         //The api controller normally validates the following model state through the normal ASP.NET API pipeline
         //Requires that we define the model error here since we're testing and not using the full ASP.NET API pipeline
-        _controller.ModelState.AddModelError("Email", "Email is required");
-        _controller.ModelState.AddModelError("Password", "Password is required");
+        _userController.ModelState.AddModelError("Email", "Email is required");
+        _userController.ModelState.AddModelError("Password", "Password is required");
 
         //Act
-        IActionResult response = await _controller.Login(loginDto);
+        IActionResult response = await _userController.Login(loginDto);
 
         //Assert
         var badRequestResult = response as ObjectResult;
@@ -155,7 +201,7 @@ public class Tests
     //--------
     //NOTE FOR REPORT:
     //Because C# model binding exists, we cannot pass non UserLoginDto objects to the Login method,
-    //We can neither assign non string values to email or password for the same reason
+    //We can neither assign non string values to email or password or null values for the same reason
     //Simply put the code will not compile due to errors raised
     //In-order to test sending non string values or non UserLoginDto object to the login endpoint we must use an HTTP Request via Integration Testing
     //Development EndPoint testing tool - Swagger - can be used to check this
@@ -165,15 +211,14 @@ public class Tests
     // {
     //     //Arrange
     //     var json = JsonSerializer.Serialize(new {Email = 123, Password = false});
-    //     var jsonContent = new StringContent(json, Encoding.UTF8, "application/json");
 
     //     //The api controller normally validates the following model state through the normal ASP.NET API pipeline
     //     //Requires that we define the model error here since we're testing and not using the full ASP.NET API pipeline
-    //     _controller.ModelState.AddModelError("Email", "Email is required");
-    //     _controller.ModelState.AddModelError("Password", "Password is required");
+    //     _userController.ModelState.AddModelError("Email", "Email is required");
+    //     _userController.ModelState.AddModelError("Password", "Password is required");
 
     //     //Act
-    //     IActionResult response = await _controller.Login(json);
+    //     IActionResult response = await _userController.Login(json);
         
     // }
 }
