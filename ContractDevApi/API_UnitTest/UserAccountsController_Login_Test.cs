@@ -2,6 +2,9 @@
 using ContractDevApi.DTOs;
 using ContractDevApi.Models;
 using ContractDevApi.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -13,7 +16,7 @@ public class Tests
     private ContractDevContext _context = null!;
 
     [SetUp]
-    public void Setup()
+    public async Task Setup()
     {
         var options = new DbContextOptionsBuilder<ContractDevContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase" + Guid.NewGuid())
@@ -49,7 +52,7 @@ public class Tests
             SecurityAnswer = "applesauce"
         };
 
-        var response = _controller.RegisterUserAccount(newUser);
+        var response = await _controller.RegisterUserAccount(newUser);
 
         Console.WriteLine(response);
     }
@@ -57,14 +60,25 @@ public class Tests
     [TearDown]
     public void TearDown()
     {
-        
-
         _context.Dispose();
     }
 
     [Test]
-    public void Test1()
+    public async Task LoginValidAccount()
     {
-        Assert.Pass();
+        string validEmail = "test@gmail.com";
+        string validPassword = "applesauce";
+        
+        UserLoginDto loginDto = new UserLoginDto()
+        {
+          Email = validEmail,
+          Password = validPassword  
+        };
+
+        IActionResult response = await _controller.Login(loginDto);
+
+        var okResult = response as OkObjectResult;
+        Assert.That(okResult, Is.Not.Null, "Expected OkObjectResult for valid login");
+        Assert.That(okResult!.StatusCode ?? StatusCodes.Status200OK, Is.EqualTo(StatusCodes.Status200OK));
     }
 }
