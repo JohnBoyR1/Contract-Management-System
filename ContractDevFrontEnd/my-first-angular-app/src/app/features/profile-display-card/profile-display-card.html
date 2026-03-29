@@ -31,20 +31,19 @@
             </div>
             <!-- Register buttons -->
              <div class="text-center">
-                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.user.facebookLink)">
-
+                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink('facebook')">
                 <i class="fab fa-facebook-f"></i>
                 </button>
 
-                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.user.userSocialEmailLink)">
+                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink('Social Email')">
                 <i class="bi bi-envelope-at"></i>
                 </button>
 
-                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.user.xLink)">
+                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink('X')">
                 <i class="bi bi-twitter-x"></i>
                 </button>
 
-                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.githubLink())">
+                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink('Github')">
                 <i class="fab fa-github"></i>
                 </button>
                 <button
@@ -52,7 +51,7 @@
                     data-mdb-button-init
                     data-mdb-ripple-init
                     class="btn btn-link btn-floating mx-1"
-                    (click)="openLink(this.user.linkedinLink)"
+                    (click)="openLink('LinkedIn')"
                 >
                     <!---- <i class="bi bi-tools"></i>-->
                     <i class="bi bi-linkedin"></i>

@@ -20,7 +20,7 @@ export class ProfileDisplayCard  {
 
   constructor(
     private router: Router,
-    public profile: ProfileStateService
+    public profileState: ProfileStateService
   ){}
   @Input() user!: Profile;
 
@@ -61,9 +61,14 @@ export class ProfileDisplayCard  {
   }
 
   //a click handler
-  openLink(url: string) {
-    if (!url) return;
-    window.open(url, '_blank');
+  openLink(platform: string) {
+    const url = this.user?.socials?.[platform];
+    if(url){
+       window.open(url, '_blank');
+    }else {
+      return;
+    }
+   
   }
 
   openChat() {
