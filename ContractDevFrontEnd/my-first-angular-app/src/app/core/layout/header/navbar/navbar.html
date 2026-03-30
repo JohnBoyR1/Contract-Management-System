@@ -36,6 +36,13 @@
               <span class="d-lg-none">Gallery</span>
             </a>
           </li>
+          <!--settings button-->
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/user-profile" routerLinkActive="active" (click)="isBurgerMenuOpen = false" matTooltip="Profile Settings" matTooltipPosition="below">
+              <i class="bi bi-person-gear icon me-2 d-none d-lg-inline-block"></i>
+              <span class="d-lg-none">Profile Settings</span>
+            </a>
+          </li>
           <!--Sign Out button-->
           <li class="nav-item">
             <a class="nav-link" routerLinkActive="active" (click)="toggleSignInAndOut(); isBurgerMenuOpen = false" style="cursor: pointer;" matTooltip="Sign Out" matTooltipPosition="below">

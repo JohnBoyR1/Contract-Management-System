@@ -2,7 +2,7 @@ import { Component, signal, computed } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 //input signals
-import { ProfileStateService } from '../../core/shared/profile-state.service';
+import { ProfileStateService } from '../../core/services/profile-state.service';
 import { UserService } from '../../core/services/user.service';
 import { Profile } from '../../core/models/profile.models';
 import { inject } from '@angular/core';

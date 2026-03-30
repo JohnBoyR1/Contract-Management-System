@@ -1,6 +1,6 @@
 import { Component, computed, Input } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { ProfileStateService } from '../../core/shared/profile-state.service';
+import { ProfileStateService } from '../../core/services/profile-state.service';
 import { ProfileSkillsModal } from '../../core/shared/components/profile-skills-modal/profile-skills-modal';
 
 //importing signals

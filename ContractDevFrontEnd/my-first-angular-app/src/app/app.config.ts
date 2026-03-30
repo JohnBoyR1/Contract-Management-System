@@ -10,8 +10,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { routes } from './app.routes';
 import { AuthService } from './core/auth/auth.service';
 import { UserService } from './core/services/user.service';
-import { ProfileStateService } from './core/shared/profile-state.service';
+import { ProfileStateService } from './core/services/profile-state.service';
 import { authInterceptor } from './core/auth/auth.interceptor';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 /*
   App initializer:
@@ -21,6 +22,7 @@ import { authInterceptor } from './core/auth/auth.interceptor';
 */
 export function createProfileInitializer() {
   return () => {
+    //dependency injection
     const auth = inject(AuthService);
     const userService = inject(UserService);
     const profileState = inject(ProfileStateService);
@@ -53,8 +55,8 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled' })
     ),
 
-    // HTTP client + JWT interceptor
-    provideHttpClient(withInterceptors([authInterceptor])),
+    // HTTP client +  Interceptors (modern Angular way)
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
 
     // Material dialog module
     importProvidersFrom(MatDialogModule),

@@ -2,77 +2,96 @@ import { Component, inject, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../core/services/user.service';
-import { ProfileStateService } from '../../core/shared/profile-state.service';
-import { Router, RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
+import { ProfileStateService } from '../../core/services/profile-state.service';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
-import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.html',
+  styleUrl: './login.css', //link style sheet
 })
 export class Login {
+  //dependency injection 
   private userService = inject(UserService);
   private profileState = inject(ProfileStateService);
   private router = inject(Router);
   private authService = inject(AuthService);
 
-  private apiUrl = `${environment.apiUrl}/api`;
-
+ 
+  //signals for state management
   isLoading = signal(false);
   loggedIn = signal(false);
   loginError = signal('');
 
+  //reactive form with build-in validation
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
   });
 
+  //main login handler: Auth -> ID retrieval -> profile loading and navigation
   handleLogin() {
+    //force all validation messages to show up 
+    this.loginForm.markAllAsTouched();
+
+    //if form not valid do not proceed
     if (!this.loginForm.valid) return;
 
+    //set isLoading state to true and clear previous loginError
     this.isLoading.set(true);
     this.loginError.set('');
 
+    //prepare credentials for form-data submission
     const formData = new FormData();
     formData.append('email', this.loginForm.value.email!);
     formData.append('password', this.loginForm.value.password!);
 
-    //fetch profile data form the backend
+    //authenticate the user
     this.authService.login(formData).subscribe({
-      next: (res) => {
-        //console.log("Status:", res.status);
-        //console.log("Message: ", res.body);
-
+      next: () => {
+        //retrieve the unique user Id (from a decoded JWT)
         const userId = this.authService.getCurrentUserId();
 
-        //update the profile data
+        //check if the token/id retrieval fails
         if (!userId) {
           this.loginError.set('Could not decode user ID');
           this.isLoading.set(false);
           return;
         }
-        //fetch profile and update profile signals
+
+        //fetch full profile data and update  global profile signals(state)
         this.userService.getProfile(userId).subscribe({
           next: (profile) => {
+            //saving the profile data into the global profile signal
             this.profileState.initProfile(profile);
-            //navigate to the home page
+
+            //set states
             this.isLoading.set(false);
             this.loggedIn.set(true);
-            this.router.navigate(['/home']);
+
+            setTimeout(() => {
+              this.loggedIn.set(false);
+              //navigate to the home page
+              this.router.navigate(['/home']);
+            }, 3000);
+           
+           
           },
           error: (err) => {
-            this.loginError.set('Failed to load profile');
+            // 'err' here is the object from the errorInterceptor
+            this.loginError.set(err.message || 'Failed to load profile');
             this.isLoading.set(false);
             console.error('?', err.status, err.error);
           },
         });
       },
-      error: () => {
-        this.loginError.set('Invalid email or password');
+      error: (err) => {
+        // integrate with the errorInterceptor instead of hardcoding 'Invalid Email' show what the interceptor found
+        this.loginError.set(err.message || 'Invalid email or password');
         this.isLoading.set(false);
       },
     });

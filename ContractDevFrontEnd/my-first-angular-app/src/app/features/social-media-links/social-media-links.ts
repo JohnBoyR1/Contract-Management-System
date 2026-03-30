@@ -3,7 +3,7 @@ import { RouterLink, RouterLinkActive, Router } from "@angular/router";
 import { FormGroup, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { AuthService } from '../../core/auth/auth.service';
 import { UserService } from '../../core/services/user.service';
-import { ProfileStateService } from '../../core/shared/profile-state.service';
+import { ProfileStateService } from '../../core/services/profile-state.service';
 import { CommonModule } from '@angular/common';
 
 @Component({

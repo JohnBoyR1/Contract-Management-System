@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../auth/auth.service';
-import { ProfileStateService } from '../../profile-state.service';
+import { ProfileStateService } from '../../../services/profile-state.service';
 
 @Component({
   selector: 'app-file-upload',

@@ -2,7 +2,7 @@ import { CanActivateFn } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthService } from './auth.service';
 import { UserService } from '../services/user.service';
-import { ProfileStateService } from '../shared/profile-state.service';
+import { ProfileStateService } from '../services/profile-state.service';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';

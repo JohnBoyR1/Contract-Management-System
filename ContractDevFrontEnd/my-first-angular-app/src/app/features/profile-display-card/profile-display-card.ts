@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Profile } from '../../core/models/profile.models';
-import { ProfileStateService } from '../../core/shared/profile-state.service';
+import { ProfileStateService } from '../../core/services/profile-state.service';
 import { signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { ProfileSkillsModal } from '../../core/shared/components/profile-skills-modal/profile-skills-modal';

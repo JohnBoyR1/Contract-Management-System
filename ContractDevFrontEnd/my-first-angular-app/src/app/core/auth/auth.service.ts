@@ -4,7 +4,7 @@ import { tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { jwtDecode } from 'jwt-decode';
-import { ProfileStateService } from '../shared/profile-state.service';
+import { ProfileStateService } from '../services/profile-state.service';
 import { Observable } from 'rxjs';
 
 
