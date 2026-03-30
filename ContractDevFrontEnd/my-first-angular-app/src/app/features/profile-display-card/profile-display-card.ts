@@ -60,7 +60,7 @@ export class ProfileDisplayCard  {
     }
   }
 
-  //a click handler
+  //a click handler for users
   openLink(platform: string) {
     const url = this.user?.socials?.[platform];
     if(url){

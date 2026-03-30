@@ -1,48 +1,18 @@
-/*global settings for nav bar*/
+/*global for Navbar*/
 .navbar {
     color:aliceblue !important;
     padding-left: 10px;
     padding-right: 10px;
-    
     background-color: rgb(201, 244, 253, 0.1) !important;
     backdrop-filter: blur(5px) !important;
     box-shadow: 0 4px 20px rgb(0, 0, 0, 0.2) !important;
    
 }
-/*Highlights the page ones on*/
-.nav-link.active i {
-    display: inline-block;
-    transform: translateY(10px) scale(1.4);
-    font-weight: bolder;
-    color:  rgb(183, 113, 248);
-}
-/*Highlights when mouse pointer is hovering over anchor*/
-.nav-link:hover {
-    color: white;
-    transform: scale(1.4);
-}
-
-.search {
-    background-color: rgb(183, 113, 248);
-    color: white;
-    font-weight: 600;
-}
-
-.search:hover {
-    background-color: blueviolet;
-    transform: scale(1.02);
-}
-
-.img {
-    border-radius: 10px;
-    
-}
-
+/* Desktop version settings and  icons*/
 a {
     color:rgb(180, 179, 184);
     text-shadow: 
     -1px -1px 0 rgb(132, 130, 134); 
-    
     font-size: x-large;
     font-weight: 600;
     font-family:'Times New Roman', Times, serif;
@@ -55,12 +25,63 @@ a {
     color:rgb(180, 179, 184);
     display: inline-block;  
 }
-
+/*Highlights when mouse pointer is hovering over anchor*/
 .icon:hover {
-    color: white;
+    color: white; 
+    transform: scale(1.4);
+}
+
+.img {
+    border-radius: 10px;
+    
+}
+
+/*Highlights the specific page user is currently on*/
+.nav-link.active i {
+    display: inline-block;
+    transform: translateY(10px) scale(1.4);
+    font-weight: bolder;
+    color:  rgb(183, 113, 248);
 }
 
 
+/*Search menu*/
+.btn-outline-success {
+    color: white !important;               
+    border-color: white !important;        
+}
+
+.btn-outline-success:hover {
+    
+    background-color: blueviolet;
+    
+}
 
 
+/*Burger Menu*/
+
+/* This targets ONLY the mobile/hamburger view */
+@media (max-width: 991.98px) {
+  
+  /*Stops all transitions/animations for links and icons */
+  .navbar-nav .nav-link, 
+  .navbar-nav .icon {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important; /* Prevents sliding/scaling */
+  }
+
+  /*Disable hover effects that might trigger on touch */
+  .navbar-nav .nav-link:hover,
+  .navbar-nav .icon:hover {
+    transform: none !important;
+    background-color: transparent !important;
+    color: black !important; /* Keeps the text color static */
+  }
+
+  /* Ensure items does not "jump" when the menu opens */
+  .collapse.show {
+    transition: height 0.35s ease; /* Keeps the smooth menu drop, but kills inner icon wobbles */
+  }
+}
 
