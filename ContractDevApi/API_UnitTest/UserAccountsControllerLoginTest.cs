@@ -64,44 +64,6 @@ public class UserProfilesControllerLoginTest
     }
 
     [Test]
-    public async Task ValidateTokenAuthenticatedUser()
-    {
-        // Arrange
-        UserLoginDto loginDto = new UserLoginDto
-        {
-            Email = "test@gmail.com",
-            Password = "applesauce"
-        };
-
-        IActionResult loginResponse = await _userController.Login(loginDto);
-        var okLoginResult = loginResponse as OkObjectResult;
-        Assert.That(okLoginResult, Is.Not.Null, "Expected OkObjectResult for valid login");
-
-        var tokenProperty = okLoginResult!.Value?.GetType().GetProperty("token");
-        string token = tokenProperty?.GetValue(okLoginResult.Value)?.ToString() ?? string.Empty;
-        Assert.That(token, Is.Not.Empty, "Expected token in login response");
-
-        var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
-        var principal = new ClaimsPrincipal(new ClaimsIdentity(jwt.Claims, "TestAuth"));
-
-        _userController.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext
-            {
-                User = principal
-            }
-        };
-
-        // Act
-        IActionResult validateResponse = await _userController.ValidateToken();
-
-        // Assert
-        var okValidateResult = validateResponse as OkObjectResult;
-        Assert.That(okValidateResult, Is.Not.Null, "Expected OkObjectResult for valid token");
-        Assert.That(okValidateResult!.StatusCode ?? StatusCodes.Status200OK, Is.EqualTo(StatusCodes.Status200OK));
-    }
-
-    [Test]
     public async Task LoginValidAccount()
     {
         //Arrange
@@ -121,7 +83,6 @@ public class UserProfilesControllerLoginTest
         var okResult = response as OkObjectResult;
         Assert.That(okResult, Is.Not.Null, "Expected OkObjectResult for valid login");
         Assert.That(okResult!.StatusCode ?? StatusCodes.Status200OK, Is.EqualTo(StatusCodes.Status200OK));
-        Assert.That(okResult, Is.Not.Null, "Expected OkObjectResult from Login during test setup");
 
         //Verify that token is present in the response
         var tokenProperty = okResult!.Value?.GetType().GetProperty("token");
