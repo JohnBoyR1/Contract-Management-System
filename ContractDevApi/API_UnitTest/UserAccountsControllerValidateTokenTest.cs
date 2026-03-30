@@ -19,12 +19,15 @@ public class UserProfilesControllerValidateTokenTest
     [SetUp]
     public async Task Setup()
     {
+        //Build inmemory database
         var options = new DbContextOptionsBuilder<ContractDevContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase" + Guid.NewGuid())
             .Options;
 
+        //apply inmemory database to context for model sync connection
         _context = new ContractDevContext(options);
 
+        //JWT setup
         var configValues = new Dictionary<string, string?>
         {
             ["Jwt:Key"] = "supersecretkey1234567890!@#$%^&*()",
@@ -33,13 +36,16 @@ public class UserProfilesControllerValidateTokenTest
             ["Jwt:ExpiresInMinutes"] = "60"
         };
 
+        //Build testing app
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(configValues)
             .Build();
 
+        //Build JWT object
         var jwtService = new JwtService(configuration);
+        //Assign dependency to build controller object
         _userController = new UserAccountsController(_context, jwtService);
-
+        
         UserRegistrationDto newUser = new UserRegistrationDto(){
             Username = "Test User",
             FirstName = "Test",
@@ -53,7 +59,8 @@ public class UserProfilesControllerValidateTokenTest
             SecurityAnswer = "applesauce"
         };
 
-        var response = await _userController.RegisterUserAccount(newUser);
+        //register test user
+        await _userController.RegisterUserAccount(newUser);
 
     }
 
@@ -102,7 +109,7 @@ public class UserProfilesControllerValidateTokenTest
     }
 
     [Test]
-    public async Task ValidateTokenUnAthenticatedUser()
+    public async Task ValidateTokenUnauthenticatedUser()
     {
         //Arrange
         UserRegistrationDto newUser = new UserRegistrationDto(){
@@ -117,13 +124,13 @@ public class UserProfilesControllerValidateTokenTest
             SecurityQuestion = "test question",
             SecurityAnswer = "applesauce"
         };
-
+        //Register new user
         await _userController.RegisterUserAccount(newUser);
 
         //Login new user
         UserLoginDto loginDto = new UserLoginDto
         {
-            Email = "test@gmail.com",
+            Email = "test@outlook.com",
             Password = "applesauce"
         };
         IActionResult response = await _userController.Login(loginDto);

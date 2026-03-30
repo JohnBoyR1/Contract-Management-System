@@ -21,12 +21,15 @@ public class UserProfilesControllerUploadTest
     [SetUp]
     public async Task Setup()
     {
+        //Build inmemory database
         var options = new DbContextOptionsBuilder<ContractDevContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase" + Guid.NewGuid())
             .Options;
 
+        //apply inmemory database to context for model sync connection
         _context = new ContractDevContext(options);
 
+        //JWT setup
         var configValues = new Dictionary<string, string?>
         {
             ["Jwt:Key"] = "supersecretkey1234567890!@#$%^&*()",
@@ -35,11 +38,14 @@ public class UserProfilesControllerUploadTest
             ["Jwt:ExpiresInMinutes"] = "60"
         };
 
+        //Build testing app
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(configValues)
             .Build();
 
+        //Build JWT object
         var jwtService = new JwtService(configuration);
+        //Assing dependency to build controller objects
         _userController = new UserAccountsController(_context, jwtService);
         _profileController = new UserProfilesController(_context, jwtService);
 
@@ -56,7 +62,7 @@ public class UserProfilesControllerUploadTest
             SecurityAnswer = "applesauce"
         };
 
-        //Register new user in database
+        //Register new user
         await _userController.RegisterUserAccount(newUser);
 
         UserLoginDto loginDto = new UserLoginDto

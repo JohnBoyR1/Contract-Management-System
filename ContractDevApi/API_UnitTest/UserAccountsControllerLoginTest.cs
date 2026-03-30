@@ -19,25 +19,31 @@ public class UserProfilesControllerLoginTest
     [SetUp]
     public async Task Setup()
     {
+        //Build inmemory database
         var options = new DbContextOptionsBuilder<ContractDevContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase" + Guid.NewGuid())
             .Options;
 
+        //apply inmemory database to context for model sync connection
         _context = new ContractDevContext(options);
 
+        //JWT setup
         var configValues = new Dictionary<string, string?>
         {
             ["Jwt:Key"] = "supersecretkey1234567890!@#$%^&*()",
             ["Jwt:Issuer"] = "https://localhost:7186",
             ["Jwt:Audience"] = "http://localhost:4200",
             ["Jwt:ExpiresInMinutes"] = "60"
-        };
+        }; 
 
+        //Build testing app
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(configValues)
             .Build();
 
+        //Build JWT object
         var jwtService = new JwtService(configuration);
+        //Assign dependency to build controller object
         _userController = new UserAccountsController(_context, jwtService);
 
         UserRegistrationDto newUser = new UserRegistrationDto(){
@@ -53,7 +59,8 @@ public class UserProfilesControllerLoginTest
             SecurityAnswer = "applesauce"
         };
 
-        var response = await _userController.RegisterUserAccount(newUser);
+        //register test user
+        await _userController.RegisterUserAccount(newUser);
 
     }
 
