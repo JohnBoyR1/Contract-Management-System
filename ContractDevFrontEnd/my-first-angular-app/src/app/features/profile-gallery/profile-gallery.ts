@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/auth/auth.service';
 import { Router } from '@angular/router';
 import { Profile } from '../../core/models/profile.models';
+import { computed } from '@angular/core';
+import { UiStateService } from '../../core/services/ui-state.service';
 
 @Component({
   selector: 'app-profile-gallery',
@@ -14,9 +16,7 @@ import { Profile } from '../../core/models/profile.models';
   styleUrl: './profile-gallery.css',
 })
 export class ProfileGallery implements OnInit {
-
-
-  //public profiles = signal([] as any[]);
+  uiService = inject(UiStateService);
 
   public profiles = signal<Profile[]>([]);
 
@@ -26,6 +26,44 @@ export class ProfileGallery implements OnInit {
 
   router = inject(Router);
 
+  
+
+ 
+  //search filter in the nav menu
+  // Create a computed signal that filters automatically
+  public filteredProfiles = computed(() => {
+  const term = this.uiService.searchTerm().toLowerCase().trim();
+  const allProfiles = this.profiles();
+
+  if (!term) return allProfiles;
+
+  return allProfiles.filter(profile => {
+    // Skill match
+    const skillsMatch =
+      profile.skills?.some(skill =>
+        skill.toLowerCase().includes(term)
+      );
+
+    // Convert booleans into searchable text
+    const availableText = profile.availableForWork
+      ? 'available for work open to work looking seeking  '
+      : '';
+
+    const offeringText = profile.offeringWork
+      ? 'offering work hiring recruiting for developers'
+      : '';
+
+    const availableMatch = availableText.toLowerCase().includes(term);
+    const offeringMatch = offeringText.toLowerCase().includes(term);
+
+    return skillsMatch || availableMatch || offeringMatch;
+  });
+});
+
+
+  
+
+ 
   
   ngOnInit() {
     //this is to ensure (non-logged in users) using url commands are directed to the home page
@@ -40,7 +78,7 @@ export class ProfileGallery implements OnInit {
     });
   }
 
-
+  
 }
 
 

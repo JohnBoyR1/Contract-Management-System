@@ -1,8 +1,9 @@
-import { Component, HostListener, ElementRef } from '@angular/core';
+import { Component, HostListener, ElementRef, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { AuthService } from '../../../auth/auth.service';
 import { darkMode } from '../../../../../app-theme.store';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { UiStateService } from '../../../services/ui-state.service';
 
 
 @Component({
@@ -12,6 +13,17 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   styleUrl: './navbar.css',
 })
 export class Navbar {
+  //searching 
+  uiService = inject(UiStateService);
+
+  onSearch(value: string){
+    
+    this.uiService.searchTerm.set(value);
+    console.log("SEARCH FIRED", value);
+    this.uiService.isSearching.set(value.length > 0);
+
+  }
+
   //check if burger menu is expanded
   isBurgerMenuOpen = false;
 

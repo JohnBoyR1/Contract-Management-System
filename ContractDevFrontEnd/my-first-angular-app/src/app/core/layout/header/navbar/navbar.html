@@ -6,7 +6,7 @@
       <img class="img ms-3" src="assets/images/contract_dev_final.png" width="80" alt="Logo">
     </button>
     <!--Icon on larger viewport-->
-    <a class="navbar-brand d-none d-lg-block" routerLink="/" matTooltip="Go to Home" matTooltipPosition="below">
+    <a class="navbar-brand d-none d-lg-block" routerLink="/" (click)="uiService.showSearchBar.set(false)" matTooltip="Go to Home" matTooltipPosition="below">
       <img class="img ms-3" src="assets/images/contract_dev_final.png" alt="Logo" width="100">
     </a>
 
@@ -15,14 +15,14 @@
         <!--Home button-->
         <li class="nav-item">
           <a class="nav-link" routerLink="/" routerLinkActive="active" 
-             [routerLinkActiveOptions]="{ exact: true}" (click)="isBurgerMenuOpen = false" matTooltip="Home Page" matTooltipPosition="below">
+             [routerLinkActiveOptions]="{ exact: true}" (click)="isBurgerMenuOpen = false; uiService.showSearchBar.set(false)" matTooltip="Home Page" matTooltipPosition="below">
             <i class="bi bi-house-fill icon me-2 d-none d-lg-inline-block"></i>
             <span class="d-lg-none">Home</span> 
           </a>
         </li>
         <!--About button-->
         <li class="nav-item">
-          <a class="nav-link" routerLink="/about" routerLinkActive="active" (click)="isBurgerMenuOpen = false" matTooltip="About Page" matTooltipPosition="below">
+          <a class="nav-link" routerLink="/about" routerLinkActive="active" (click)="isBurgerMenuOpen = false; uiService.showSearchBar.set(false)" matTooltip="About Page" matTooltipPosition="below">
             <i class="bi bi-exclamation-square-fill icon me-2 d-none d-lg-inline-block"></i>
             <span class="d-lg-none">About</span>
           </a>
@@ -31,21 +31,21 @@
         @if(authService.isLoggedIn()){
           <!--Gallery button-->
           <li class="nav-item">
-            <a class="nav-link" routerLink="/profileGallery" routerLinkActive="active" (click)="isBurgerMenuOpen = false" matTooltip="Gallery Page" matTooltipPosition="below">
+            <a class="nav-link" routerLink="/profileGallery" routerLinkActive="active" (click)="isBurgerMenuOpen = false; uiService.showSearchBar.set(true)" matTooltip="Gallery Page" matTooltipPosition="below">
               <i class="bi bi-file-earmark-richtext icon me-2 d-none d-lg-inline-block"></i>
               <span class="d-lg-none">Gallery</span>
             </a>
           </li>
           <!--settings button-->
           <li class="nav-item">
-            <a class="nav-link" routerLink="/user-profile" routerLinkActive="active" (click)="isBurgerMenuOpen = false" matTooltip="Profile Settings" matTooltipPosition="below">
+            <a class="nav-link" routerLink="/user-profile" routerLinkActive="active" (click)="isBurgerMenuOpen = false; uiService.showSearchBar.set(false)" matTooltip="Profile Settings" matTooltipPosition="below">
               <i class="bi bi-person-gear icon me-2 d-none d-lg-inline-block"></i>
               <span class="d-lg-none">Profile Settings</span>
             </a>
           </li>
           <!--Sign Out button-->
           <li class="nav-item">
-            <a class="nav-link" routerLinkActive="active" (click)="toggleSignInAndOut(); isBurgerMenuOpen = false" style="cursor: pointer;" matTooltip="Sign Out" matTooltipPosition="below">
+            <a class="nav-link" routerLinkActive="active" (click)="toggleSignInAndOut(); isBurgerMenuOpen = false; uiService.showSearchBar.set(false)" style="cursor: pointer;" matTooltip="Sign Out" matTooltipPosition="below">
               <i class="bi bi-x-circle icon me-2 d-none d-lg-inline-block"></i>
               <span class="d-lg-none">Sign Out</span>
             </a>
@@ -54,14 +54,14 @@
           <!--If user is not logged in-->
           <!--Create Account button-->
           <li class="nav-item">
-            <a class="nav-link" routerLink="/sign-up" routerLinkActive="active" (click)="isBurgerMenuOpen = false" matTooltip="Create Account Page" matTooltipPosition="below">
+            <a class="nav-link" routerLink="/sign-up" routerLinkActive="active" (click)="isBurgerMenuOpen = false; uiService.showSearchBar.set(false)"  matTooltip="Create Account Page" matTooltipPosition="below">
               <i class="bi bi-pencil-square icon me-2 d-none d-lg-inline-block"></i>
               <span class="d-lg-none">Create Account</span>
             </a>
           </li>
           <!--Login button-->
           <li class="nav-item">
-            <a class="nav-link" routerLink="/login" routerLinkActive="active" (click)="isBurgerMenuOpen = false" matTooltip="Login Page" matTooltipPosition="below">
+            <a class="nav-link" routerLink="/login" routerLinkActive="active" (click)="isBurgerMenuOpen = false; uiService.showSearchBar.set(false)" matTooltip="Login Page" matTooltipPosition="below">
               <i class="bi bi-door-open-fill icon me-2 d-none d-lg-inline-block"></i>
               <span class="d-lg-none">Login</span>
             </a>
@@ -81,11 +81,15 @@
           >
         </i>
       </div>
-      <!--Search bar placeholder-->
-      <div class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" matTooltip="Run Search" matTooltipPosition="below">
-        <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>
-      </div>
     </div>
+
+     <!--Search bar placeholder-->
+     @if (uiService.showSearchBar()) {
+
+      <div class="d-flex">
+        <input #SearchTerm class="form-control me-2" type="search" (input)="onSearch(SearchTerm.value)" placeholder="Search" matTooltip="Run Search" matTooltipPosition="below">
+        <button class="btn btn-outline-success" type="button" (click)="onSearch(SearchTerm.value)"><i class="bi bi-search"></i></button>
+      </div>
+    }
   </div>
 </nav>

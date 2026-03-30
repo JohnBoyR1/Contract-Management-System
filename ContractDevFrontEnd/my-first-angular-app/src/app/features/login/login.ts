@@ -33,6 +33,8 @@ export class Login {
     password: new FormControl('', [Validators.required]),
   });
 
+  
+
   //main login handler: Auth -> ID retrieval -> profile loading and navigation
   handleLogin() {
     //force all validation messages to show up 
