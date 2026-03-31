@@ -69,7 +69,7 @@ namespace ContractDevApi.Services
                 audience: _config["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(
-                    int.Parse(_config["Jwt:ExpiresInMinutes"])
+                    int.Parse(_config["Jwt:ExpiresInMinutes"]!)
                 ),
                 signingCredentials: creds
             );
