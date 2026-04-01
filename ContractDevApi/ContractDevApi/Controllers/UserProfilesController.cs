@@ -54,40 +54,57 @@ namespace ContractDevApi.Controllers
             var user = await _context.UserAccounts.FindAsync(dto.Id);
             var profile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
             var social = await _context.SocialConnections.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
-            //var review = await _context.UserReviews.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
-            var skillIds = await _context.Skills.Where(x => dto.Skills.Contains(x.SkillName)).Select(x => x.SkillId).ToListAsync(); //Retrieve desired skill IDs from DB
-            var userSkills = await _context.UserSkills.Where(x => x.UserAccountId == dto.Id).Select(x => x.SkillId).ToListAsync(); //Retrieve all skills associated to user
 
-            if (user == null) return NotFound("User Not Found");
-            if (profile == null) return NotFound("Profile not found");
-            if (social == null) return NotFound("Social Connections not found");
-            if (skillIds == null) return BadRequest("Skills given not found in database");
+            if (user == null || profile == null || social == null) return NotFound("User not found");
+            //hasChanges flag to check if any changes have been made to the profile - prevent database update if no changes detected
+            bool hasChanges = false;
+            //Check each value to determine if not null and does not match existing value on database
+            if (dto.Username != null && profile.Username != dto.Username.ToLower()) { profile.Username = dto.Username.ToLower(); hasChanges = true; }
+            if (dto.Email != null && user.UserSignupEmail != dto.Email.ToLower()) { user.UserSignupEmail = dto.Email.ToLower(); hasChanges = true; }
+            if (dto.PhoneNumber != null && profile.PhoneNumber != dto.PhoneNumber) { profile.PhoneNumber = dto.PhoneNumber; hasChanges = true; }
+            if (dto.Country != null && profile.Country != dto.Country) { profile.Country = dto.Country; hasChanges = true; }
+            if (dto.Bio != null && profile.Bio != dto.Bio) { profile.Bio = dto.Bio; hasChanges = true; }
+            if (dto.AvailableForWork.HasValue && profile.AvailableForWork != dto.AvailableForWork) { profile.AvailableForWork = dto.AvailableForWork; hasChanges = true; }
+            if (dto.OfferingWork.HasValue && profile.OfferingWork != dto.OfferingWork) { profile.OfferingWork = dto.OfferingWork; hasChanges = true; }
+            if (dto.DisplayUserName.HasValue && profile.UsernameDisplay != dto.DisplayUserName) { profile.UsernameDisplay = dto.DisplayUserName; hasChanges = true; }
+            if (dto.HidePhoneNumber.HasValue && profile.HidePhoneNumber != dto.HidePhoneNumber) { profile.HidePhoneNumber = dto.HidePhoneNumber; hasChanges = true; }
+            if (dto.FacebookLink != null && social.FacebookLink != dto.FacebookLink) { social.FacebookLink = dto.FacebookLink; hasChanges = true; }
+            if (dto.UserSocialEmailLink != null && social.UserSocialEmailLink != dto.UserSocialEmailLink) { social.UserSocialEmailLink = dto.UserSocialEmailLink; hasChanges = true; }
+            if (dto.XLink != null && social.XLink != dto.XLink) { social.XLink = dto.XLink; hasChanges = true; }
+            if (dto.GithubLink != null && social.GithubLink != dto.GithubLink) { social.GithubLink = dto.GithubLink; hasChanges = true; }
+            if (dto.LinkedinLink != null && social.LinkedinLink != dto.LinkedinLink) { social.LinkedinLink = dto.LinkedinLink; hasChanges = true; }
 
-            if (dto.Username != null) profile.Username = dto.Username.ToLower();
-            if (dto.Email != null) user.UserSignupEmail = dto.Email.ToLower();
-            if (dto.PhoneNumber != null) profile.PhoneNumber = dto.PhoneNumber;
-            if (dto.Country != null) profile.Country = dto.Country;
-            if (dto.Description != null) profile.Description = dto.Description;
-            if (dto.UserTitle != null) profile.UserTitle = dto.UserTitle;
-            if (dto.Bio != null) profile.Bio = dto.Bio;
-            if (dto.AvailableForWork.HasValue) profile.AvailableForWork = dto.AvailableForWork;
-            if (dto.OfferingWork.HasValue) profile.OfferingWork = dto.OfferingWork;
-            if (dto.DisplayUserName.HasValue) profile.UsernameDisplay = dto.DisplayUserName;
-            if (dto.HidePhoneNumber.HasValue) profile.HidePhoneNumber = dto.HidePhoneNumber;
-            if (dto.FacebookLink != null) social.FacebookLink = dto.FacebookLink;
-            if (dto.UserSocialEmailLink != null) social.UserSocialEmailLink = dto.UserSocialEmailLink;
-            if (dto.XLink != null) social.XLink = dto.XLink;
-            if (dto.GithubLink != null) social.GithubLink = dto.GithubLink;
-            if (dto.LinkedinLink != null) social.LinkedinLink = dto.LinkedinLink;
+            //Get all skill IDs from database that match skills provided in DTO
+            var dbSkillIds = await _context.Skills
+                .Where(x => dto.Skills.Contains(x.SkillName))
+                .Select(x => x.SkillId).ToListAsync();
+            //Get all user skills current to db
+            var savedSkillIds = await _context.UserSkills
+                .Where(x => x.UserAccountId == dto.Id)
+                .Select(x => x.SkillId).ToListAsync();
+            //Check if skills list differs - by number of skills or by skill ids
+            bool skillsChanged = dbSkillIds.Count != savedSkillIds.Count || dbSkillIds.Except(savedSkillIds).Any();
 
-            var newSkillIds = skillIds.Except(userSkills).ToList();
-            var newUserSkills = newSkillIds.Select(id => new UserSkill
+            if (skillsChanged)
             {
-                UserAccountId = dto.Id,
-                SkillId = id
-            });
+                hasChanges = true;
+                //Remove existing skills
+                var oldSkills = _context.UserSkills.Where(x => x.UserAccountId == dto.Id);
+                _context.UserSkills.RemoveRange(oldSkills);
+                //Add new skills
+                var newSkills = dbSkillIds.Select(skillId => new UserSkill
+                {
+                    UserAccountId = dto.Id,
+                    SkillId = skillId
+                });
+                _context.UserSkills.AddRange(newSkills);
+            }
 
-            _context.UserSkills.AddRange(newUserSkills);
+            //Final check for changes
+            if (!hasChanges)
+            {
+                return BadRequest(new { Message = "No changes detected in profile update" });
+            }
 
             //Try to update database -- if unsuccessful return error
             try {

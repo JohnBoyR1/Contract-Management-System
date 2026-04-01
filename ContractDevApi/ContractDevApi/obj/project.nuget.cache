@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "GQNd49pOr3g=",
+  "dgSpecHash": "+YKQIKeFwJI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\moare\\Documents\\GitHub\\Team_10_Group_Project\\ContractDevApi\\ContractDevAPi\\ContractDevApi.csproj",
+  "projectFilePath": "C:\\Users\\moare\\Documents\\GitHub\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\moare\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\moare\\.nuget\\packages\\efcore.namingconventions\\10.0.1\\efcore.namingconventions.10.0.1.nupkg.sha512",
