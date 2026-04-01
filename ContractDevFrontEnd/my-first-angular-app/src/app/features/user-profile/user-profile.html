@@ -5,7 +5,7 @@
       <div class="col-12 mb-4">
         <div class="profile-header position-relative mb-4">
           <div class="position-absolute top-0 end-0 p-3">
-            <button class="btn btn-light"><i class="fas fa-edit me-2"></i>Edit Cover</button>
+            <!--<button class="btn btn-light"><i class="fas fa-edit me-2"></i>Edit Cover</button> for future implementation-->
           </div>
         </div>
         <div class="text-center">
@@ -18,18 +18,20 @@
             <button
               routerLink="/userProfileUploadImage"
               class="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle"
+              matTooltip="Upload a new profile picture"
+              matTooltipPosition="below"
             >
               <i class="fas fa-camera"></i>
             </button>
           </div>
-          <h3 class="mt-3 mb-1">{{ nameDisplay() }}</h3>
-          <p class="text-muted mb-3">{{ titleDisplay() }}</p>
+          <h3 class="mt-3 mb-1" matTooltip="Display name" matTooltipPosition="below">{{ nameDisplay() }}</h3>
+          <p class="text-muted mb-3" matTooltip="Title" matTooltipPosition="below">{{ titleDisplay() }}</p>
           <div class="d-flex justify-content-center gap-2 mb-4">
-            <button class="btn btn-outline-primary">
+            <button class="btn btn-outline-primary" matTooltip="Send a direct message" matTooltipPosition="below">
               <i class="fas fa-envelope me-2"></i>Message
             </button>
-            <button class="btn btn-primary">
-              <i class="fas fa-user-plus me-2"></i>Add Favourite
+            <button class="btn btn-primary" matTooltip="Ratings, 'experience with user'" matTooltipPosition="below">
+              <i class="fas fa-user-plus me-2"></i>Add Ratings
             </button>
           </div>
         </div>
@@ -44,15 +46,15 @@
               <div class="col-lg-3 border-end">
                 <div class="p-4">
                   <div class="navbar-nav flex-column nav-pills">
-                    <a class="nav-link" routerLink="/user-profile" routerLinkActive="active">
+                    <a class="nav-link" routerLink="/user-profile" routerLinkActive="active" matTooltip="View personal details" matTooltipPosition="below">
                       <i class="fas fa-user me-2"></i>Personal Info
                     </a>
 
-                    <a class="nav-link" routerLink="/userProfileSecurity" routerLinkActive="active">
+                    <a class="nav-link" routerLink="/userProfileSecurity" routerLinkActive="active" matTooltip="Password reset and account deletion" matTooltipPosition="below">
                       <i class="fas fa-lock me-2"></i>Security
                     </a>
 
-                    <a class="nav-link" routerLink="/social-media-links" routerLinkActive="active">
+                    <a class="nav-link" routerLink="/social-media-links" routerLinkActive="active" matTooltip="Manage your social links" matTooltipPosition="below">
                       <i class="fas fa-bell me-2"></i>Social Media Links
                     </a>
 
@@ -60,7 +62,7 @@
                       <i class="fas fa-credit-card me-2"></i>Billing
                     </a>-->
 
-                    <a class="nav-link" routerLink="/profile-card" routerLinkActive="active">
+                    <a class="nav-link" routerLink="/profile-card" routerLinkActive="active" matTooltip="View your public profile card" matTooltipPosition="below">
                       <i class="fas fa-chart-line me-2"></i>Profile Card
                     </a>
                   </div>
@@ -77,21 +79,27 @@
                       <h5 class="mb-4">Personal Information</h5>
                       <div class="row g-3">
                         <div class="col-md-6">
+                          <!--first name only display-->
                           <label class="form-label">First Name</label>
                           <input
                             formControlName="firstName"
-                            type="text"
+                            type="text" 
+                            [readonly]="true"
                             class="form-control"
-                            value="Alex"
+                            matTooltip="First name cannot be changed" 
+                            matTooltipPosition="below"
                           />
                         </div>
+                        <!--last name only display-->
                         <div class="col-md-6">
                           <label class="form-label">Last Name</label>
                           <input
                             formControlName="lastName"
                             type="text"
+                            [readonly]="true"
                             class="form-control"
-                            value="Johnson"
+                            matTooltip="Last name cannot be changed" 
+                            matTooltipPosition="below"
                           />
                         </div>
                         <div class="col-md-6">
@@ -101,6 +109,8 @@
                             type="jobRole"
                             class="form-control"
                             value="Senior Product Designer"
+                            matTooltip="Update Job Role/Professional title" 
+                            matTooltipPosition="below"
                           />
                         </div>
                         <div class="col-md-6">
@@ -110,6 +120,8 @@
                             type="username"
                             class="form-control"
                             value="Johnny"
+                            matTooltip="Update user name" 
+                            matTooltipPosition="below"
                           />
                         </div>
                         <div class="col-md-6">
@@ -119,6 +131,8 @@
                             type="email"
                             class="form-control"
                             value="alex.johnson@example.com"
+                            matTooltip="Update email address" 
+                            matTooltipPosition="below"
                           />
                         </div>
                         <div class="col-md-6">
@@ -127,6 +141,7 @@
                             formControlName="phoneNumber"
                             type="phoneNumber"
                             class="form-control phoneNumber"
+                            
                           />
                         </div>
 
@@ -134,6 +149,8 @@
                         <div class="col-md-12 mb-4">
                           <select
                             class="form-control form-control-lg"
+                            matTooltip="Update current Skills" 
+                            matTooltipPosition="below"
                             [formControl]="skillsControl"
                           >
                             <option value="" disabled selected>Choose a skill...</option>
@@ -141,15 +158,15 @@
                               <option [value]="q">{{ q }}</option>
                             }
                           </select>
-                          <label class="form-label">Skills</label>
+                          <!--<label class="form-label">Skills</label>
                            @if (skillsControl.touched && skillsControl.hasError('required')) {
                             <div class="text-danger">Skills are required.</div>
-                          }
+                        }-->
                           
                         </div>
 
                         <!-- show chosen skills live -->
-                        <div class="col-md-12 mt-2">
+                        <div class="col-md-12 mt-2 skill-badges">
                           @for (s of selectedSkillsControl.value ?? []; track $index) {
                             <div class="badge bg-secondary me-2">
                               {{ s }}
@@ -157,6 +174,8 @@
                                 type="button"
                                 class="btn btn-sm btn-link text-white p-0 ms-2"
                                 (click)="removeSkill(s)"
+                                matTooltip="Remove skill"
+                                matTooltipPosition="below"
                               >
                                 ✕
                               </button>
@@ -166,7 +185,9 @@
 
                         <div class="col-12">
                           <label class="form-label">Bio</label>
-                          <textarea formControlName="bio" class="form-control" rows="4">
+                          <textarea formControlName="bio" class="form-control" rows="4" 
+                          matTooltip="Briefly describe your expertise, key achievements, and what you're passionate about. Aim for 2-3 sentences." 
+                          matTooltipPosition="below">
 Product designer with 5+ years of experience in creating user-centered digital solutions. Passionate about solving complex problems through simple and elegant designs.</textarea
                           >
                         </div>
@@ -175,26 +196,19 @@ Product designer with 5+ years of experience in creating user-centered digital s
 
                     <!-- Settings Cards -->
                     <div class="row g-4 mb-4">
-                     <!---- <div class="col-md-6">
-                        <div class="settings-card card">
-                          <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                              <div>
-                                <h6 class="mb-1">Two-Factor Authentication</h6>
-                                <p class="text-muted mb-0 small">Add an extra layer of security</p>
-                              </div>
-                              <div class="form-check form-switch">
-                                <input
-                                  formControlName="twoFactorAuth"
-                                  class="form-check-input"
-                                  type="checkbox"
-                                  checked
-                                />
-                              </div>
-                            </div>
-                          </div>
+                     <!--verify a valid form has been sent banner pop up-->
+                      @if (updateSuccess()) {
+                        <div class="alert alert-success mt-3">
+                          <strong>Success!</strong> User Profile Updated....
                         </div>
-                      </div>-->
+                      }
+                      <!--if login fail-->
+                      @if (updateError()) {
+                        <div class="alert alert-danger mt-3 mb-4 animate__animated animate__fadeIn" role="alert">
+                          <i class="fas fa-exclamation-circle me-2"></i>
+                          {{ updateError() }}
+                        </div>
+                      }
                       <div class="col-md-6">
                         <div class="settings-card card">
                           <div class="card-body">
@@ -208,6 +222,8 @@ Product designer with 5+ years of experience in creating user-centered digital s
                                   formControlName="displayUserName"
                                   class="form-check-input"
                                   type="checkbox"
+                                  matTooltip="Toggle privacy mode 'hiding your real name'" 
+                                  matTooltipPosition="below"
                                 />
                               </div>
                             </div>
@@ -221,7 +237,7 @@ Product designer with 5+ years of experience in creating user-centered digital s
                               <div>
                                 <h6 class="mb-1">Hide Phone Number</h6>
                                 <p class="text-muted mb-0 small">
-                                  Your real phone number will be hidden
+                                  Phone number will be hidden
                                 </p>
                               </div>
                               <div class="form-check form-switch">
@@ -229,6 +245,8 @@ Product designer with 5+ years of experience in creating user-centered digital s
                                   formControlName="hidePhoneNumber"
                                   class="form-check-input"
                                   type="checkbox"
+                                  matTooltip="Toggle privacy mode 'hiding your phone number'" 
+                                  matTooltipPosition="below"
                                 />
                               </div>
                             </div>
@@ -250,6 +268,8 @@ Product designer with 5+ years of experience in creating user-centered digital s
                                   formControlName="availableForWork"
                                   class="form-check-input"
                                   type="checkbox"
+                                  matTooltip="Toggle available for work mode" 
+                                  matTooltipPosition="below"
                                 />
                               </div>
                             </div>
@@ -271,6 +291,8 @@ Product designer with 5+ years of experience in creating user-centered digital s
                                   formControlName="offeringWork"
                                   class="form-check-input"
                                   type="checkbox"
+                                  matTooltip="Toggle hiring mode 'contracting others'" 
+                                  matTooltipPosition="below"
                                 />
                               </div>
                             </div>
@@ -289,7 +311,9 @@ Product designer with 5+ years of experience in creating user-centered digital s
                                 <p class="text-muted mb-0 small">Only if you made changes</p>
                               </div>
                               <div>
-                                <button type="button" class="btn btn-outline-primary" type="submit">
+                                <button type="button" class="btn btn-outline-primary" type="submit"
+                                  matTooltip="Save Changes" 
+                                  matTooltipPosition="below">
                                   Save
                                 </button>
                               </div>
