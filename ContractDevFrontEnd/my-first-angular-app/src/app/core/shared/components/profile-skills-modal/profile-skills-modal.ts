@@ -1,4 +1,4 @@
-import { Component, inject, Input, computed } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { Profile } from '../../../models/profile.models';
 
@@ -14,11 +14,11 @@ export class ProfileSkillsModal {
   @Input() user!: Profile;
 
   isdisplayUserName() {
-     //inline if statement
-   // return this.user.displayUserName ? this.user.username : this.fullName;
-   return this.user.lastName; 
+     //inline if statement display the name set by user (toggle Display Username)
+    return this.user.displayUserName ? this.user.username : `${this.user.firstName} ${this.user.lastName}`;
+    
   }
-
+  // display the skills if any else displays "No Skills added yet."
   selectedSkills(){
     return this.user?.skills ?? []; 
   }

@@ -17,6 +17,12 @@ import { UserProfileUploadImage } from './features/user-profile-upload-image/use
 import { PasswordRecovery } from './features/password-recovery/password-recovery';
 import { SocialMediaLinks } from './features/social-media-links/social-media-links';
 
+/*
+  Defines all navigation paths in the Angular application
+  Each route maps a URL path to a component
+  Protected routes use the authGuard to block access unless the user is logged in
+*/
+
 export const routes: Routes = [
   //public routes
   { path: '', component: Home },
@@ -35,9 +41,8 @@ export const routes: Routes = [
   //protectd routes (locked by auth.guard.ts)
   { path: 'user-profile', component: UserProfile, canActivate: [authGuard] },
   { path: 'billing-details', component: BillingDetails, canActivate: [authGuard] },
-  { path: 'chat', component: Chat, outlet: 'popup', canActivate: [authGuard] }, //this prevents it from replacing the main content
+  { path: 'chat', component: Chat, outlet: 'popup', canActivate: [authGuard] }, //This allows the chat window to appear as a 'popup' without replacing the main page content
   { path: 'profile-card', component: ProfileCard, canActivate: [authGuard] },
   //fallback too
-
   { path: '**', redirectTo: '' },
 ];

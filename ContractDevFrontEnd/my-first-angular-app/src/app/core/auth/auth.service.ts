@@ -12,8 +12,11 @@ import { Observable } from 'rxjs';
 export class AuthService {
 
   // SIGNAL replaces BehaviorSubject + boolean
+  // Tracks whether the user is authenticated.
+  // Automatically updates UI components that depend on login state.
   isLoggedIn = signal(!!localStorage.getItem('auth_token'));
 
+  // Key used to store the JWT token in localStorage
   private readonly TOKEN_KEY = 'auth_token';
 
   constructor(
@@ -22,12 +25,18 @@ export class AuthService {
     private profileStateService: ProfileStateService
   ) {}
 
+  /*
+    Sends login credentials to the backend.
+    Expects a JWT token in the response body.
+    Stores the token in localStorage.
+    Updates the login signal so the UI reacts instantly.
+  */
   login(formData: FormData): Observable<HttpResponse<{ token: string }>> {
   return this.http
     .post<{ token: string }>(
       `${environment.apiUrl}/api/UserAccounts/Login`,
       formData,
-      { observe: 'response' }
+      { observe: 'response' } // allows reading headers and the full response
     )
     .pipe(
       tap((res) => {
@@ -39,8 +48,13 @@ export class AuthService {
       })
     );
 }
-
-
+  /*
+    Removes the JWT token.
+    Updates login signal.
+    Clears the user's profile state.
+    Redirects to login page.
+    Used when user manually logs out OR token becomes invalid.
+  */
   logout() {
     localStorage.removeItem(this.TOKEN_KEY);
     this.isLoggedIn.set(false); // signal update
@@ -48,10 +62,19 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
+  /*
+    Returns the stored JWT token.
+    Used by the authInterceptor to attach Authorization headers.
+  */
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
   }
 
+  /*
+    Decodes the JWT token to extract the user ID (stored in "sub").
+    Returns null if token is missing or invalid.
+    Used by the authGuard to load the user's profile.
+  */
   getCurrentUserId(): number | null {
     const token = localStorage.getItem(this.TOKEN_KEY);
     if (!token) return null;
@@ -60,11 +83,16 @@ export class AuthService {
       const decoded: any = jwtDecode(token);
       return Number(decoded.sub);
     } catch {
+      //If Token is corrupted or expired
       localStorage.removeItem(this.TOKEN_KEY);
       return null;
     }
   }
 
+  /*
+    Endpoint to check if the token is still valid.
+    Useful for session restoration or silent authentication.
+  */
   validateToken() {
     return this.http.get(`${environment.apiUrl}/api/UserAccounts/Validate`);
   }
@@ -74,80 +102,3 @@ export class AuthService {
 
 
 
-
-
-
-/*import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, tap } from 'rxjs';
-import { Router } from '@angular/router';
-import { environment } from '../../../environments/environment';
-import { jwtDecode } from 'jwt-decode';
-import { ProfileStateService } from '../shared/profile-state.service';
-
-@Injectable({ providedIn: 'root' })
-export class AuthService {
-  isLoggedIn = false;
-
-  private http = inject(HttpClient);
-  private router = inject(Router);
-  private profileStateService = inject(ProfileStateService);
-
-  private readonly TOKEN_KEY = 'auth_token';
-
-  // BehaviorSubject initialized based on whether a token exists in storage
-  private loggedIn = new BehaviorSubject<boolean>(!!localStorage.getItem(this.TOKEN_KEY));
-  isLoggedIn$ = this.loggedIn.asObservable();
-
-  //LOGIN calls backend , receives { token }, stores it
-  login(credentials: any) {
-    // Replace with your actual API URL
-    return this.http
-      .post<{ token: string }>(`${environment.apiUrl}/api/UserAccounts/Login`, credentials)
-      .pipe(
-        tap((res) => {
-          // saves token to local storage
-          localStorage.setItem(this.TOKEN_KEY, res.token);
-
-          this.isLoggedIn = true;
-
-          //update login state
-          this.loggedIn.next(true);
-        }),
-      );
-  }
-
-  // LOGOUT - clears token and redirects
-  logout() {
-    localStorage.removeItem(this.TOKEN_KEY);
-    this.loggedIn.next(false);
-    this.router.navigate(['/login']);
-    this.isLoggedIn = false;
-    this.profileStateService.clearProfile();
-  }
-
-  // GET TOKEN  used by the interceptor
-  getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
-  }
-
-  // Get current userId
-
-  getCurrentUserId(): number | null {
-    //decoding the token
-    const token = localStorage.getItem(this.TOKEN_KEY);
-    if (!token) return null;
-    try {
-      const decoded: any = jwtDecode(token);
-      return Number(decoded.sub); // "sub" contains the userId
-    } catch (e) {
-      console.error('Invalid JWT in localStorage');
-      localStorage.removeItem('auth_token');
-      return null;
-    }
-  }
-  //this is for validation of the already given token
-  validateToken() {
-    return this.http.get(`${environment.apiUrl}/api/UserAccounts/Validate`);
-  }
-}*/

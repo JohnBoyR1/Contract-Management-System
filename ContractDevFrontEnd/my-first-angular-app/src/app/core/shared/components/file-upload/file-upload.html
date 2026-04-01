@@ -1,13 +1,15 @@
+<!--seperate componet giving the ability for the user to upload a profile picture in this case, but can be used to upload other files-->
 <div class="card p-3 shadow-sm">
   <h5 class="mb-3">Upload a file</h5>
-
+  <!---choose file button-->
   <div class="mb-3">
     <input type="file"
            class="form-control"
            (change)="onFileSelected($event)" />
   </div>
-
+  
   <div class="row mt-2">
+    <!--Preview button (disable if no file upload)-->
     <div class="col-6 d-grid">
       <button type="button"
               class="btn btn-secondary"
@@ -16,7 +18,7 @@
         Preview
       </button>
     </div>
-
+    <!--Upload button (disable if preview has not been viewed)-->
     <div class="col-6 d-grid text-end">
       <button type="button"
               class="btn btn-primary"
@@ -26,7 +28,7 @@
       </button>
     </div>
   </div>
-
+  <!--preview image display-->
   @if (previewUrl) {
     <div class="mt-3 text-center">
       <img [src]="previewUrl"

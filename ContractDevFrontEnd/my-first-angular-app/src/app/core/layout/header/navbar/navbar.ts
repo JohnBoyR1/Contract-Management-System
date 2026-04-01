@@ -41,6 +41,7 @@ export class Navbar {
       this.isBurgerMenuOpen = false;
     }
   }
+  
   //imported darkMode (access)
   darkMode = darkMode;
   /*toggle switch next to the search placeholder*/
@@ -49,6 +50,7 @@ export class Navbar {
      this.darkMode.set(valueChange);
      localStorage.setItem('darkMode', JSON.stringify(valueChange));
   }
+
   /*sign out/ logout button*/
   toggleSignInAndOut() {
     this.authService.logout();
