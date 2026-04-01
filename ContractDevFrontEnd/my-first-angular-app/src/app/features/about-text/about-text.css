@@ -18,9 +18,11 @@
   font-size: 1.05rem;
 }
 
-img {
-  max-height: 300px;
-  object-fit: cover;
+/*example profile images*/
+.profile-images {
+  width: 100%;
+  max-width: 650px; 
+  height: 100%;
 }
 
 

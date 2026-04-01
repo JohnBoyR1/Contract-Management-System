@@ -1,16 +1,30 @@
 <div class="container py-4">
     
 
-    <div class="content row">
+    <div class="content row" (click)="showVideoOn()">
         
-        <img src="assets/images/black_board_dev.png" alt="5 people sitting around table descussing idea"  class="ideas_img"/>
+        @if(showVideo()){
+            
+           <video class="multi-cards bottom-video  w-100 ideas_img" autoplay muted (ended)="onVideoEnding()"  >
+                <source  type="video/mp4" src="assets/videos/software_dev_video.mp4">
+            </video>
+        }
+        @else { 
+            
+            <img src="assets/images/black_board_dev.png" alt="5 people sitting around table descussing idea"  class="ideas_img"
+            matTooltip="Click to play the video"
+            matTooltipPosition="below"/>
+            
+        }
         
     </div>
     <div class="content row  mt-5 ">
         <div class="col-12 image-meeting"  (click)=" toggleAboutText()">
-            <img src="assets/images/ideas_meeting.png" alt="5 people sitting around table descussing idea"  class="ideas_img"/>
+            <img src="assets/images/ideas_meeting.png" alt="5 people sitting around table descussing idea"  class="ideas_img"
+            matTooltip="Click View About Details"
+            matTooltipPosition="below"/>
             @if (showAboutText()) {
-                <div class="about-overlay">
+                <div #aboutSection class="about-overlay">
                     <app-about-text></app-about-text>
                 </div>
             }

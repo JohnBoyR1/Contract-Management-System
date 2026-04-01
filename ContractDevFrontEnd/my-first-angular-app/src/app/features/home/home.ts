@@ -17,7 +17,7 @@ import { MarketingBanner } from "../marketing-banner/marketing-banner";
 
 export class Home implements AfterViewInit {
 
-
+  index = signal(0);
   //learning to create signals and see what can be done(for testing)
   count = signal(3);
 
@@ -60,6 +60,26 @@ export class Home implements AfterViewInit {
     })
 
   }
+
+  quotes = [
+    "Every great piece of technology started as someone’s small, stubborn idea.",
+    "Code is proof that even the most complex problems can be solved one line at a time.",
+    "Innovation begins the moment you stop asking ‘Can I?’ and start asking ‘How do I?’",
+    "In tech, progress isn’t about perfection — it’s about iteration.",
+    "The future belongs to those who stay curious long after others stop asking questions.",
+    "Every bug fixed is a reminder that persistence beats complexity.",
+    "Technology moves fast, but belief in yourself moves faster.",
+    "Behind every breakthrough is someone who refused to accept the first error message.",
+    "You don’t need to know everything — just enough to start, learn, and keep going.",
+    "The best developers aren’t the ones who know the most, but the ones who never stop learning."
+  ];
+
+ 
+
+  nextQuote() {
+    this.index.update(i => (i + 1) % this.quotes.length);
+  }
+
 }
 
 
