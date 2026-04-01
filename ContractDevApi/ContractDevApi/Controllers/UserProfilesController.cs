@@ -54,7 +54,7 @@ namespace ContractDevApi.Controllers
             var user = await _context.UserAccounts.FindAsync(dto.Id);
             var profile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
             var social = await _context.SocialConnections.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
-            var review = await _context.UserReviews.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
+            //var review = await _context.UserReviews.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
             var skillIds = await _context.Skills.Where(x => dto.Skills.Contains(x.SkillName)).Select(x => x.SkillId).ToListAsync(); //Retrieve desired skill IDs from DB
             var userSkills = await _context.UserSkills.Where(x => x.UserAccountId == dto.Id).Select(x => x.SkillId).ToListAsync(); //Retrieve all skills associated to user
 

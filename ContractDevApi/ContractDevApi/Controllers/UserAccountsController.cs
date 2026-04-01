@@ -135,14 +135,14 @@ namespace ContractDevApi.Controllers
 
             _context.SocialConnections.Add(socials);
 
-            var reviews = new UserReview
-            {
-                UserAccountId = user.UserAccountId,
-                NumberOfReviews = 0,
-                TotalReviewPoints = 0.0f,
-                AverageReviewScore = 0.0f,
-                UserAccount = user
-            };
+            //var reviews = new UserReview
+            //{
+            //    UserAccountId = user.UserAccountId,
+            //    NumberOfReviews = 0,
+            //    TotalReviewPoints = 0.0f,
+            //    AverageReviewScore = 0.0f,
+            //    UserAccount = user
+            //};
 
             //Try to update database -- if unsuccessful return error
             try {

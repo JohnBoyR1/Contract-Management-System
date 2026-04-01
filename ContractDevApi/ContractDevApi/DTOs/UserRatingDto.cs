@@ -5,7 +5,7 @@ namespace ContractDevApi.DTOs
     //-----------------------
     //ReviewDTO used to associate reviews sent from one User account to another
     //-----------------------
-    public class UserReviewDto
+    public class UserRatingDto
     {
         [Required]
         public int ReviewerId { get; set; }
