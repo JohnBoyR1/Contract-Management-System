@@ -6,10 +6,12 @@ import { UserService } from '../../core/services/user.service';
 import { ProfileStateService } from '../../core/services/profile-state.service';
 import { signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { timeout } from 'rxjs';
 
 @Component({
   selector: 'app-user-profile-deletion',
-  imports: [RouterLink, RouterLinkActive, ReactiveFormsModule, CommonModule],
+  imports: [RouterLink, RouterLinkActive, ReactiveFormsModule, CommonModule, MatTooltipModule],
   templateUrl: './user-profile-deletion.html',
   styleUrl: './user-profile-deletion.css',
 })
@@ -21,6 +23,10 @@ export class UserProfileDeletion {
   private userService = inject(UserService);
   private router = inject(Router);
   public profile = inject(ProfileStateService);
+
+  //signals
+  deleteSuccess = signal(false);
+  deleteError = signal('');
 
   constructor() {
     this.deletionForm = this.fb.group({
@@ -38,6 +44,8 @@ export class UserProfileDeletion {
 
   // deletion
   deleteProfile() {
+
+
     if (this.deletionForm.invalid) return;
 
     const formDataDelete = new FormData();
@@ -59,19 +67,34 @@ export class UserProfileDeletion {
 
     this.userService.deleteUserAccount(formDataDelete).subscribe({
       next: () => {
-        alert('User Account Deleted.');
-        this.router.navigate(['/profile']);
+        
+        this.deleteSuccess.set(true);
+
+        //display success to user for a set time
+        setTimeout(() => {
+          this.deleteSuccess.set(false);
+          this.router.navigate(['/home']);
+        }, 2500);
+        
       },
       error: (err) => {
-        console.error(err);
-        alert('Failed to Delete User Account.');
+        
+        this.deleteError.set('Failed to Delete User Account: ' + err.message);
+
+        //display error to user for a set time
+        setTimeout(() => {
+          this.deleteError.set('');
+          this.router.navigate(['/userProfileDeletion']);
+        }, 2500);
       },
     });
   }
   // pop up Modal for account deletion
   isOpenDeleteModal = signal(false);
 
+  //used to verify deletion ( to prevent accidental account deletion )
   openModal() {
+    this.deletionForm.markAllAsTouched();
     this.isOpenDeleteModal.set(true);
     console.log('open modal');
   }

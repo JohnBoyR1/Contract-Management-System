@@ -320,6 +320,11 @@ namespace ContractDevApi.Controllers
             //If password does not pass verification, return error Status 401
             if (!validatePassword) return Unauthorized(new { Message = "Invalid Password" });
 
+            //there was not security answer validation implemented Jeán 01/04/2026(please verify Lorenzo)
+            // Validate security answer
+            if (!BCrypt.Net.BCrypt.Verify(dto.SecurityAnswer, userAccount.SecurityAnswer))
+            return Unauthorized(new { Message = "Invalid Security Answer" });
+
 
             _context.UserAccounts.Remove(userAccount);
             _context.UserProfiles.Remove(userProfile);

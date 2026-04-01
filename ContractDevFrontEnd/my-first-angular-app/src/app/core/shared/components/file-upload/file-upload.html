@@ -1,63 +1,75 @@
 <!--seperate componet giving the ability for the user to upload a profile picture in this case, but can be used to upload other files-->
+
+<!-- Card wrapper -->
 <div class="card p-3 shadow-sm">
   <h5 class="mb-3">Upload a file</h5>
-  <!---choose file button-->
+
+  <!-- File input -->
   <div class="mb-3">
-    <input type="file"
-           class="form-control"
-           (change)="onFileSelected($event)" />
+    <input
+      #fileInput
+      type="file"
+      class="form-control"
+      accept="image/*"
+      (change)="onFileSelected($event)"
+    />
   </div>
-  
+
+  <!-- Action buttons -->
   <div class="row mt-2">
-    <!--Preview button (disable if no file upload)-->
+    <!-- Preview button -->
     <div class="col-6 d-grid">
-      <button type="button"
-              class="btn btn-secondary"
-              [disabled]="!selectedFile"
-              (click)="showPreview()">
+      <button
+        matTooltip="View Image before uploading"
+        matTooltipPosition="below"
+        type="button"
+        class="btn btn-secondary"
+        [disabled]="!selectedFile"
+        (click)="showPreview()"
+      >
         Preview
       </button>
     </div>
-    <!--Upload button (disable if preview has not been viewed)-->
+
+    <!-- Upload button -->
     <div class="col-6 d-grid text-end">
-      <button type="button"
-              class="btn btn-primary"
-              [disabled]="!previewUrl"
-              (click)="upload()">
+      <button
+        matTooltip="Upload the Previewed Image"
+        matTooltipPosition="below"
+        type="button"
+        class="btn btn-primary"
+        [disabled]="!selectedFile"
+        (click)="upload()"
+      >
         Upload
       </button>
     </div>
   </div>
-  <!--preview image display-->
+
+  <!-- Preview section -->
   @if (previewUrl) {
-    <div class="mt-3 text-center">
-      <img [src]="previewUrl"
-           class="img-thumbnail"
-           style="max-width: 200px" />
+    <div class="mt-3 text-center position-relative d-inline-block">
+
+      <!-- Delete (X) button -->
+      <button
+        matTooltip="Clear Preview"
+        matTooltipPosition="below"
+        type="button"
+        class="btn btn-sm btn-danger position-absolute"
+        style="top: -10px; right: -10px; border-radius: 50%; padding: 2px 6px;"
+        (click)="clearPreview()"
+      >
+        ×
+      </button>
+
+      <!-- Image preview -->
+      <img
+        matTooltip="Preview Image"
+        matTooltipPosition="below"
+        [src]="previewUrl"
+        class="img-thumbnail"
+        style="max-width: 200px"
+      />
     </div>
   }
 </div>
-
-
-
-
-
-
-
-
-<!--
-<div class="card p-3 shadow-sm">
-  <h5 class="mb-3">Upload a file</h5>
-
-  <div class="mb-3">
-    <input type="file" class="form-control" (change)="onFileSelected($event)" />
-  </div>
-
-  @if (previewUrl) {
-    <div class="mb-3">
-      <img [src]="previewUrl" class="img-thumbnail" style="max-width: 200px" alt="File preview" />
-    </div>
-  }
-
-  <button class="btn btn-primary" [disabled]="!selectedFile" (click)="upload()">Upload</button>
-</div>-->

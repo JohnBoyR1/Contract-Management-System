@@ -38,61 +38,91 @@
                             <!-- Profile Header -->
                             <div class="col-12 mb-4">
                                 <div class="profile-header position-relative mb-4">
-                                    <!--removing edit button--
-                                    <div class="position-absolute top-0 end-0 p-3">
-                                        <button class="btn btn-light"><i class="fas fa-edit me-2"></i>Edit Cover</button>
-                                    </div>-->
+                                   
                                 </div>
                                 <div class="text-center">
                                     <div class="position-relative d-inline-block">
-                                        <img [src]="profile.profileImageUrl()" class="rounded-circle profile-pic" [class]="workStatus()" alt="Profile Picture">
-                                       <!--- <button class="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle">
-                                            <i class="fas fa-camera"></i>
-                                        </button>-->
+                                        <img [src]="profile.profileImageUrl()" 
+                                        class="rounded-circle 
+                                        profile-pic" 
+                                        [class]="workStatus()" 
+                                        alt="Profile Picture"
+                                        matTooltip={{workStatusTooltip()}} 
+                                        matTooltipPosition="below"
+                                        >
                                     </div>
                                     <!--profile name under profile picture-->
                                     <h3 class="mt-3 mb-1 dispalyName">{{ isdisplayUserName() }}</h3>
                                     <p class="text-muted mb-3">{{ this.profile.userTitle() }}</p>
                                     <div class="d-flex justify-content-center gap-2 mb-4">
-                                        <button class="btn btn-outline-primary" (click)="openChat()"  ><i class="fas fa-envelope me-2" ></i>Message</button>
-                                        <button class="btn btn-primary"><i class="fas fa-user-plus me-2"></i>Add Favourite</button>
+                                        <button class="btn btn-outline-primary"
+                                        matTooltip="Send a direct message" 
+                                        matTooltipPosition="below"
+                                        (click)="openChat()"
+                                        >
+                                        <i class="fas fa-envelope me-2"></i>Message
+                                        </button>
+                                        <button class="btn btn-primary"
+                                        matTooltip="Ratings, 'experience with user'" 
+                                        matTooltipPosition="below"
+                                        >
+                                        <i class="bi bi-stars"></i>Add Ratings
+                                        </button>
                                     </div>
                                     <!-- Register buttons -->
-                                    <div class="text-center">
-                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.facebookLink())">
-
-                                        <i class="fab fa-facebook-f"></i>
-                                        </button>
-
-                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.userSocialEmailLink())">
-                                        <i class="bi bi-envelope-at"></i>
-                                        </button>
-
-                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.xLink())">
-                                        <i class="bi bi-twitter-x"></i>
-                                        </button>
-
-                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" (click)="openLink(this.profile.githubLink())">
-                                        <i class="fab fa-github"></i>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            data-mdb-button-init
-                                            data-mdb-ripple-init
+                                     <div class="text-center">
+                                    <button type="button"
                                             class="btn btn-link btn-floating mx-1"
-                                            (click)="openLink(this.profile.linkedinLink())"
-                                        >
-                                           <!---- <i class="bi bi-tools"></i>-->
-                                           <i class="bi bi-linkedin"></i>
-                                        </button>
-                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1" data-bs-toggle="modal" [attr.data-bs-target]="'#skills-modal-' + this.profile.userId()">
+                                            matTooltip="Open Facebook" 
+                                            matTooltipPosition="below"
+                                            (click)="openLink('facebook')">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-link btn-floating mx-1"
+                                            matTooltip="Open Social Email" 
+                                            matTooltipPosition="below"
+                                            (click)="openLink('Social Email')">
+                                        <i class="bi bi-envelope-at"></i>
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-link btn-floating mx-1"                
+                                            matTooltip="Open X Profile" 
+                                            matTooltipPosition="below"
+                                            (click)="openLink('X')">
+                                        <i class="bi bi-twitter-x"></i>
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-link btn-floating mx-1"
+                                            matTooltip="Open GitHub" 
+                                            matTooltipPosition="below"
+                                            (click)="openLink('Github')">
+                                        <i class="fab fa-github"></i>
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-link btn-floating mx-1"
+                                            matTooltip="Open LinkedIn" 
+                                            matTooltipPosition="below"
+                                            (click)="openLink('LinkedIn')">
+                                        <i class="bi bi-linkedin"></i>
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-link btn-floating mx-1"
+                                            matTooltip="View Profile Skills" 
+                                            matTooltipPosition="below"
+                                            [attr.data-bs-target]="'#skills-modal-' + this.profile.userId()"
+                                            data-bs-toggle="modal"
+                                            >
                                         <i class="bi bi-tools"></i>
-                                        </button>
-                                        
+                                    </button>
                                     </div>
-                                </div>
-                            </div>
-                            
+                                </div>        
+                            </div>    
                             <div class="mb-4">
                                 <div class="row g-3">
                                     <div class="col-md-6">

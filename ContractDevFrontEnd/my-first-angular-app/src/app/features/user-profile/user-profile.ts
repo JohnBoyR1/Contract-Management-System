@@ -1,10 +1,9 @@
 import { Component, signal} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule} from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import { ProfileStateService } from '../../core/services/profile-state.service';
 import { UserService } from '../../core/services/user.service';
 import { inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../core/auth/auth.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -32,7 +31,6 @@ export class UserProfile {
 
   //Inject the Router in the constructor
   constructor(
-    private http: HttpClient,
     private router: Router,
     private fb: FormBuilder, //FormBuilder is a built in angular ?
     public profile: ProfileStateService, //then I can use {{ profile.firstName() }} etc.
@@ -43,8 +41,18 @@ export class UserProfile {
       firstName: [''],
       lastName: [''],
       username: [''],
-      phoneNumber: [''],
-      email: [''],
+      phoneNumber: ['', 
+        [
+          Validators.required,
+          Validators.pattern(/^[0-9]{7,15}$/) // only digits, length 7–15
+        ]
+      ],
+      email: ['',
+        [
+          Validators.required,
+          Validators.email
+        ]
+      ],
       country: [''],
       description: [''],
       bio: [''],
@@ -231,8 +239,6 @@ export class UserProfile {
         console.error("Update failed:", err);
       }  
     });
-
-
   }
 }
 

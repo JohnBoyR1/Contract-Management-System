@@ -5,10 +5,11 @@ import { AuthService } from '../../core/auth/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { ProfileStateService } from '../../core/services/profile-state.service';
 import { CommonModule } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-social-media-links',
-  imports: [RouterLink, RouterLinkActive, ReactiveFormsModule, CommonModule],
+  imports: [RouterLink, RouterLinkActive, ReactiveFormsModule, CommonModule, MatTooltipModule],
   templateUrl: './social-media-links.html',
   styleUrl: './social-media-links.css',
 })

@@ -31,7 +31,7 @@
               <i class="fas fa-envelope me-2"></i>Message
             </button>
             <button class="btn btn-primary" matTooltip="Ratings, 'experience with user'" matTooltipPosition="below">
-              <i class="fas fa-user-plus me-2"></i>Add Ratings
+              <i class="bi bi-stars"></i>Add Ratings
             </button>
           </div>
         </div>
@@ -141,6 +141,8 @@
                             formControlName="phoneNumber"
                             type="phoneNumber"
                             class="form-control phoneNumber"
+                            matTooltip="Change/Enter a contact number"
+                            matTooltipPosition="below"
                             
                           />
                         </div>
@@ -157,12 +159,7 @@
                             @for (q of availableSkills; track $index) {
                               <option [value]="q">{{ q }}</option>
                             }
-                          </select>
-                          <!--<label class="form-label">Skills</label>
-                           @if (skillsControl.touched && skillsControl.hasError('required')) {
-                            <div class="text-danger">Skills are required.</div>
-                        }-->
-                          
+                          </select> 
                         </div>
 
                         <!-- show chosen skills live -->
