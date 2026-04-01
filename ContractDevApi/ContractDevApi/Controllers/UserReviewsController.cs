@@ -30,7 +30,7 @@ namespace ContractDevApi.Controllers
 
         [Authorize]
         [HttpPost("AddReview")]
-        public async Task<IActionResult> AddReview([FromForm] UserReviewDto dto)
+        public async Task<IActionResult> AddRating([FromForm] UserReviewDto dto)
         {
             //Checks UserReviewDto Model to ensure that all incoming values match the Model constraints
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
@@ -55,6 +55,13 @@ namespace ContractDevApi.Controllers
             if (reviewer == null || reviewee == null )
             {
                 return BadRequest(new { Message = "Unable to find accounts for review"});
+            }
+
+            var existingRating = await _context.UserRatings.FirstOrDefaultAsync(x => x.ReviewerId == dto.ReviewerId && x.UserAccountId == dto.RevieweeId);
+
+            if (existingRating != null)
+            {
+                _context.UserRatings.Remove(existingRating);
             }
 
             UserRating review = new UserRating
