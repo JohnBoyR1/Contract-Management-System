@@ -94,6 +94,19 @@
                     <!-- Personal Information -->
                     <div class="mb-4">
                       <h5 class="mb-4">social Media Links</h5>
+                      <!--verify a valid form has been sent banner pop up-->
+                      @if (updateSuccess()) {
+                        <div class="alert alert-success mt-3">
+                          <strong>Success!</strong> User Profile Updated....
+                        </div>
+                      }
+                      <!--if login fail-->
+                      @if (updateError()) {
+                        <div class="alert alert-danger mt-3 mb-4 animate__animated animate__fadeIn" role="alert">
+                          <i class="fas fa-exclamation-circle me-2"></i>
+                          {{ updateError() }}
+                        </div>
+                      }
                       <div class="row g-3">
                         <div class="col-md-6">
                           <label class="form-label">Facebook Link</label>
@@ -101,7 +114,6 @@
                             formControlName="facebookLink"
                             type="socialLink"
                             class="form-control"
-                            value=""
                             matTooltip="Enter your full Facebook profile URL" 
                             matTooltipPosition="below"
                             
@@ -113,7 +125,6 @@
                             formControlName="userSocialEmailLink"
                             type="socialLink"
                             class="form-control"
-                            value=""
                             matTooltip="Enter link or a public email page"
                             matTooltipPosition="above"
                           />
@@ -123,8 +134,7 @@
                           <input
                             formControlName="xLink"
                             type="socialLink"
-                            class="form-control"
-                            value=""
+                            class="form-control"                           
                             matTooltip="Enter your X (Twitter) profile URL"
                             matTooltipPosition="above"
                           />
@@ -134,8 +144,7 @@
                           <input
                             formControlName="gitHubLink"
                             type="socialLink"
-                            class="form-control"
-                            value=""
+                            class="form-control"                      
                             matTooltip="Paste your GitHub profile or repository link"
                             matTooltipPosition="above"
                           />
@@ -146,7 +155,6 @@
                             formControlName="linkedinLink"
                             type="socialLink"
                             class="form-control"
-                            value=""
                             matTooltip="Enter your full LinkedIn profile URL"
                             matTooltipPosition="above"
                           />

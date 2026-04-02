@@ -26,6 +26,8 @@
                   type="email"
                   id="form3Example3"
                   class="form-control"
+                  matTooltip="Enter valid email associated with your account" 
+                  matTooltipPosition="below"
                 />
                 <label class="form-label" for="form3Example3">Email address</label>
                 @if (
@@ -43,6 +45,8 @@
                   type="password"
                   id="form3Example4"
                   class="form-control"
+                  matTooltip="Enter valid current password" 
+                  matTooltipPosition="below"
                 />
                 <label class="form-label" for="form3Example4">Password</label>
                 @if (
@@ -57,8 +61,9 @@
                 <!-- Submit button -->
                 <button
                   type="submit"
-                  
                   class="login-btn btn btn-primary btn-block mb-4"
+                  matTooltip="Login Button" 
+                  matTooltipPosition="below"
                 >
                   Log In
                 </button>
@@ -66,10 +71,10 @@
                 <!-- Reset password button -->
                 <button
                   type="button"
-                  
                   class="login-reset-password-btn btn btn-primary btn-block mb-4"
-                  
                   routerLink="/password-recovery"
+                  matTooltip="'forgot your password?', reset" 
+                  matTooltipPosition="below"
                 >
                   Reset Password
                 </button>

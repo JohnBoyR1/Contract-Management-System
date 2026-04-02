@@ -75,7 +75,7 @@
                                             class="btn btn-link btn-floating mx-1"
                                             matTooltip="Open Facebook" 
                                             matTooltipPosition="below"
-                                            (click)="openLink('facebook')">
+                                            (click)="openLink(profile.facebookLink())">
                                         <i class="fab fa-facebook-f"></i>
                                     </button>
 
@@ -83,7 +83,7 @@
                                             class="btn btn-link btn-floating mx-1"
                                             matTooltip="Open Social Email" 
                                             matTooltipPosition="below"
-                                            (click)="openLink('Social Email')">
+                                            (click)="openLink(profile.userSocialEmailLink())">
                                         <i class="bi bi-envelope-at"></i>
                                     </button>
 
@@ -91,7 +91,7 @@
                                             class="btn btn-link btn-floating mx-1"                
                                             matTooltip="Open X Profile" 
                                             matTooltipPosition="below"
-                                            (click)="openLink('X')">
+                                            (click)="openLink(profile.xLink())">
                                         <i class="bi bi-twitter-x"></i>
                                     </button>
 
@@ -99,7 +99,7 @@
                                             class="btn btn-link btn-floating mx-1"
                                             matTooltip="Open GitHub" 
                                             matTooltipPosition="below"
-                                            (click)="openLink('Github')">
+                                            (click)="openLink(profile.githubLink())">
                                         <i class="fab fa-github"></i>
                                     </button>
 
@@ -107,7 +107,7 @@
                                             class="btn btn-link btn-floating mx-1"
                                             matTooltip="Open LinkedIn" 
                                             matTooltipPosition="below"
-                                            (click)="openLink('LinkedIn')">
+                                            (click)="openLink(profile.linkedinLink())">
                                         <i class="bi bi-linkedin"></i>
                                     </button>
 
@@ -115,7 +115,7 @@
                                             class="btn btn-link btn-floating mx-1"
                                             matTooltip="View Profile Skills" 
                                             matTooltipPosition="below"
-                                            [attr.data-bs-target]="'#skills-modal-' + this.profile.userId()"
+                                            [attr.data-bs-target]="'#skills-modal-' + profile.userId()"
                                             data-bs-toggle="modal"
                                             >
                                         <i class="bi bi-tools"></i>

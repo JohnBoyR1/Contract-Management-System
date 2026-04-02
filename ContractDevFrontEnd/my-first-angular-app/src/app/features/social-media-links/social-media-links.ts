@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router } from "@angular/router";
 import { FormGroup, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { AuthService } from '../../core/auth/auth.service';
@@ -6,6 +6,7 @@ import { UserService } from '../../core/services/user.service';
 import { ProfileStateService } from '../../core/services/profile-state.service';
 import { CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
 
 @Component({
   selector: 'app-social-media-links',
@@ -15,11 +16,21 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class SocialMediaLinks {
 
+
+  //dependency injection
   private authService = inject(AuthService);
   private userService = inject(UserService);
-  
   public profile = inject(ProfileStateService);
+  public router = inject(Router);
 
+  // signal states 
+  updateError = signal('');
+  updateSuccess = signal(false);
+
+  //unique id of the user
+  private id = this.authService.getCurrentUserId();
+
+  //formGroup data
   socialForm = new FormGroup({
     
     facebookLink: new FormControl(''),
@@ -30,17 +41,29 @@ export class SocialMediaLinks {
 
   });
 
+  ngOnInit() {
+   //populate the input fields related to the links with the data from the backend
+    this.userService.getProfile(this.id).subscribe(profile => {
+      this.socialForm.patchValue({
+        facebookLink: profile.socials["facebook"],
+        userSocialEmailLink: profile.socials["Social Email"],
+        xLink: profile.socials["X"],
+        gitHubLink: profile.socials["Github"],
+        linkedinLink: profile.socials["LinkedIn"]
+      });
+    });
+  }
+
   saveSocialForm(){
     
-    const id = this.authService.getCurrentUserId();
+   
     //make things easier 
     const raw = this.socialForm.value;
 
-    //form data
+    //form data to send to backend
     const formData = new FormData();
 
-   
-    formData.append('Id', id.toString());
+    formData.append('Id', this.id.toString());
 
     formData.append('FacebookLink', raw.facebookLink);
     
@@ -52,13 +75,39 @@ export class SocialMediaLinks {
     
     formData.append('LinkedinLink', raw.linkedinLink);
     
+     //updating backend and refreshing the global profile state
+    this.userService.updateProfile(formData).subscribe({
+      next: (response: any) => {
 
+        //check if any changes if not? inform user no changes were made
+        if(!response?.updated){
+          this.updateError.set("No changes were made.");
+          //display message and then reset page
+          setTimeout(() => {
+              this.updateError.set('');
+              //navigate to the social-media-links page
+              this.router.navigate(['/social-media-links']);
+            }, 2000);
+          return;
+        }
 
-    //updating backend and refreshing the global profile state
-    this.userService.updateProfile(formData).subscribe(() => {
-      this.userService.getProfile(id).subscribe((fullProfile) => {
-        this.profile.initProfile(fullProfile);
-      });
+        this.updateSuccess.set(true);
+        //display message and then reset page
+        setTimeout(() => {
+              this.updateSuccess.set(false);
+              //navigate to the profile-card page
+              this.router.navigate(['/profile-card']);
+            }, 2500);
+       
+        //refresh the profile
+        this.userService.getProfile(this.id).subscribe((fullProfile) => {
+          this.profile.initProfile(fullProfile);
+        });
+      },
+      error: (err) => {
+        this.updateError.set("Update failed: " + err.message || 'Failed to update profile');
+        console.error("Update failed:", err);
+      }  
     });
   }
 

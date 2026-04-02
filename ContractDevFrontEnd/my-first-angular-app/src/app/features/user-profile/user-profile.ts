@@ -19,7 +19,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class UserProfile {
 
   profileForm: FormGroup;
-
+  
   private userService = inject(UserService);
   private authService = inject(AuthService);
 

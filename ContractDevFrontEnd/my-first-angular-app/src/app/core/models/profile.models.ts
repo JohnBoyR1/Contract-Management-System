@@ -48,9 +48,13 @@ export interface Profile {
   socials: { [key: string]: string | null };
 
   // Review statistics (used for rating system)
-  numberOfReviews: number; //this will change soon!!!
-  totalReviewPoints: number;
-  averageReviewScore: number;
+  existingRating?: {
+    time_management_score: number;
+    payment_reliability_score: number;
+    communication_score: number;
+    collaboration_score: number;
+    recommendation_score: number;
+  } | null;
 
   //social media links
   facebookLink: string;

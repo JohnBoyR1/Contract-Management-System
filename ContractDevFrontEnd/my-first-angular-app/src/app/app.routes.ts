@@ -16,6 +16,7 @@ import { UserProfileDeletion } from './features/user-profile-deletion/user-profi
 import { UserProfileUploadImage } from './features/user-profile-upload-image/user-profile-upload-image';
 import { PasswordRecovery } from './features/password-recovery/password-recovery';
 import { SocialMediaLinks } from './features/social-media-links/social-media-links';
+import { StarRatingModal } from './core/shared/components/star-rating-modal/star-rating-modal';
 
 /*
   Defines all navigation paths in the Angular application
@@ -37,6 +38,7 @@ export const routes: Routes = [
   { path: 'userProfileUploadImage', component: UserProfileUploadImage },
   { path: 'password-recovery', component: PasswordRecovery },
   { path: 'social-media-links', component: SocialMediaLinks},
+  { path: 'star-rating', component: StarRatingModal},
 
   //protectd routes (locked by auth.guard.ts)
   { path: 'user-profile', component: UserProfile, canActivate: [authGuard] },

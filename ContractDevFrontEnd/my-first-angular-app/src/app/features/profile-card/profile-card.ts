@@ -90,6 +90,7 @@ export class ProfileCard {
   // Accepts a URL string from the template.
   openLink(url: string) {
     if (!url) return;
+    console.log(url + " _blank");
     window.open(url, '_blank');
   }
 

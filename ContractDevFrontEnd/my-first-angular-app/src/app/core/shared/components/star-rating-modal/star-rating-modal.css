@@ -1,0 +1,31 @@
+.rating-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rating-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.rating-row label {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.stars {
+  display: flex;
+  gap: 6px;
+}
+
+.stars i {
+  font-size: 28px;
+  color: #f5c518;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.stars i:hover {
+  transform: scale(1.2);
+}

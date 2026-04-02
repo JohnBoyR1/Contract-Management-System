@@ -1,161 +1,132 @@
--- ============================================
--- DATABASE SCHEMA: contractdev_db
--- ============================================
+--Chatroom table will be developed when a discussion is had about what exactly is required for a chatroom to function
+--create database contractdev_db;
 
--- ================
--- USER ACCOUNTS
--- ================
-CREATE TABLE user_accounts (
-    user_account_id SERIAL PRIMARY KEY,
-    user_signup_email VARCHAR(255) UNIQUE NOT NULL,
-    security_question TEXT NOT NULL,
-    security_answer TEXT NOT NULL,
-    hashed_password TEXT NOT NULL
+--User accounts creation statement
+create table user_accounts(
+user_account_id SERIAL not null primary key,--SERIAL will automatically incrament 
+user_signup_email varchar(255) unique not null,--Constraint below for our allowed email providers
+security_question text not null,--An ENUM was implemented here but it made no sense as the security questions are pre selected and are NOT inputted by the user
+security_answer text not null,
+hashed_password text not null--Of type text as the hashed password will vary in length between user
 );
 
--- Allowed email provider constraint
-ALTER TABLE user_accounts
-ADD CONSTRAINT allowed_email_providers CHECK (
-    user_signup_email ILIKE '%@gmail.com' OR
-    user_signup_email ILIKE '%@outlook.com' OR
-    user_signup_email ILIKE '%@icloud.com' OR
-    user_signup_email ILIKE '%@yahoo.com' OR
-    user_signup_email ILIKE '%@hotmail.com' OR
-    user_signup_email ILIKE '%@proton.me' OR
-    user_signup_email ILIKE '%@protonmail.com' OR
-    user_signup_email ILIKE '%@pm.me'
+--Allowed email provider check
+alter table user_accounts
+add constraint allowed_email_providers
+CHECK(
+--ILIKE the case sensitive version of LIKE. It is used to prevent an error from occuring if a user were to input for example email@Gmail.com https://www.datacamp.com/doc/postgresql/like
+user_signup_email ilike '%@gmail.com' or
+user_signup_email ilike '%@outlook.com' or
+user_signup_email ilike '%@icloud.com' or
+user_signup_email ilike '%@yahoo.com' or
+user_signup_email ilike '%@hotmail.com' or
+user_signup_email ilike '%@proton.me' or
+user_signup_email ilike '%@protonmail.com' or
+user_signup_email ilike '%@pm.me'
 );
 
--- ==========================
--- SOCIAL CONNECTIONS (1:1)
--- ==========================
-CREATE TABLE social_connections (
-    user_account_id INTEGER PRIMARY KEY,
-    facebook_link TEXT DEFAULT '',
-    user_social_email_link TEXT DEFAULT '',
-    x_link TEXT DEFAULT '',
-    github_link TEXT DEFAULT '',
-    linkedin_link TEXT DEFAULT '',
-
-    CONSTRAINT fk_account_social
-        FOREIGN KEY (user_account_id)
-        REFERENCES user_accounts(user_account_id)
-        ON DELETE CASCADE
+--Relational table for displaying the socials on the users profile
+create table social_connections(
+user_account_id integer not null primary key,
+facebook_link text default '' ,
+user_social_email_link text default '' ,
+x_link text default '' ,
+github_link text default '' ,
+linkedin_link text default '',
+constraint fk_account foreign key(user_account_id)--Foreign Key constraint
+references user_accounts(user_account_id)
+on delete cascade--When the user account gets deleted, every data entry associated with that user_account_id will get deleted
 );
 
-ALTER TABLE social_connections
-ADD CONSTRAINT check_facebook_link CHECK (facebook_link = '' OR facebook_link ILIKE '%facebook.com/%'),
-ADD CONSTRAINT check_x_link CHECK (x_link = '' OR x_link ILIKE '%x.com/%'),
-ADD CONSTRAINT check_github_link CHECK (github_link = '' OR github_link ILIKE '%github.com/%'),
-ADD CONSTRAINT check_linkedin_link CHECK (linkedin_link = '' OR linkedin_link ILIKE '%linkedin.com/in/%');
+alter table social_connections--Constraints to check if the social media links are empty or are the valid social media links 
+add constraint check_facebook_link check (facebook_link = '' or facebook_link ilike '%facebook.com/%'),
+add constraint check_x_link check (x_link = '' or x_link ilike '%x.com/%'),
+add constraint check_github_link check (github_link = '' or github_link ilike '%github.com/%'),
+add constraint check_linkedin_link check (linkedin_link = '' or linkedin_link ilike '%linkedin.com/in/%');
 
--- ==========================
--- USER REVIEWS (AGGREGATED)
--- ==========================
-CREATE TABLE user_reviews (
-    user_account_id INTEGER PRIMARY KEY,
-    number_of_reviews INTEGER NOT NULL DEFAULT 0,
-    total_review_points FLOAT NOT NULL DEFAULT 0,
-    average_review_score FLOAT NOT NULL DEFAULT 0,
-
-    CONSTRAINT fk_account_reviews
-        FOREIGN KEY (user_account_id)
-        REFERENCES user_accounts(user_account_id)
-        ON DELETE CASCADE
+--User review creation statement
+create table user_reviews(
+user_account_id integer not null primary key,
+number_of_reviews integer not null default 0,
+total_review_points float not null default 0,
+average_review_score float not null default 0,
+constraint fk_account foreign key(user_account_id)
+references user_accounts(user_account_id)
+on delete cascade
 );
 
--- ==========================
--- USER PROFILES (1:1)
--- ==========================
-CREATE TABLE user_profiles (
-    user_profile_id SERIAL PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    first_name VARCHAR(30) NOT NULL,
-    last_name VARCHAR(30) NOT NULL,
-    country VARCHAR(2) NOT NULL,
-    bio VARCHAR(255) NOT NULL,
-    phone_number VARCHAR(15) NOT NULL,
-    description VARCHAR(20),
-    user_title VARCHAR(50),
-    last_login TIMESTAMPTZ,
-    available_for_work BOOLEAN DEFAULT FALSE,
-    offering_work BOOLEAN DEFAULT FALSE,
-    username_display BOOLEAN DEFAULT FALSE,
-    hide_phone_number BOOLEAN DEFAULT FALSE,
-    profile_picture_filepath VARCHAR(512) NOT NULL,
-    profile_picture_extension VARCHAR(5) NOT NULL,
-    user_account_id INTEGER NOT NULL,
-
-    CONSTRAINT fk_account_profile
-        FOREIGN KEY (user_account_id)
-        REFERENCES user_accounts(user_account_id)
-        ON DELETE CASCADE
+--User profile creation statement
+create table user_profiles(
+user_profile_id SERIAL not null primary key,
+username varchar(50) unique not null,
+first_name varchar (30) not null,
+last_name varchar (30) not null,
+country varchar (2) not null,-- ISO 3166-1 alpha-2 is in use for the country codes
+bio varchar (255) not null,
+phone_number varchar(15) not null,
+description varchar(20),--Describes whether a user is a developer, client or both
+user_title varchar(50),--This is the title the user would provide themselves e.g. Senior Developer, Graduate etc...
+last_login timestamptz,--Displays the time and date that the user logged in last in the UTC timezone, which is the default timezeone for timestamptz https://www.datacamp.com/doc/postgresql/timestamptz 
+available_for_work boolean default false,
+offering_work boolean default false,
+username_display boolean default false,
+hide_phone_number boolean default false ,
+profile_picture_filepath varchar(512) not null,--Stores the filepath of the users profile picture
+profile_picture_extension varchar(5) not null,
+user_account_id integer not null,
+constraint fk_account foreign key(user_account_id)
+references user_accounts(user_account_id)
+on delete cascade
 );
 
--- ==========================
--- SKILLS DICTIONARY
--- ==========================
-CREATE TABLE skills (
-    skill_id SERIAL PRIMARY KEY,
-    skill_name VARCHAR(50) UNIQUE NOT NULL
+--Skills table creation statement, needed to associate each skill with an ID so that each user can be associated with a skill
+create table skills(
+skill_id SERIAL primary key,
+skill_name VARCHAR(50) unique not null
 );
 
-INSERT INTO skills (skill_name) VALUES
-('HTML'), ('CSS'), ('JavaScript'), ('Angular'), ('React'), ('Bootstrap'),
-('PostgreSQL'), ('MySQL'), ('MongoDB'), ('AWS'), ('Docker'), ('Java'),
-('Python'), ('C#'), ('C++'), ('C'), ('Rust'), ('Go'), ('TypeScript'),
-('Frontend'), ('Backend'), ('Cloud Developer'), ('Full Stack'),
-('Mobile Developer'), ('Database Developer'), ('Web Developer');
+--Insert skills into skills table
+insert into skills (skill_name) values
+('HTML'), ('CSS'), ('JavaScript'), ('Angular'), ('React'), ('Bootstrap'), 
+('PostgreSQL'), ('MySQL'), ('MongoDB'), ('AWS'), ('Docker'), ('Java'), 
+('Python'), ('C#'), ('C++'), ('C'), ('Rust'), ('Go'), ('TypeScript'), ('Frontend'), ('Backend'), ('Cloud Developer'), ('Full Stack'), ('Mobile Developer'), ('Database Developer'), ('Web Developer');
 
--- ==========================
--- USER SKILLS (MANY-TO-MANY)
--- ==========================
-CREATE TABLE user_skills (
-    user_account_id INTEGER NOT NULL,
-    skill_id INTEGER NOT NULL,
-    PRIMARY KEY (user_account_id, skill_id),
-
-    CONSTRAINT fk_account_skill
-        FOREIGN KEY (user_account_id)
-        REFERENCES user_accounts(user_account_id)
-        ON DELETE CASCADE,
-
-    CONSTRAINT fk_skill
-        FOREIGN KEY (skill_id)
-        REFERENCES skills(skill_id)
-        ON DELETE CASCADE
+--User skils creation statement, this table will act as the bridge between a user having skills
+create table user_skills(
+    user_account_id integer not null,
+    skill_id integer not null,
+    primary key(user_account_id, skill_id), -- Added comma
+    constraint fk_account foreign key(user_account_id)
+        references user_accounts(user_account_id)
+        on delete cascade, -- Added comma
+    constraint fk_skill foreign key(skill_id)
+        references skills(skill_id)
+        on delete cascade
 );
 
--- ============================================
--- INDIVIDUAL USER RATINGS (NEW TABLE)
--- ============================================
-CREATE TABLE user_individual_ratings (
-    rating_id SERIAL PRIMARY KEY,
-
-    reviewer_id INTEGER NOT NULL,
-    user_account_id INTEGER NOT NULL,
-
-    -- Category scores (1–5)
-    time_management_score INTEGER NOT NULL CHECK (time_management_score BETWEEN 1 AND 5),
-    payment_reliability_score INTEGER NOT NULL CHECK (payment_reliability_score BETWEEN 1 AND 5),
-    communication_score INTEGER NOT NULL CHECK (communication_score BETWEEN 1 AND 5),
-    collaboration_score INTEGER NOT NULL CHECK (collaboration_score BETWEEN 1 AND 5),
-    recommendation_score INTEGER NOT NULL CHECK (recommendation_score BETWEEN 1 AND 5),
-
-    -- Foreign keys
-    CONSTRAINT fk_reviewer
-        FOREIGN KEY (reviewer_id)
-        REFERENCES user_accounts(user_account_id)
-        ON DELETE CASCADE,
-
-    CONSTRAINT fk_target_account
-        FOREIGN KEY (user_account_id)
-        REFERENCES user_accounts(user_account_id)
-        ON DELETE CASCADE,
-
-    -- Prevent self-rating
-    CONSTRAINT no_self_rating CHECK (reviewer_id <> user_account_id),
-
-    -- Prevent duplicate ratings
-    CONSTRAINT unique_rating_pair UNIQUE (reviewer_id, user_account_id)
+-- User individual ratings table
+-- Stores the 5 specific community values as 1-5 star ratings
+create table user_individual_ratings(
+    rating_id SERIAL primary key,
+    reviewer_id integer not null,
+    user_account_id integer not null, -- The person being rated (Target)
+    -- Community Value Categories (Strictly 1-5)
+    time_management_score integer not null check (time_management_score between 1 and 5),
+    payment_reliability_score integer not null check (payment_reliability_score between 1 and 5),
+    communication_score integer not null check (communication_score between 1 and 5),
+    collaboration_score integer not null check (collaboration_score between 1 and 5),
+    recommendation_score integer not null check (recommendation_score between 1 and 5),
+    -- Verification of Constraints & Keys:
+    -- 1. Ensure the reviewer exists
+    constraint fk_reviewer foreign key(reviewer_id) 
+        references user_accounts(user_account_id) 
+        on delete cascade,
+    -- 2. Ensure the person being rated exists
+    constraint fk_target_account foreign key(user_account_id) 
+        references user_accounts(user_account_id) 
+        on delete cascade,
+    -- 3. Prevent a user from rating themselves
+    constraint no_self_rating check (reviewer_id <> user_account_id),
+    -- 4. Prevent duplicate ratings (One user can only rate another user once)
+    constraint unique_rating_pair unique (reviewer_id, user_account_id)
 );
