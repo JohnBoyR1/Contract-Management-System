@@ -44,11 +44,7 @@ namespace ContractDevApi.DTOs
 
         public Dictionary<string, string?> Socials { get; set; } = new Dictionary<string,string?>();
 
-        public int NumberOfReviews { get; set; }
-
-        public float TotalReviewPoints { get; set; }
-
-        public float AverageReviewScore { get; set; }
+        public Dictionary<string, decimal> Ratings { get; set; } = new Dictionary<string,decimal>();
 
         public List<string> Skills { get; set; } = new List<string>();
 
