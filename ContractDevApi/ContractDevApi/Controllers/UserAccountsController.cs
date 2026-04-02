@@ -135,20 +135,20 @@ namespace ContractDevApi.Controllers
 
             _context.SocialConnections.Add(socials);
 
-            var reviews = new UserReview
-            {
-                UserAccountId = user.UserAccountId,
-                NumberOfReviews = 0,
-                TotalReviewPoints = 0.0f,
-                AverageReviewScore = 0.0f,
-                UserAccount = user
-            };
+            //var reviews = new UserReview
+            //{
+            //    UserAccountId = user.UserAccountId,
+            //    NumberOfReviews = 0,
+            //    TotalReviewPoints = 0.0f,
+            //    AverageReviewScore = 0.0f,
+            //    UserAccount = user
+            //};
 
             //Try to update database -- if unsuccessful return error
             try {
                 await _context.SaveChangesAsync();
             } catch(DbUpdateException e) {
-                return Problem("System error occured. User Profile Update Failed.");
+                return Problem("System error occured. User Profile Update Failed."+e.Message);
             }
 
 
@@ -277,7 +277,7 @@ namespace ContractDevApi.Controllers
             try {
                 await _context.SaveChangesAsync();
             } catch(DbUpdateException e) {
-                return Problem("System error occured. User Profile Update Failed.");
+                return Problem("System error occured. User Profile Update Failed."+e.Message);
             }
 
 
@@ -320,10 +320,9 @@ namespace ContractDevApi.Controllers
             //If password does not pass verification, return error Status 401
             if (!validatePassword) return Unauthorized(new { Message = "Invalid Password" });
 
-            //there was not security answer validation implemented Jeán 01/04/2026(please verify Lorenzo)
-            // Validate security answer
-            if (!BCrypt.Net.BCrypt.Verify(dto.SecurityAnswer, userAccount.SecurityAnswer))
-            return Unauthorized(new { Message = "Invalid Security Answer" });
+            bool validateSecurityAnswer = BCrypt.Net.BCrypt.Verify(dto.SecurityAnswer.ToLower(), user.SecurityAnswer);
+
+            if (!validateSecurityAnswer) return Unauthorized(new { Message = "Invalid Security Answer" });
 
 
             _context.UserAccounts.Remove(userAccount);
@@ -333,7 +332,7 @@ namespace ContractDevApi.Controllers
             try {
                 await _context.SaveChangesAsync();
             } catch(DbUpdateException e) {
-                return Problem("System error occured. User Profile Update Failed.");
+                return Problem("System error occured. User Profile Update Failed."+e.Message);
             }
 
 
@@ -346,8 +345,15 @@ namespace ContractDevApi.Controllers
         //-----------------------
         private int? GetAuthenticatedUserId()
         {
+            //Retrieve current user from http context - bearer token authentication
+            var principal = HttpContext?.User;
+            if (principal?.Identity?.IsAuthenticated != true)
+            {
+                return null; //no bearer token is currently provided - return null for user id
+            }
+
             //The "sub" (subject) claim contains the user ID
-            var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            var userIdClaim = principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
 
             if (string.IsNullOrEmpty(userIdClaim))
             {
@@ -372,10 +378,12 @@ namespace ContractDevApi.Controllers
         [HttpGet("Validate")]
         public async Task<IActionResult> ValidateToken()
         {
+            var principal = HttpContext?.User;
+
             //Parse JWT claim to get authenticated user
             var userId = GetAuthenticatedUserId();
-            var email = User.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
-            var username = User.FindFirst("username")?.Value;
+            var email = principal?.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
+            var username = principal?.FindFirst("username")?.Value;
 
             if (userId == null)
             {
@@ -471,7 +479,7 @@ namespace ContractDevApi.Controllers
             try {
                 await _context.SaveChangesAsync();
             } catch(DbUpdateException e) {
-                return Problem("System error occured. User Profile Update Failed.");
+                return Problem("System error occured. User Profile Update Failed."+e.Message);
             }
 
 
