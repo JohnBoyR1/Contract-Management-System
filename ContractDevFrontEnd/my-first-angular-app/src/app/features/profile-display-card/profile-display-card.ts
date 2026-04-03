@@ -1,222 +1,175 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, WritableSignal, signal, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Profile } from '../../core/models/profile.models';
 import { ProfileStateService } from '../../core/services/profile-state.service';
-import { signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { ProfileSkillsModal } from '../../core/shared/components/profile-skills-modal/profile-skills-modal';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { StarRatingModal} from '../../core/shared/components/star-rating-modal/star-rating-modal';
+import { StarRatingModal } from '../../core/shared/components/star-rating-modal/star-rating-modal';
 import { UserService } from '../../core/services/user.service';
-import { WritableSignal } from '@angular/core';
-import { effect } from '@angular/core';
 import { SelectedProfileStateService } from '../../core/services/selected-profile-state.service';
 
 @Component({
   selector: 'app-profile-display-card',
+  standalone: true,
   imports: [CommonModule, ProfileSkillsModal, MatTooltipModule, StarRatingModal],
   templateUrl: './profile-display-card.html',
   styleUrl: './profile-display-card.css',
 })
-export class ProfileDisplayCard {
+export class ProfileDisplayCard implements OnInit {
+  // Input received from the parent Gallery component representing a single user
+  @Input() user!: Profile;
+
+  // Signal to store the computed full URL for the user's profile image
+  profileImageUrl = signal<string | null>(null);
+
+  // Signal to capture rating actions (add/remove) emitted from the rating modal
+  ratingAction: WritableSignal<{ type: 'add' | 'remove', payload: any } | null> = signal(null);
 
   constructor(
     private router: Router,
-    public profileState: ProfileStateService,
-    public selectedProfileState: SelectedProfileStateService,
-    public userService: UserService,
+    public profileState: ProfileStateService, // Global state for the logged-in user
+    public selectedProfileState: SelectedProfileStateService, // Shared state for the user currently in a modal
+    public userService: UserService // API service for database operations
   ) {
-    //reacting to signal
-    effect((): void => {
+    /**
+     * REACTIVE EFFECT: Handles the submission logic when ratingAction changes.
+     * Since every card in a gallery listens to this signal, the ID check is CRITICAL.
+     */
+    effect(() => {
       const action = this.ratingAction();
       if (!action) return;
 
+      // Identify which user is actually targeted in the modal right now
+      const selectedId = this.selectedProfileState.selectedProfile()?.userId;
+
+      // GUARD: Only the specific card instance matching the target user handles the API call.
+      // This prevents "Gallery Crossfire" where every card tries to submit the same rating.
+      if (this.user.userId !== selectedId) {
+        return; 
+      }
+
+      // Execute the appropriate API logic based on the action type
       if (action.type === 'add') {
         this.submitRating(action.payload);
+      } else if (action.type === 'remove') {
+        this.removeRating();
       }
 
-      if (action.type === 'remove') {
-        this.removeRating(action.payload);
-      }
-
-      this.ratingAction.set(null);
+      // Reset signal to null so the same action can be triggered again later if needed
+      this.ratingAction.set(null); 
     });
-
   }
 
-  // The user profile passed in from the parent component
-  @Input() user!: Profile;
-
-  // Reactive signal for the profile image URL
-  profileImageUrl = signal<string | null>(null);
-  // rating signal
-  ratingAction: WritableSignal<{ type: 'add' | 'remove', payload: any } | null> =
-  signal(null);
-
-  selectedProfile = signal<Profile | null>(null);
-
-  // Build the full profile image URL if one exists
-  // Otherwise fall back to null (default image in template)
   ngOnInit() {
+    // Construct the full image URL by prefixing the relative path with the API base URL
     if (this.user.profileImagePath) {
       this.profileImageUrl.set(`${environment.apiUrl}${this.user.profileImagePath}`);
     } else {
       this.profileImageUrl.set(null);
     }
-
-    this.loadExistingRating();
-
-
-    /* Load existing rating for THIS profile
-      this.userService.getUserRating(
-        this.profileState.userId(),   // reviewer
-        this.user.userId              // reviewee
-      ).subscribe(rating => {
-        this.user.existingRating = rating ?? null;
-      });*/
-
   }
 
+  /**
+   * Triggers the rating modal by setting the 'selectedProfile' in the global state.
+   */
+  openRatingModal() {
+    const myId = this.profileState.userId();
+    const targetId = this.user.userId;
 
-   // Display logic for phone number
-   //If the user hides their number, show placeholder text instead
-  displayPhoneNumber() {
-    return this.user.hidePhoneNumber ? "User Hidden" : this.user.phoneNumber;
-  }
-
-
-  //Display either username or full name depending on user preference.
-  displayUserNameProfile() {
-    return this.user.displayUserName
-      ? this.user.username
-      : `${this.user.firstName} ${this.user.lastName}`;
-  }
-
-  // Returns the user's selected skills.
-  // Used by the skills modal.
-  displayUserSkills() {
-    return this.user.selectedSkills;
-  }
-
-  //Determine the user's work status. 
-  workStatus() {
-    if (this.user?.availableForWork && this.user?.offeringWork) {
-      return "both";        // Hiring + looking for work
-    } else if (this.user?.availableForWork) {
-      return "available";   // Looking for work only
-    } else if (this.user?.offeringWork) {
-      return "offering";    // Hiring only
-    } else {
-      return "none";        // Neither
+    // UI-level guard to prevent users from rating their own profiles
+    if (myId === targetId) {
+      alert("You cannot rate yourself!");
+      return;
     }
-  }
 
-  //Tooltip text for the profile picture ring.
-  //Maps the workStatus() string to a readable label.
-   
-  workStatusTooltip(): string {
-    const status = this.workStatus();
-
-    switch (status) {
-      case 'both':
-        return 'Both Hiring and looking for work';
-      case 'available':
-        return 'Looking for work';
-      case 'offering':
-        return 'Hiring';
-      default:
-        return 'Status not set';
-    }
-  }
-
-  
-  //Opens a social link in a new tab.
-  openLink(platform: string) {
-    const url = this.user?.socials?.[platform];
-    if (url) {
-      window.open(url, '_blank');
-    }
-  }
-
-  loadExistingRating() {
-    const reviewerId = this.profileState.userId();   // logged-in user
-    const revieweeId = this.user.userId;             // profile being viewed
-
-    this.userService.getUserRating(reviewerId, revieweeId)
-      .subscribe(rating => {
-        this.user.existingRating = rating ?? null;
-      });
-  }
-
-
-  
-  submitRating(payload: any){
-    const formData = new FormData();
-
-    formData.append("ReviewerId", payload.profileState.userId());
-    formData.append("RevieweeId", payload.user.userId);
-    formData.append("TimeManagementScore", payload.time_management_score);
-    formData.append("PaymentReliabilityScore", payload.payment_reliability_score);
-    formData.append("CommunicationScore", payload.communication_score);
-    formData.append("CollaborationScore", payload.collaboration_score);
-    formData.append("RecomendationScore", payload.recommendation_score);
-
-    // Set the selected profile for the modal
+    // Updating this shared signal allows the modal (wherever it lives) to display this user's data
     this.selectedProfileState.setProfile(this.user);
+  }
 
+  /**
+   * Prepares and sends rating data to the backend using FormData.
+   * Logic is mapped to match the UserRatingDto.cs structure.
+   */
+  submitRating(payload: any) {
+    const loggedInId = this.profileState.userId(); // Current logged-in user (Reviewer)
+    const cardUserId = this.user.userId;           // This card's user (Reviewee)
 
+    // Final safety check to ensure IDs are not identical before making the network request
+    if (loggedInId === cardUserId) return;
+
+    const formData = new FormData();
+    // Identifiers for the relationship
+    formData.append("ReviewerId", String(loggedInId));
+    formData.append("RevieweeId", String(cardUserId));
+    
+    // Individual scores (Payload keys match the modal's internal model)
+    // Note: 'RecomendationScore' matches the spelling in the backend DTO
+    formData.append("TimeManagementScore", String(payload.time_management_score));
+    formData.append("PaymentReliabilityScore", String(payload.payment_reliability_score));
+    formData.append("CommunicationScore", String(payload.communication_score));
+    formData.append("CollaborationScore", String(payload.collaboration_score));
+    formData.append("RecomendationScore", String(payload.recommendation_score));
+
+    // Execute the POST request to AddRating
     this.userService.addRating(formData).subscribe({
       next: () => {
-        console.log("Rating saved successfully");
-        // optional: close modal, refresh UI, show toast
+        alert("Rating submitted successfully!");
       },
-      error: (err) => {
-        console.error("Rating failed", err);
-      }
+      error: (err) => console.error("Submission failed:", err)
     });
   }
 
-  removeRating(payload: any) {
+  /**
+   * Prepares and sends a deletion request to remove a specific rating.
+   */
+  removeRating() {
     const formData = new FormData();
-
-    formData.append("ReviewerId", payload.reviewerId.toString());
-    formData.append("RevieweeId", payload.user_account_id.toString());
+    // Reviewer and Reviewee pair uniquely identifies the rating record
+    formData.append("ReviewerId", this.profileState.userId().toString());
+    formData.append("RevieweeId", this.user.userId.toString());
 
     this.userService.removeRating(formData).subscribe({
-      next: () => {
-        console.log("Rating removed");
-        // optional: refresh UI, close modal, show toast
-      },
-      error: (err) => {
-        console.error("Failed to remove rating", err);
-      }
+      next: () => alert("Rating removed successfully"),
+      error: (err) => console.error("Rating removal failed", err)
     });
   }
 
+  // --- Display Helpers for the UI Template ---
+
+  /** Mask phone number if user preference 'hidePhoneNumber' is enabled */
+  displayPhoneNumber() { return this.user.hidePhoneNumber ? "User Hidden" : this.user.phoneNumber; }
   
-
-  //Opens the chat popup using named router outlets.
-  openChat() {
-    console.log("Opening chat popup...");
-    this.router.navigate([{ outlets: { popup: ['chat'] }}]);
+  /** Toggle between showing the Username or First + Last name based on user preference */
+  displayUserNameProfile() { 
+    return this.user.displayUserName ? this.user.username : `${this.user.firstName} ${this.user.lastName}`; 
   }
 
-  openRatingModal() {
-    // 1. Set the selected profile BEFORE the modal opens
-    this.selectedProfileState.setProfile(this.user);
-
-    // 2. Load the rating for THIS profile
-    const reviewerId = this.profileState.userId();   // logged-in user
-    const revieweeId = this.user.userId;             // profile being viewed
-
-    this.userService.getUserRating(reviewerId, revieweeId)
-      .subscribe(rating => {
-        this.user.existingRating = rating ?? null;
-
-        // 3. Update selected profile with rating
-        this.selectedProfileState.setProfile(this.user);
-      });
+  /** Logical check for the user's current employment/hiring status */
+  workStatus() {
+    if (this.user?.availableForWork && this.user?.offeringWork) return "both";
+    return this.user?.availableForWork ? "available" : (this.user?.offeringWork ? "offering" : "none");
   }
 
+  /** Returns human-readable strings for the CSS/Mat-Tooltip indicating work status */
+  workStatusTooltip(): string {
+    const status = this.workStatus();
+    switch (status) {
+      case 'both': return 'Both Hiring and looking for work';
+      case 'available': return 'Looking for work';
+      case 'offering': return 'Hiring';
+      default: return 'Status not set';
+    }
+  }
+
+  /** Opens social media links in a new browser tab safely */
+  openLink(platform: string) {
+    const url = this.user?.socials?.[platform];
+    if (url) window.open(url, '_blank');
+  }
+
+  /** Navigates to the chat outlet */
+  openChat() { this.router.navigate([{ outlets: { popup: ['chat'] }}]); }
 }
+

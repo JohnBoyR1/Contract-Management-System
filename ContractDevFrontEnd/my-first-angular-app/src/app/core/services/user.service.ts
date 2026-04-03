@@ -126,16 +126,6 @@ export class UserService {
     return this.http.post<void>(`${this.apiUrl}/UserRatings/AddRating`, data);
   }
 
-  // ----------------------------------------------------
-  // getUserRating (GALLERY)
-  // ----------------------------------------------------
-  // gets the other users ratings
-  getUserRating(reviewerId: number, revieweeId: number) {
-    return this.http.get<any>(
-      `${environment.apiUrl}/UserRatings/GetUserRating?reviewerId=${reviewerId}&revieweeId=${revieweeId}`
-    );
-  }
-
 
   // ----------------------------------------------------
   // removeRating (GALLERY)

@@ -47,6 +47,9 @@ export interface Profile {
   // Example: { facebook: "url", github: "url" }
   socials: { [key: string]: string | null };
 
+  // ADD THIS: This matches the "Ratings" dictionary from your C# ProfileResponseDto
+  ratings?: { [key: string]: number };
+
   // Review statistics (used for rating system)
   existingRating?: {
     time_management_score: number;

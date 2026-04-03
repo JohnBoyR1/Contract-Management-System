@@ -1,21 +1,14 @@
 
-
-@if (selectedProfileState.selectedProfile()) {
-  @let selected = selectedProfileState.selectedProfile();
-  <app-rating-modal
-    [user]="selected"
-    [existingRating]="selected.existingRating"
-  ></app-rating-modal>
-}
-
-<!--<app-rating-modal
-  [user]="user"
+<app-star-rating-modal 
+  [user]="user" 
   [reviewerId]="profileState.userId()"
   [existingRating]="user.existingRating"
-  [ratingAction]="ratingAction"
-  [setRatingAction]="ratingAction.set">
-</app-rating-modal>-->
+  (ratingAction)="ratingAction.set($event)"> 
+</app-star-rating-modal>
 
+<app-profile-skills-modal [user]="user">
+
+</app-profile-skills-modal>
 
 
 <div class="col-12  display-card">
