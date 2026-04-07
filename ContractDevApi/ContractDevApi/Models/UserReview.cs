@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContractDevApi.Models
 {
+    [Obsolete("This class is deprecated and will be removed. Please Use UserRating instead.")]
     public class UserReview
     {
         [Key]

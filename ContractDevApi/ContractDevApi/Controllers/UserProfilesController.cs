@@ -54,46 +54,63 @@ namespace ContractDevApi.Controllers
             var user = await _context.UserAccounts.FindAsync(dto.Id);
             var profile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
             var social = await _context.SocialConnections.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
-            var review = await _context.UserReviews.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
-            var skillIds = await _context.Skills.Where(x => dto.Skills.Contains(x.SkillName)).Select(x => x.SkillId).ToListAsync(); //Retrieve desired skill IDs from DB
-            var userSkills = await _context.UserSkills.Where(x => x.UserAccountId == dto.Id).Select(x => x.SkillId).ToListAsync(); //Retrieve all skills associated to user
 
-            if (user == null) return NotFound("User Not Found");
-            if (profile == null) return NotFound("Profile not found");
-            if (social == null) return NotFound("Social Connections not found");
-            if (skillIds == null) return BadRequest("Skills given not found in database");
+            if (user == null || profile == null || social == null) return NotFound("User not found");
+            //hasChanges flag to check if any changes have been made to the profile - prevent database update if no changes detected
+            bool hasChanges = false;
+            //Check each value to determine if not null and does not match existing value on database
+            if (dto.Username != null && profile.Username != dto.Username.ToLower()) { profile.Username = dto.Username.ToLower(); hasChanges = true; }
+            if (dto.Email != null && user.UserSignupEmail != dto.Email.ToLower()) { user.UserSignupEmail = dto.Email.ToLower(); hasChanges = true; }
+            if (dto.PhoneNumber != null && profile.PhoneNumber != dto.PhoneNumber) { profile.PhoneNumber = dto.PhoneNumber; hasChanges = true; }
+            if (dto.Country != null && profile.Country != dto.Country) { profile.Country = dto.Country; hasChanges = true; }
+            if (dto.Bio != null && profile.Bio != dto.Bio) { profile.Bio = dto.Bio; hasChanges = true; }
+            if (dto.AvailableForWork.HasValue && profile.AvailableForWork != dto.AvailableForWork) { profile.AvailableForWork = dto.AvailableForWork; hasChanges = true; }
+            if (dto.OfferingWork.HasValue && profile.OfferingWork != dto.OfferingWork) { profile.OfferingWork = dto.OfferingWork; hasChanges = true; }
+            if (dto.DisplayUserName.HasValue && profile.UsernameDisplay != dto.DisplayUserName) { profile.UsernameDisplay = dto.DisplayUserName; hasChanges = true; }
+            if (dto.HidePhoneNumber.HasValue && profile.HidePhoneNumber != dto.HidePhoneNumber) { profile.HidePhoneNumber = dto.HidePhoneNumber; hasChanges = true; }
+            if (dto.FacebookLink != null && social.FacebookLink != dto.FacebookLink) { social.FacebookLink = dto.FacebookLink; hasChanges = true; }
+            if (dto.UserSocialEmailLink != null && social.UserSocialEmailLink != dto.UserSocialEmailLink) { social.UserSocialEmailLink = dto.UserSocialEmailLink; hasChanges = true; }
+            if (dto.XLink != null && social.XLink != dto.XLink) { social.XLink = dto.XLink; hasChanges = true; }
+            if (dto.GithubLink != null && social.GithubLink != dto.GithubLink) { social.GithubLink = dto.GithubLink; hasChanges = true; }
+            if (dto.LinkedinLink != null && social.LinkedinLink != dto.LinkedinLink) { social.LinkedinLink = dto.LinkedinLink; hasChanges = true; }
 
-            if (dto.Username != null) profile.Username = dto.Username.ToLower();
-            if (dto.Email != null) user.UserSignupEmail = dto.Email.ToLower();
-            if (dto.PhoneNumber != null) profile.PhoneNumber = dto.PhoneNumber;
-            if (dto.Country != null) profile.Country = dto.Country;
-            if (dto.Description != null) profile.Description = dto.Description;
-            if (dto.UserTitle != null) profile.UserTitle = dto.UserTitle;
-            if (dto.Bio != null) profile.Bio = dto.Bio;
-            if (dto.AvailableForWork.HasValue) profile.AvailableForWork = dto.AvailableForWork;
-            if (dto.OfferingWork.HasValue) profile.OfferingWork = dto.OfferingWork;
-            if (dto.DisplayUserName.HasValue) profile.UsernameDisplay = dto.DisplayUserName;
-            if (dto.HidePhoneNumber.HasValue) profile.HidePhoneNumber = dto.HidePhoneNumber;
-            if (dto.FacebookLink != null) social.FacebookLink = dto.FacebookLink;
-            if (dto.UserSocialEmailLink != null) social.UserSocialEmailLink = dto.UserSocialEmailLink;
-            if (dto.XLink != null) social.XLink = dto.XLink;
-            if (dto.GithubLink != null) social.GithubLink = dto.GithubLink;
-            if (dto.LinkedinLink != null) social.LinkedinLink = dto.LinkedinLink;
+            //Get all skill IDs from database that match skills provided in DTO
+            var dbSkillIds = await _context.Skills
+                .Where(x => dto.Skills.Contains(x.SkillName))
+                .Select(x => x.SkillId).ToListAsync();
+            //Get all user skills current to db
+            var savedSkillIds = await _context.UserSkills
+                .Where(x => x.UserAccountId == dto.Id)
+                .Select(x => x.SkillId).ToListAsync();
+            //Check if skills list differs - by number of skills or by skill ids
+            bool skillsChanged = dbSkillIds.Count != savedSkillIds.Count || dbSkillIds.Except(savedSkillIds).Any();
 
-            var newSkillIds = skillIds.Except(userSkills).ToList();
-            var newUserSkills = newSkillIds.Select(id => new UserSkill
+            if (skillsChanged)
             {
-                UserAccountId = dto.Id,
-                SkillId = id
-            });
+                hasChanges = true;
+                //Remove existing skills
+                var oldSkills = _context.UserSkills.Where(x => x.UserAccountId == dto.Id);
+                _context.UserSkills.RemoveRange(oldSkills);
+                //Add new skills
+                var newSkills = dbSkillIds.Select(skillId => new UserSkill
+                {
+                    UserAccountId = dto.Id,
+                    SkillId = skillId
+                });
+                _context.UserSkills.AddRange(newSkills);
+            }
 
-            _context.UserSkills.AddRange(newUserSkills);
+            //Final check for changes
+            if (!hasChanges)
+            {
+                return BadRequest(new { Message = "No changes detected in profile update" });
+            }
 
             //Try to update database -- if unsuccessful return error
             try {
                 await _context.SaveChangesAsync();
             } catch(DbUpdateException e) {
-                return Problem("System error occured. User Profile Update Failed.");
+                return Problem("System error occured. User Profile Update Failed."+e.Message);
             }
 
 
@@ -130,9 +147,18 @@ namespace ContractDevApi.Controllers
             var social = await _context.SocialConnections.FirstOrDefaultAsync(x => x.UserAccountId == id);
             if (social == null) social = new SocialConnection();
 
-            var review = await _context.UserReviews.FirstOrDefaultAsync(x => x.UserAccountId == id);
-            if (review == null) review = new UserReview();
-
+            var ratings = await _context.UserRatings.Where(x => x.UserAccountId == id).ToListAsync();
+            var hasRatings = ratings.Count > 0;
+            var timeManagement = hasRatings ? Math.Round((decimal)ratings.Average(x => x.TimeManagementScore), 1) : 0m;
+            var paymentReliability = hasRatings ? Math.Round((decimal)ratings.Average(x => x.PaymentReliabilityScore), 1) : 0m;
+            var communication = hasRatings ? Math.Round((decimal)ratings.Average(x => x.CommunicationScore), 1) : 0m;
+            var collaboration = hasRatings ? Math.Round((decimal)ratings.Average(x => x.CollaborationScore), 1) : 0m;
+            var recommendation = hasRatings ? Math.Round((decimal)ratings.Average(x => x.RecommendationScore), 1) : 0m;
+            var totalReviewScore = hasRatings
+                ? Math.Round((decimal)ratings.Average(x =>
+                    (x.TimeManagementScore + x.PaymentReliabilityScore + x.CommunicationScore + x.CollaborationScore + x.RecommendationScore) / 5.0), 1)
+                : 0m;
+            
             var skills = await _context.UserSkills.Where(x => x.UserAccountId == id).Select(x => x.Skill!.SkillName).ToListAsync();
 
             var response = new ProfileResponseDto
@@ -159,9 +185,14 @@ namespace ContractDevApi.Controllers
                         { "Github", social.GithubLink },
                         { "LinkedIn", social.LinkedinLink }
                 },
-                NumberOfReviews = review.NumberOfReviews,
-                TotalReviewPoints = review.TotalReviewPoints,
-                AverageReviewScore = review.AverageReviewScore,
+                Ratings = new Dictionary<string, decimal> {
+                    { "Time Management", timeManagement },
+                    { "Payment Reliability", paymentReliability },
+                    { "Communication", communication },
+                    { "Collaboration", collaboration },
+                    { "Recommendation", recommendation },
+                    { "Total Review Score", totalReviewScore }
+                },
                 Skills = skills
             };
 
@@ -181,7 +212,8 @@ namespace ContractDevApi.Controllers
             var profiles = await _context.UserProfiles.ToListAsync();
             var users = await _context.UserAccounts.ToListAsync();
             var socials = await _context.SocialConnections.ToListAsync();
-            var reviews = await _context.UserReviews.ToListAsync();
+            var ratings = await _context.UserRatings.ToListAsync();
+            
             var skills =
                 from us in _context.UserSkills
                 join s in _context.Skills on us.SkillId equals s.SkillId
@@ -192,51 +224,72 @@ namespace ContractDevApi.Controllers
                     Skills = g.ToList()
                 };
 
+            //Get average of all scores per user
+            var aggregatedRatings =
+                from rating in ratings
+                group rating by rating.UserAccountId into g
+                select new
+                {
+                    UserAccountId = g.Key,
+                    TimeManagement = Math.Round((decimal)g.Average(x => x.TimeManagementScore), 1),
+                    PaymentReliability = Math.Round((decimal)g.Average(x => x.PaymentReliabilityScore), 1),
+                    Communication = Math.Round((decimal)g.Average(x => x.CommunicationScore), 1),
+                    Collaboration = Math.Round((decimal)g.Average(x => x.CollaborationScore), 1),
+                    Recommendation = Math.Round((decimal)g.Average(x => x.RecommendationScore), 1),
+                    TotalReviewScore = Math.Round((decimal)g.Average(x =>
+                        (x.TimeManagementScore + x.PaymentReliabilityScore + x.CommunicationScore + x.CollaborationScore + x.RecommendationScore) / 5.0), 1)
+                };
+
             var response =
                 from u in users
-                join p in profiles
-                    on u.UserAccountId equals p.UserAccountId
+                    join p in profiles 
+                    on u.UserAccountId equals p.UserAccountId 
                     into profileJoin
                 from p in profileJoin.DefaultIfEmpty()
-                join s in socials
-                    on u.UserAccountId equals s.UserAccountId
+                    join s in socials 
+                    on u.UserAccountId equals s.UserAccountId 
                     into socialJoin
                 from s in socialJoin.DefaultIfEmpty()
-                join r in reviews
-                    on u.UserAccountId equals r.UserAccountId
-                    into reviewJoin
-                from r in reviewJoin.DefaultIfEmpty()
-                join sk in skills
-                    on u.UserAccountId equals sk.UserAccountId
+                    join ar in aggregatedRatings 
+                    on u.UserAccountId equals ar.UserAccountId 
+                    into ratingJoin
+                from ar in ratingJoin.DefaultIfEmpty()
+                    join sk in skills on u.UserAccountId 
+                    equals sk.UserAccountId 
                     into skillJoin
                 from sk in skillJoin.DefaultIfEmpty()
                 select new ProfileResponseDto
                 {
                     UserId = u.UserAccountId,
-                    FirstName = p.FirstName,
-                    LastName = p.LastName,
-                    Username = p.Username,
+                    FirstName = p?.FirstName ?? string.Empty,
+                    LastName = p?.LastName ?? string.Empty,
+                    Username = p?.Username ?? string.Empty,
                     Email = u.UserSignupEmail,
-                    PhoneNumber = p.PhoneNumber,
-                    Country = p.Country,
-                    Description = p.Description,
-                    UserTitle = p.UserTitle,
-                    Bio = p.Bio,
-                    AvailableForWork = p.AvailableForWork,
-                    OfferingWork = p.OfferingWork,
-                    DisplayUserName = p.UsernameDisplay,
-                    HidePhoneNumber = p.HidePhoneNumber,
-                    ProfileImagePath = p.ProfilePictureFilepath,
+                    PhoneNumber = p?.PhoneNumber ?? string.Empty,
+                    Country = p?.Country ?? string.Empty,
+                    Description = p?.Description ?? string.Empty,
+                    UserTitle = p?.UserTitle ?? string.Empty,
+                    Bio = p?.Bio ?? string.Empty,
+                    AvailableForWork = p?.AvailableForWork,
+                    OfferingWork = p?.OfferingWork,
+                    DisplayUserName = p?.UsernameDisplay,
+                    HidePhoneNumber = p?.HidePhoneNumber,
+                    ProfileImagePath = p?.ProfilePictureFilepath ?? string.Empty,
                     Socials = new Dictionary<string, string?> {
-                            { "facebook", s.FacebookLink },
-                            { "Social Email", s.UserSocialEmailLink },
-                            { "X", s.XLink },
-                            { "Github", s.GithubLink },
-                            { "LinkedIn", s.LinkedinLink }
+                            { "facebook", s?.FacebookLink },
+                            { "Social Email", s?.UserSocialEmailLink },
+                            { "X", s?.XLink },
+                            { "Github", s?.GithubLink },
+                            { "LinkedIn", s?.LinkedinLink }
                     },
-                    NumberOfReviews = r?.NumberOfReviews ?? 0, 
-                    TotalReviewPoints = r?.TotalReviewPoints ?? 0,
-                    AverageReviewScore = r?.AverageReviewScore ?? 0,
+                    Ratings = new Dictionary<string, decimal> {
+                        { "Time Management", ar?.TimeManagement ?? 0m},
+                        { "Payment Reliability", ar?.PaymentReliability ?? 0m},
+                        { "Communication", ar?.Communication ?? 0m},
+                        { "Collaboration", ar?.Collaboration ?? 0m},
+                        { "Recommendation", ar?.Recommendation ?? 0m},
+                        { "Total Review Score", ar?.TotalReviewScore ?? 0m}
+                    },
                     Skills = sk?.Skills ?? new List<string>()
                 };
 
@@ -335,7 +388,7 @@ namespace ContractDevApi.Controllers
             try {
                 await _context.SaveChangesAsync();
             } catch(DbUpdateException e) {
-                return Problem("System error occured. User Profile Update Failed.");
+                return Problem("System error occured. User Profile Update Failed."+e.Message);
             }
 
 
@@ -348,8 +401,15 @@ namespace ContractDevApi.Controllers
         //-----------------------
         private int? GetAuthenticatedUserId()
         {
-            // The "sub" (subject) claim contains the user ID
-            var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            //Retrieve current user from http context - bearer token authentication
+            var principal = HttpContext?.User;
+            if (principal?.Identity?.IsAuthenticated != true)
+            {
+                return null; //no bearer token is currently provided - return null for user id
+            }
+
+            //The "sub" (subject) claim contains the user ID
+            var userIdClaim = principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
 
             if (string.IsNullOrEmpty(userIdClaim))
             {

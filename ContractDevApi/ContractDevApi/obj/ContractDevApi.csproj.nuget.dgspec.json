@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "C:\\Users\\gamer\\Desktop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj": {}
   },
   "projects": {
@@ -12,9 +13,28 @@
         "projectPath": "C:\\Users\\gamer\\Desktop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
         "packagesPath": "C:\\Users\\gamer\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\gamer\\Desktop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\obj\\",
+=======
+    "C:\\Users\\moare\\Documents\\GitHub\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\moare\\Documents\\GitHub\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\moare\\Documents\\GitHub\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
+        "projectName": "ContractDevApi",
+        "projectPath": "C:\\Users\\moare\\Documents\\GitHub\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
+        "packagesPath": "C:\\Users\\moare\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\moare\\Documents\\GitHub\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\obj\\",
+>>>>>>> main
         "projectStyle": "PackageReference",
         "configFilePaths": [
+<<<<<<< HEAD
           "C:\\Users\\gamer\\AppData\\Roaming\\NuGet\\NuGet.Config"
+=======
+          "C:\\Users\\moare\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+>>>>>>> main
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -62,19 +82,19 @@
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[10.0.2, )"
+              "version": "[10.0.1, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[10.0.2, )"
+              "version": "[10.0.1, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[10.0.2, )"
+              "version": "[10.0.1, )"
             },
             "Microsoft.IdentityModel.Tokens": {
               "target": "Package",
@@ -82,7 +102,7 @@
             },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
-              "version": "[10.0.2, )"
+              "version": "[10.0.1, )"
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
