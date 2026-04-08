@@ -147,7 +147,7 @@ namespace ContractDevApi.Controllers
             var social = await _context.SocialConnections.FirstOrDefaultAsync(x => x.UserAccountId == id);
             if (social == null) social = new SocialConnection();
 
-            var ratings = await _context.UserRatings.Where(x => x.UserAccountId == id).ToListAsync();
+            var ratings = await _context.UserRatings.Where(x => x.RevieweeId == id).ToListAsync();
             var hasRatings = ratings.Count > 0;
             var timeManagement = hasRatings ? Math.Round((decimal)ratings.Average(x => x.TimeManagementScore), 1) : 0m;
             var paymentReliability = hasRatings ? Math.Round((decimal)ratings.Average(x => x.PaymentReliabilityScore), 1) : 0m;
@@ -227,7 +227,7 @@ namespace ContractDevApi.Controllers
             //Get average of all scores per user
             var aggregatedRatings =
                 from rating in ratings
-                group rating by rating.UserAccountId into g
+                group rating by rating.RevieweeId into g
                 select new
                 {
                     UserAccountId = g.Key,
