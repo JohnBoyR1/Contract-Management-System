@@ -109,3 +109,39 @@ constraint fk_skill foreign key(skill_id)
 references skills(skill_id)
 on delete cascade
 );
+
+--User Rating Table Creation Statement
+create table user_individual_ratings(
+    rating_id SERIAL primary key,
+    reviewer_id integer not null,
+    reviewee_id integer not null, -- The person being rated (Target)
+    
+    -- Community Value Categories (Strictly 1-5)
+    time_management_score integer not null check (time_management_score between 1 and 5),
+    payment_reliability_score integer not null check (payment_reliability_score between 1 and 5),
+    communication_score integer not null check (communication_score between 1 and 5),
+    collaboration_score integer not null check (collaboration_score between 1 and 5),
+    recommendation_score integer not null check (recommendation_score between 1 and 5),
+
+    -- Verification of Constraints & Keys:
+    -- 1. Ensure the reviewer exists
+    constraint fk_reviewer foreign key(reviewer_id) 
+        references user_accounts(user_account_id) 
+        on delete cascade,
+        
+    -- 2. Ensure the person being rated exists
+    constraint fk_target_account foreign key(reviewee_id) 
+        references user_accounts(user_account_id) 
+        on delete cascade,
+
+    -- 3. Prevent a user from rating themselves
+    constraint no_self_rating check (reviewer_id <> user_account_id),
+
+    -- 4. Prevent duplicate ratings (One user can only rate another user once)
+    constraint unique_rating_pair unique (reviewer_id, user_account_id)
+);
+
+--Query optimisation
+create index idx_user_auth on user_accounts(user_signup_email);
+create index idx_user_skills on user_skills(skill_id, reviewee_id);
+create index idx_user_socials on social_connections(reviewee_id);

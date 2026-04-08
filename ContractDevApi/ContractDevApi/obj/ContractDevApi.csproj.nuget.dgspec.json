@@ -1,6 +1,19 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
+    "C:\\Users\\gamer\\Desktop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\gamer\\Desktop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\gamer\\Desktop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
+        "projectName": "ContractDevApi",
+        "projectPath": "C:\\Users\\gamer\\Desktop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
+        "packagesPath": "C:\\Users\\gamer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\gamer\\Desktop\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\obj\\",
+=======
     "C:\\Users\\moare\\Documents\\GitHub\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj": {}
   },
   "projects": {
@@ -12,20 +25,21 @@
         "projectPath": "C:\\Users\\moare\\Documents\\GitHub\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\ContractDevApi.csproj",
         "packagesPath": "C:\\Users\\moare\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\moare\\Documents\\GitHub\\Team_10_Group_Project\\ContractDevApi\\ContractDevApi\\obj\\",
+>>>>>>> main
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
+<<<<<<< HEAD
+          "C:\\Users\\gamer\\AppData\\Roaming\\NuGet\\NuGet.Config"
+=======
           "C:\\Users\\moare\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+>>>>>>> main
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
