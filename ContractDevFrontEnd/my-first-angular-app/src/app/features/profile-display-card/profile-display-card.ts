@@ -10,6 +10,7 @@ import { StarRatingModal } from '../../core/shared/components/star-rating-modal/
 import { UserService } from '../../core/services/user.service';
 import { SelectedProfileStateService } from '../../core/services/selected-profile-state.service';
 
+
 @Component({
   selector: 'app-profile-display-card',
   standalone: true,
@@ -27,6 +28,7 @@ export class ProfileDisplayCard implements OnInit {
   // Signal to capture rating actions (add/remove) emitted from the rating modal
   ratingAction: WritableSignal<{ type: 'add' | 'remove', payload: any } | null> = signal(null);
 
+
   constructor(
     private router: Router,
     public profileState: ProfileStateService, // Global state for the logged-in user
@@ -34,8 +36,8 @@ export class ProfileDisplayCard implements OnInit {
     public userService: UserService // API service for database operations
   ) {
     /**
-     * REACTIVE EFFECT: Handles the submission logic when ratingAction changes.
-     * Since every card in a gallery listens to this signal, the ID check is CRITICAL.
+      REACTIVE EFFECT: Handles the submission logic when ratingAction changes.
+      Since every card in a gallery listens to this signal, the ID check is CRITICAL.
      */
     effect(() => {
       const action = this.ratingAction();
@@ -71,12 +73,12 @@ export class ProfileDisplayCard implements OnInit {
     }
   }
 
-  /**
-   * Triggers the rating modal by setting the 'selectedProfile' in the global state.
-   */
-  openRatingModal() {
+  
+   //Triggers the rating modal by setting the 'selectedProfile' in the global state.
+   
+  openRatingModal(user: Profile) {
     const myId = this.profileState.userId();
-    const targetId = this.user.userId;
+    const targetId = user.userId;
 
     // UI-level guard to prevent users from rating their own profiles
     if (myId === targetId) {
@@ -85,12 +87,12 @@ export class ProfileDisplayCard implements OnInit {
     }
 
     // Updating this shared signal allows the modal (wherever it lives) to display this user's data
-    this.selectedProfileState.setProfile(this.user);
+    this.selectedProfileState.setProfile({ ...user});
   }
 
-  /**
-   * Prepares and sends rating data to the backend using FormData.
-   * Logic is mapped to match the UserRatingDto.cs structure.
+  /*
+    Prepares and sends rating data to the backend using FormData.
+    Logic is mapped to match the UserRatingDto.cs structure.
    */
   submitRating(payload: any) {
     const loggedInId = this.profileState.userId(); // Current logged-in user (Reviewer)
@@ -121,9 +123,8 @@ export class ProfileDisplayCard implements OnInit {
     });
   }
 
-  /**
-   * Prepares and sends a deletion request to remove a specific rating.
-   */
+
+   // Prepares and sends a deletion request to remove a specific rating.
   removeRating() {
     const formData = new FormData();
     // Reviewer and Reviewee pair uniquely identifies the rating record
@@ -136,23 +137,22 @@ export class ProfileDisplayCard implements OnInit {
     });
   }
 
-  // --- Display Helpers for the UI Template ---
 
-  /** Mask phone number if user preference 'hidePhoneNumber' is enabled */
+  /*Mask phone number if user preference 'hidePhoneNumber' is enabled */
   displayPhoneNumber() { return this.user.hidePhoneNumber ? "User Hidden" : this.user.phoneNumber; }
   
-  /** Toggle between showing the Username or First + Last name based on user preference */
+  /*Toggle between showing the Username or First + Last name based on user preference */
   displayUserNameProfile() { 
     return this.user.displayUserName ? this.user.username : `${this.user.firstName} ${this.user.lastName}`; 
   }
 
-  /** Logical check for the user's current employment/hiring status */
+  /*Logical check for the user's current employment/hiring status */
   workStatus() {
     if (this.user?.availableForWork && this.user?.offeringWork) return "both";
     return this.user?.availableForWork ? "available" : (this.user?.offeringWork ? "offering" : "none");
   }
 
-  /** Returns human-readable strings for the CSS/Mat-Tooltip indicating work status */
+  /*Returns human-readable strings for the CSS/Mat-Tooltip indicating work status */
   workStatusTooltip(): string {
     const status = this.workStatus();
     switch (status) {
@@ -163,13 +163,13 @@ export class ProfileDisplayCard implements OnInit {
     }
   }
 
-  /** Opens social media links in a new browser tab safely */
+  /*Opens social media links in a new browser tab safely */
   openLink(platform: string) {
     const url = this.user?.socials?.[platform];
     if (url) window.open(url, '_blank');
   }
 
-  /** Navigates to the chat outlet */
+  /*Navigates to the chat outlet */
   openChat() { this.router.navigate([{ outlets: { popup: ['chat'] }}]); }
 }
 

@@ -1,10 +1,12 @@
 
 <app-star-rating-modal 
-  [user]="user" 
+  [user]="user"
   [reviewerId]="profileState.userId()"
-  [existingRating]="user.existingRating"
-  (ratingAction)="ratingAction.set($event)"> 
+  [existingRating]="user?.existingRating"
+  [ratingAverages]="user?.ratings"
+  (ratingAction)="ratingAction.set($event)">
 </app-star-rating-modal>
+
 
 <app-profile-skills-modal [user]="user">
 
@@ -45,8 +47,9 @@
               <button class="btn btn-primary"
               data-bs-toggle="modal"
               data-bs-target="#ratingModal"
+              [attr.data-bs-target]="'#rating-modal-' + user.userId"
               [disabled]="user.userId === profileState.userId()"
-              (click)="openRatingModal()"
+              (click)="openRatingModal(user)"
 
               matTooltip="Ratings, 'experience with user'" 
               matTooltipPosition="below"
@@ -60,6 +63,7 @@
                       class="btn btn-link btn-floating mx-1"
                       matTooltip="Open Facebook" 
                       matTooltipPosition="below"
+                      [disabled]="!this.user?.socials?.facebook"
                       (click)="openLink('facebook')">
                 <i class="fab fa-facebook-f"></i>
               </button>
@@ -68,6 +72,7 @@
                       class="btn btn-link btn-floating mx-1"
                       matTooltip="Open Social Email" 
                       matTooltipPosition="below"
+                      [disabled]="!this.user?.socials?.['Social Email']"
                       (click)="openLink('Social Email')">
                 <i class="bi bi-envelope-at"></i>
               </button>
@@ -76,6 +81,7 @@
                       class="btn btn-link btn-floating mx-1"                
                       matTooltip="Open X Profile" 
                       matTooltipPosition="below"
+                      [disabled]="!this.user?.socials?.X"
                       (click)="openLink('X')">
                 <i class="bi bi-twitter-x"></i>
               </button>
@@ -84,6 +90,7 @@
                       class="btn btn-link btn-floating mx-1"
                       matTooltip="Open GitHub" 
                       matTooltipPosition="below"
+                      [disabled]="!this.user?.socials?.Github"
                       (click)="openLink('Github')">
                 <i class="fab fa-github"></i>
               </button>
@@ -92,6 +99,7 @@
                       class="btn btn-link btn-floating mx-1"
                       matTooltip="Open LinkedIn" 
                       matTooltipPosition="below"
+                      [disabled]="!this.user?.socials?.LinkedIn"
                       (click)="openLink('LinkedIn')">
                 <i class="bi bi-linkedin"></i>
               </button>

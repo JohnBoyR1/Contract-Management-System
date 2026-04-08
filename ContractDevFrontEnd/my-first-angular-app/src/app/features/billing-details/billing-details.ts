@@ -1,3 +1,4 @@
+// NOT USED FOR FUTURE USE //
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ProfileStateService } from '../../core/services/profile-state.service';
