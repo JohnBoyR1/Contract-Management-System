@@ -218,17 +218,17 @@ export class UserProfile {
               //navigate to the home page
               this.router.navigate(['/user-profile']);
             }, 2500);
-          return;
-        }
+            
+        }else{
 
-        this.updateSuccess.set(true);
-        //display message and then reset page
-        setTimeout(() => {
-              this.updateSuccess.set(false);
-              //navigate to the home page
-              this.router.navigate(['/user-profile']);
-            }, 2500);
-       
+          this.updateSuccess.set(true);
+          //display message and then reset page
+          setTimeout(() => {
+                this.updateSuccess.set(false);
+                //navigate to the home page
+                this.router.navigate(['/user-profile']);
+              }, 2000);
+        }   
         //refresh the profile
         this.userService.getProfile(id!).subscribe((fullProfile) => {
           this.profile.initProfile(fullProfile);

@@ -33,7 +33,7 @@ namespace ContractDevApi.Controllers
         //Update Profle - Requires that logged in user is authenticated, Checks JWT and Cookie auth
         //Recieves id of user from Front-End and updated profile fields
         //Empty or null values are ignored for updated fields - prevents dataloss
-        /*-----------------------
+        //-----------------------
         [Authorize]
         [HttpPut("UpdateProfile")]
         public async Task<IActionResult> UpdateProfile([FromForm] ProfileUpdateDto dto)
@@ -63,6 +63,7 @@ namespace ContractDevApi.Controllers
             if (dto.Email != null && user.UserSignupEmail != dto.Email.ToLower()) { user.UserSignupEmail = dto.Email.ToLower(); hasChanges = true; }
             if (dto.PhoneNumber != null && profile.PhoneNumber != dto.PhoneNumber) { profile.PhoneNumber = dto.PhoneNumber; hasChanges = true; }
             if (dto.Country != null && profile.Country != dto.Country) { profile.Country = dto.Country; hasChanges = true; }
+            if (dto.UserTitle != null && profile.UserTitle != dto.UserTitle) { profile.UserTitle = dto.UserTitle; hasChanges = true; }
             if (dto.Bio != null && profile.Bio != dto.Bio) { profile.Bio = dto.Bio; hasChanges = true; }
             if (dto.AvailableForWork.HasValue && profile.AvailableForWork != dto.AvailableForWork) { profile.AvailableForWork = dto.AvailableForWork; hasChanges = true; }
             if (dto.OfferingWork.HasValue && profile.OfferingWork != dto.OfferingWork) { profile.OfferingWork = dto.OfferingWork; hasChanges = true; }
@@ -103,7 +104,7 @@ namespace ContractDevApi.Controllers
             //Final check for changes
             if (!hasChanges)
             {
-                return BadRequest(new { Message = "No changes detected in profile update" });
+                return Ok(new { updated = false, Message = "No changes detected in profile update" });
             }
 
             //Try to update database -- if unsuccessful return error
@@ -114,196 +115,9 @@ namespace ContractDevApi.Controllers
             }
 
 
-            return Ok(new { message = "Profile updated successfully" });
-        }*/
-
-         //Jeán changed detection *******Lorenzo ***** (please check this and verify (approval))
-        [Authorize]
-        [HttpPut("UpdateProfile")]
-        public async Task<IActionResult> UpdateProfile([FromForm] ProfileUpdateDto dto)
-        {
-            //  Validate authenticated user
-            var authenticatedUserId = GetAuthenticatedUserId();
-            if (authenticatedUserId == null)
-                return Unauthorized(new { message = "Invalid token" });
-
-            if (authenticatedUserId.Value != dto.Id)
-                return Forbid();
-
-            //  Load all required entities
-            var user = await _context.UserAccounts.FindAsync(dto.Id);
-            var profile = await _context.UserProfiles.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
-            var social = await _context.SocialConnections.FirstOrDefaultAsync(x => x.UserAccountId == dto.Id);
-
-            if (user == null) return NotFound("User not found");
-            if (profile == null) return NotFound("Profile not found");
-            if (social == null) return NotFound("Social connections not found");
-
-            //  Load skills
-            var skillIds = await _context.Skills
-                .Where(x => dto.Skills.Contains(x.SkillName))
-                .Select(x => x.SkillId)
-                .ToListAsync();
-
-            var existingSkills = await _context.UserSkills
-                .Where(x => x.UserAccountId == dto.Id)
-                .ToListAsync();
-
-            bool changesMade = false;
-
-            // -----------------------------
-            // PROFILE FIELDS (change detection)
-            // -----------------------------
-            
-            if (dto.Username != null && profile.Username != dto.Username.ToLower())
-            {
-                profile.Username = dto.Username.ToLower();
-                changesMade = true;
-            }
-
-            if (dto.Email != null && user.UserSignupEmail != dto.Email.ToLower())
-            {
-                user.UserSignupEmail = dto.Email.ToLower();
-                changesMade = true;
-            }
-
-            if (dto.PhoneNumber != null && profile.PhoneNumber != dto.PhoneNumber)
-            {
-                profile.PhoneNumber = dto.PhoneNumber;
-                changesMade = true;
-            }
-
-            if (dto.Country != null && profile.Country != dto.Country)
-            {
-                profile.Country = dto.Country;
-                changesMade = true;
-            }
-
-            if (dto.Description != null && profile.Description != dto.Description)
-            {
-                profile.Description = dto.Description;
-                changesMade = true;
-            }
-
-            if (dto.UserTitle != null && profile.UserTitle != dto.UserTitle)
-            {
-                profile.UserTitle = dto.UserTitle;
-                changesMade = true;
-            }
-
-            if (dto.Bio != null && profile.Bio != dto.Bio)
-            {
-                profile.Bio = dto.Bio;
-                changesMade = true;
-            }
-
-            if (dto.AvailableForWork.HasValue && profile.AvailableForWork != dto.AvailableForWork)
-            {
-                profile.AvailableForWork = dto.AvailableForWork.Value;
-                changesMade = true;
-            }
-
-            if (dto.OfferingWork.HasValue && profile.OfferingWork != dto.OfferingWork)
-            {
-                profile.OfferingWork = dto.OfferingWork.Value;
-                changesMade = true;
-            }
-
-            if (dto.DisplayUserName.HasValue && profile.UsernameDisplay != dto.DisplayUserName)
-            {
-                profile.UsernameDisplay = dto.DisplayUserName.Value;
-                changesMade = true;
-            }
-
-            if (dto.HidePhoneNumber.HasValue && profile.HidePhoneNumber != dto.HidePhoneNumber)
-            {
-                profile.HidePhoneNumber = dto.HidePhoneNumber.Value;
-                changesMade = true;
-            }
-
-            // -----------------------------
-            // SOCIAL LINKS (change detection)
-            // -----------------------------
-            if (dto.FacebookLink != null && social.FacebookLink != dto.FacebookLink)
-            {
-                social.FacebookLink = dto.FacebookLink;
-                changesMade = true;
-            }
-
-            if (dto.UserSocialEmailLink != null && social.UserSocialEmailLink != dto.UserSocialEmailLink)
-            {
-                social.UserSocialEmailLink = dto.UserSocialEmailLink;
-                changesMade = true;
-            }
-
-            if (dto.XLink != null && social.XLink != dto.XLink)
-            {
-                social.XLink = dto.XLink;
-                changesMade = true;
-            }
-
-            if (dto.GithubLink != null && social.GithubLink != dto.GithubLink)
-            {
-                social.GithubLink = dto.GithubLink;
-                changesMade = true;
-            }
-
-            if (dto.LinkedinLink != null && social.LinkedinLink != dto.LinkedinLink)
-            {
-                social.LinkedinLink = dto.LinkedinLink;
-                changesMade = true;
-            }
-
-            // -----------------------------
-            // SKILLS (full replacement)
-            // -----------------------------
-            var newSkillIds = skillIds;
-
-            // Compare lists
-            var existingSkillIds = existingSkills.Select(x => x.SkillId).ToList();
-
-            bool skillsChanged = !existingSkillIds.OrderBy(x => x).SequenceEqual(newSkillIds.OrderBy(x => x));
-
-            if (skillsChanged)
-            {
-                changesMade = true;
-
-                // Remove old skills
-                _context.UserSkills.RemoveRange(existingSkills);
-
-                // Add new skills
-                var newUserSkills = newSkillIds.Select(id => new UserSkill
-                {
-                    UserAccountId = dto.Id,
-                    SkillId = id
-                });
-
-                await _context.UserSkills.AddRangeAsync(newUserSkills);
-            }
-
-            // -----------------------------
-            // NO CHANGES? Return early
-            // -----------------------------
-            if (!changesMade)
-            {
-                return Ok(new { updated = false, message = "No changes detected" });
-            }
-
-            // -----------------------------
-            // SAVE CHANGES
-            // -----------------------------
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                return Problem("System error occurred. User profile update failed.");
-            }
-
             return Ok(new { updated = true, message = "Profile updated successfully" });
         }
-        
+
         //-----------------------
         //Get Profile Details - receives user id from Front-End
         //Construct full user and profile entity from shared userid and sends that back to front-end as response

@@ -112,7 +112,7 @@ export class ProfileDisplayCard implements OnInit {
     formData.append("PaymentReliabilityScore", String(payload.payment_reliability_score));
     formData.append("CommunicationScore", String(payload.communication_score));
     formData.append("CollaborationScore", String(payload.collaboration_score));
-    formData.append("RecomendationScore", String(payload.recommendation_score));
+    formData.append("RecommendationScore", String(payload.recommendation_score));
 
     // Execute the POST request to AddRating
     this.userService.addRating(formData).subscribe({
