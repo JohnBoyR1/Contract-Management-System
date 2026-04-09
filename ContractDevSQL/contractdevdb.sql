@@ -1,4 +1,3 @@
---Chatroom table will be developed when a discussion is had about what exactly is required for a chatroom to function
 --create database contractdev_db;
 
 --User accounts creation statement
@@ -61,7 +60,7 @@ user_profile_id SERIAL not null primary key,
 username varchar(50) unique not null,
 first_name varchar (30) not null,
 last_name varchar (30) not null,
-country varchar (2) not null,-- ISO 3166-1 alpha-2 is in use for the country codes
+country varchar (2) not null,--ISO 3166-1 alpha-2 is in use for the country codes
 bio varchar (255) not null,
 phone_number varchar(15) not null,
 description varchar(20),--Describes whether a user is a developer, client or both
@@ -108,7 +107,7 @@ on delete cascade
 create table user_individual_ratings(
     rating_id SERIAL primary key,
     reviewer_id integer not null,
-    reviewee_id integer not null, -- The person being rated (Target)
+    reviewee_id integer not null,-- The person being rated (Target)
     -- Community Value Categories (Strictly 1-5)
     time_management_score integer not null check (time_management_score between 1 and 5),
     payment_reliability_score integer not null check (payment_reliability_score between 1 and 5),
@@ -125,7 +124,7 @@ create table user_individual_ratings(
     constraint unique_rating_pair unique (reviewer_id, reviewee_id)
 );
 
---Query optimisation
+--Index Creation(Query optimisation)
 create index idx_user_auth on user_accounts(user_signup_email);
 create index idx_user_skills on user_skills(skill_id, user_account_id);
 create index idx_user_socials on social_connections(user_account_id);
