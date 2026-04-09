@@ -17,6 +17,7 @@ import { UserProfileUploadImage } from './features/user-profile-upload-image/use
 import { PasswordRecovery } from './features/password-recovery/password-recovery';
 import { SocialMediaLinks } from './features/social-media-links/social-media-links';
 import { StarRatingModal } from './core/shared/components/star-rating-modal/star-rating-modal';
+import { GdprModal } from './core/shared/components/gdpr-modal/gdpr-modal';
 
 /*
   Defines all navigation paths in the Angular application
@@ -39,12 +40,14 @@ export const routes: Routes = [
   { path: 'password-recovery', component: PasswordRecovery },
   { path: 'social-media-links', component: SocialMediaLinks},
   { path: 'star-rating', component: StarRatingModal},
+  { path: 'gdpr-modal', component: GdprModal},
 
   //protectd routes (locked by auth.guard.ts)
   { path: 'user-profile', component: UserProfile, canActivate: [authGuard] },
   { path: 'billing-details', component: BillingDetails, canActivate: [authGuard] },
   { path: 'chat', component: Chat, outlet: 'popup', canActivate: [authGuard] }, //This allows the chat window to appear as a 'popup' without replacing the main page content
   { path: 'profile-card', component: ProfileCard, canActivate: [authGuard] },
+  
   //fallback too
   { path: '**', redirectTo: '' },
 ];

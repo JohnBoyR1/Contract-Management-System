@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import {
@@ -13,17 +13,22 @@ import { UserService } from '../../core/services/user.service';
 import { ProfileStateService } from '../../core/services/profile-state.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { Router } from '@angular/router';
-
+import { GdprModal } from '../../core/shared/components/gdpr-modal/gdpr-modal';
 
 
 @Component({
   selector: 'app-sign-up',
   standalone: true,
-  imports: [FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule, GdprModal],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.css',
 })
 export class SignUp {
+
+  @ViewChild(GdprModal) gdprModal!: GdprModal;
+  acceptedGdpr = false;
+
+
   // injecting DataService
   private userService = inject(UserService);
   private profileState = inject(ProfileStateService);
@@ -70,21 +75,24 @@ export class SignUp {
       : { passwordsDontMatch: true };
   }
 
-
-  /*password match confirm password validation
-  passwordMatchValidator(form: FormGroup) {
-    const password = form.get('password')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
-
-    if (!password || !confirmPassword) {
-      return null; //if either password is no value no point evaluating them
-    }
-
-    return password === confirmPassword ? null : { passwordsDontMatch: true };
-  }*/
+  // firstly the GDPR policy must be accepted before account creation
+  onGdprAccepted() {
+    this.acceptedGdpr = true;
+    this.handleFormSubmit();   // Continue after acceptance
+  }
+  
 
   //handling the submission
   handleFormSubmit() {
+    //check GDPR first
+    
+    if (!this.acceptedGdpr) {
+      this.gdprModal.open(); 
+      return;
+    }
+
+
+
     //force all validation messages to show up 
     this.contractForm.markAllAsTouched();
     this.contractForm.updateValueAndValidity();

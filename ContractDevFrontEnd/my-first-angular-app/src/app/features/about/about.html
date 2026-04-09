@@ -1,7 +1,11 @@
+
+<app-gdpr-modal [showButtons]="false"></app-gdpr-modal>
+
+
 <div class="container py-4">
     
 
-    <div class="content row" (click)="showVideoOn()">
+    <div class="content row image-meeting" (click)="showVideoOn()">
         
         @if(showVideo()){
             
@@ -11,7 +15,7 @@
         }
         @else { 
             
-            <img src="assets/images/black_board_dev.png" alt="5 people sitting around table descussing idea"  class="ideas_img"
+            <img src="assets/images/black_board_dev.png" alt=" a man standing with his back towards the user looking at a blackboard with many ideas or directions regarding 'devops'"  class="ideas_img"
             matTooltip="Click to play the video"
             matTooltipPosition="below"/>
             
@@ -31,11 +35,16 @@
         </div>   
     </div>
     <div class="row mt-5">
-        <div class="col-sm-6">
-            <img src="assets/images/devops_manager.png" alt="5 people sitting around table descussing idea"  class="devops_manager_img"/>    
+        <div class="col-sm-6 image-meeting" (click)="onShowGdpr()">
+            <img src="assets/images/devops_manager.png"
+                class="devops_manager_img"
+                matTooltip="Click View About GDPR"
+                matTooltipPosition="below"/>
         </div>
+       
+      
         <div class="col-sm-6">
-            <img src="assets/images/man_city.png" alt="5 people sitting around table descussing idea"  class="man_city_img"/>
+            <img src="assets/images/man_city.png" alt="a man holding a mobile phone smiling with a city, large builings in the background"  class="man_city_img"/>
         </div>
     </div>
 </div>
