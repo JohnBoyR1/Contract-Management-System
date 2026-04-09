@@ -75,19 +75,7 @@ export class SignUp {
       : { passwordsDontMatch: true };
   }
 
-
-  /*password match confirm password validation
-  passwordMatchValidator(form: FormGroup) {
-    const password = form.get('password')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
-
-    if (!password || !confirmPassword) {
-      return null; //if either password is no value no point evaluating them
-    }
-
-    return password === confirmPassword ? null : { passwordsDontMatch: true };
-  }*/
-
+  // firstly the GDPR policy must be accepted before account creation
   onGdprAccepted() {
     this.acceptedGdpr = true;
     this.handleFormSubmit();   // Continue after acceptance
