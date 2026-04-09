@@ -99,7 +99,6 @@ export class UserProfileDeletion {
   openModal() {
     this.deletionForm.markAllAsTouched();
     this.isOpenDeleteModal.set(true);
-    console.log('open modal');
   }
 
   closeModal() {
@@ -108,7 +107,9 @@ export class UserProfileDeletion {
 
   confirmDelete() {
     console.log('Deleting...');
+
     this.deleteProfile();
+    this.authService.logout();
     this.closeModal();
   }
 

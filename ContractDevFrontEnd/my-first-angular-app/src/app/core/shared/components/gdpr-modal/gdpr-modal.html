@@ -1,0 +1,104 @@
+<div class="modal fade" id="gdprModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">GDPR Privacy Policy</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <h3>Privacy Policy for ContractDev</h3>
+        <p><strong>Last Updated:</strong> April 9, 2026</p>
+
+        <p>This Privacy Policy is designed for ContractDev to meet the transparency requirements of the General Data Protection Regulation (GDPR).</p>
+
+        <div class="alert alert-warning mt-3">
+          <strong>Important Notice:</strong> ContractDev is currently a <strong>college project</strong> in a <strong>beta development phase</strong>.  
+          Users are strongly advised <strong>not to enter real personal or sensitive data</strong> while the platform is under academic development.  
+          If you choose to provide any information, please note that it is <strong>not sold, traded, or shared</strong> with third parties for commercial purposes.
+        </div>
+
+
+        <h4>1. Identity and Contact Details</h4>
+        <p>ContractDev acts as the Data Controller for the personal data collected through this website.</p>
+        <ul>
+        <li><strong>Organization:</strong> ContractDev (Academic Project – National College of Ireland)</li>
+        <li><strong>Email:</strong> x23405040@student.ncirl.ie</li>
+        <li><strong>Postal Address:</strong> 
+            National College of Ireland,<br>
+            Mayor Street Lower,<br>
+            IFSC, Dublin 1,<br>
+            D01 Y300,<br>
+            Ireland
+        </li>
+        <li><strong>Data Protection Officer:</strong> dpo@ncirl.ie</li>
+        </ul>
+
+        <h4>2. Purposes and Legal Basis for Processing</h4>
+        <ul>
+          <li>Contractual Necessity</li>
+          <li>Legal Obligation</li>
+          <li>Legitimate Interests</li>
+          <li>Consent</li>
+        </ul>
+
+        <h4>3. Legitimate Interests</h4>
+        <ul>
+          <li>Security protection</li>
+          <li>User behavior analysis</li>
+          <li>Direct marketing (where permitted)</li>
+        </ul>
+
+        <h4>4. Recipients of Personal Data</h4>
+        <ul>
+          <li>Service Providers</li>
+          <li>Professional Advisors</li>
+          <li>Legal Authorities</li>
+        </ul>
+
+        <h4>5. International Data Transfers</h4>
+        <ul>
+          <li>Adequacy decisions</li>
+          <li>Standard Contractual Clauses (SCCs)</li>
+        </ul>
+
+        <h4>6. Data Retention</h4>
+        <ul>
+          <li>Account Data: active account + [X] years</li>
+          <li>Contact Queries: [X] months</li>
+        </ul>
+
+        <h4>7. Your Rights</h4>
+        <ul>
+          <li>Access</li>
+          <li>Rectification</li>
+          <li>Erasure</li>
+          <li>Restriction</li>
+          <li>Portability</li>
+          <li>Objection</li>
+        </ul>
+
+        <h4>8. Withdraw Consent</h4>
+        <p>You may withdraw consent at any time.</p>
+
+        <h4>9. Complaints</h4>
+        <p>You may lodge a complaint with the Data Protection Commission (Ireland).</p>
+
+        <h4>10. Statutory Requirements</h4>
+        <p>Certain data is required to use the ContractDev platform.</p>
+
+        <h4>11. Automated Decision-Making</h4>
+        <p>ContractDev [does / does not] use automated decision-making.</p>
+
+      </div>
+      @if (showButtons){
+        <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="accept()">Accept</button>
+        </div>
+      }       
+    </div>
+  </div>
+</div>
