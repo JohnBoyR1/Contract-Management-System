@@ -22,8 +22,6 @@ namespace ContractDevApi.Models
 
         public DbSet<UserProfile> UserProfiles { get; set; }
 
-        //public DbSet<UserReview> UserReviews { get; set; }
-
         public DbSet<UserRating> UserRatings { get; set; }
 
         public DbSet<SocialConnection> SocialConnections { get; set; }
@@ -87,11 +85,6 @@ namespace ContractDevApi.Models
                 entity.ToTable("social_connections");
 
             });
-
-            //modelBuilder.Entity<UserReview>(entity =>
-            //{
-            //    entity.ToTable("user_reviews");
-            //});
 
             modelBuilder.Entity<UserRating>(entity =>
             {

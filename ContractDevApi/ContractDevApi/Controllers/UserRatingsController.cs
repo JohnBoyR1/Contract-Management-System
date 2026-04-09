@@ -63,41 +63,48 @@ namespace ContractDevApi.Controllers
                 return BadRequest(new { Message = "Unable to find accounts for review"});
             }
 
-            var existingRating = await _context.UserRatings.FirstOrDefaultAsync(x => x.ReviewerId == dto.ReviewerId && x.UserAccountId == dto.RevieweeId);
-
+            var existingRating = await _context.UserRatings.FirstOrDefaultAsync(x => x.ReviewerId == dto.ReviewerId && x.RevieweeId == dto.RevieweeId);
             if (existingRating != null)
             {
-                _context.UserRatings.Remove(existingRating);
-            }
-
-            UserRating review = new UserRating
+                //Rating already exists, update existing rating with new values
+                existingRating.TimeManagementScore = dto.TimeManagementScore;
+                existingRating.PaymentReliabilityScore = dto.PaymentReliabilityScore;
+                existingRating.CommunicationScore = dto.CommunicationScore;
+                existingRating.CollaborationScore = dto.CollaborationScore;
+                existingRating.RecommendationScore = dto.RecommendationScore;
+                existingRating.ReviewerAccount = reviewer;
+                existingRating.RevieweeAccount = reviewee;
+            }else
             {
-                ReviewerId = dto.ReviewerId,
-                UserAccountId = dto.RevieweeId,
-                TimeManagementScore = dto.TimeManagementScore,
-                PaymentReliabilityScore = dto.PaymentReliabilityScore,
-                CommunicationScore = dto.CommunicationScore,
-                CollaborationScore = dto.CollaborationScore,
-                RecommendationScore = dto.RecomendationScore,
-                ReviewerAccount = reviewer,
-                RevieweeAccount = reviewee  
-            };
-
-            _context.UserRatings.Add(review);
+                //Rating does not exist, create new rating entry
+                UserRating review = new UserRating
+                {
+                    ReviewerId = dto.ReviewerId,
+                    RevieweeId = dto.RevieweeId,
+                    TimeManagementScore = dto.TimeManagementScore,
+                    PaymentReliabilityScore = dto.PaymentReliabilityScore,
+                    CommunicationScore = dto.CommunicationScore,
+                    CollaborationScore = dto.CollaborationScore,
+                    RecommendationScore = dto.RecommendationScore,
+                    ReviewerAccount = reviewer,
+                    RevieweeAccount = reviewee  
+                };
+                _context.UserRatings.Add(review);
+            }
 
             //Try to update database -- if unsuccessful return error
             try {
                 await _context.SaveChangesAsync();
             } catch(DbUpdateException e) {
-                return Problem("System error occured. User Profile Update Failed."+e.Message);
+                return Problem("System error occured. Add User Rating Failed."+e.Message);
             }
 
             return Ok(new { Message = "Rating Successful"});
         }
 
         [Authorize]
-        [HttpDelete("RemoveReview")]
-        public async Task<IActionResult> RemoveRating([FromForm] UserRatingDeleteDto dto)
+        [HttpDelete("DeleteRating")]
+        public async Task<IActionResult> DeleteRating([FromForm] UserRatingDeleteDto dto)
         {
             //Checks UserReviewDeleteDto Model to ensure that all incoming values match the Model constraints
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
@@ -116,7 +123,7 @@ namespace ContractDevApi.Controllers
             }
 
             //Verify if rating exists
-            var existingRating = await _context.UserRatings.FirstOrDefaultAsync(x => x.ReviewerId == dto.ReviewerId && x.UserAccountId == dto.RevieweeId);
+            var existingRating = await _context.UserRatings.FirstOrDefaultAsync(x => x.ReviewerId == dto.ReviewerId && x.RevieweeId == dto.RevieweeId);
 
             if (existingRating == null)
             {
@@ -132,7 +139,7 @@ namespace ContractDevApi.Controllers
             }
             catch (DbUpdateException e)
             {
-                return Problem("System error occured. User Profile Update Failed." + e.Message);
+                return Problem("System error occured. Delete User Rating Failed." + e.Message);
             }
 
             return Ok(new { Message = "User Rating Deleted."});

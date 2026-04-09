@@ -29,40 +29,6 @@ namespace ContractDevApi.Controllers
             _jwt = jwt;
         }
 
-        // GET: api/UserAccounts
-        // Returns all user accounts - should be restricted to admin users in production
-        //[Authorize] // Require authentication
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<UserAccount>>> GetUserAccounts()
-        //{
-        //    //In production we may want to consider only allowing admins to retrieve all user accounts
-        //    //Ex: if (!User.IsInRole("Admin")) return Forbid();
-
-        //    return await _context.UserAccounts.ToListAsync();
-        //}
-
-        // GET: api/UserAccounts/{id}
-        // Get a specific user's account - users can only view their own account
-        //[Authorize]
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<UserAccount>> GetUserAccount(int id)
-        //{
-        //    //Verify the authenticated user is requesting their own data
-        //    if (!IsAuthorizedUser(id))
-        //    {
-        //        return Forbid(); // 403 Forbidden
-        //    }
-
-        //    var userAccount = await _context.UserAccounts.FindAsync(id);
-
-        //    if (userAccount == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return userAccount;
-        //}
-
         // POST: api/UserAccounts/Register
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         //-----------------------
@@ -135,15 +101,6 @@ namespace ContractDevApi.Controllers
 
             _context.SocialConnections.Add(socials);
 
-            //var reviews = new UserReview
-            //{
-            //    UserAccountId = user.UserAccountId,
-            //    NumberOfReviews = 0,
-            //    TotalReviewPoints = 0.0f,
-            //    AverageReviewScore = 0.0f,
-            //    UserAccount = user
-            //};
-
             //Try to update database -- if unsuccessful return error
             try {
                 await _context.SaveChangesAsync();
@@ -210,22 +167,6 @@ namespace ContractDevApi.Controllers
             //Valid login, return token entity
             return Ok(new { token });
         }
-
-
-        //-----------------------
-        //Logout - Deauthorizes cookie associated to current user
-        //Cannot deauthorize JWT - JWT current lifetime is 1 hour
-        //-----------------------
-        //[HttpPost("Logout")]
-        //public async Task<IActionResult> Logout()
-        //{
-        //    //possible solution - add jwt to blacklist on database for duration of jwt expiry
-            
-        //    return Ok(new
-        //    {
-        //        Message = "User logged out"
-        //    });
-        //}
 
         //-----------------------
         //Change Password - Receives id, old password, new password, and confirm new password from Front-End
