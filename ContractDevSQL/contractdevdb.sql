@@ -60,7 +60,7 @@ user_profile_id SERIAL not null primary key,
 username varchar(50) unique not null,
 first_name varchar (30) not null,
 last_name varchar (30) not null,
-country varchar (2) not null,-- ISO 3166-1 alpha-2 is in use for the country codes
+country varchar (2) not null,--ISO 3166-1 alpha-2 is in use for the country codes
 bio varchar (255) not null,
 phone_number varchar(15) not null,
 description varchar(20),--Describes whether a user is a developer, client or both
