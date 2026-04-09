@@ -1,3 +1,4 @@
+/* NOTE: User-to-user messaging is not functioning with the current backend/RDS/cloud integration. */
 .messages {
   flex: 1;
   overflow-y: auto;

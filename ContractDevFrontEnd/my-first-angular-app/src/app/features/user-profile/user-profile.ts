@@ -145,7 +145,7 @@ export class UserProfile {
     const id = this.authService.getCurrentUserId();
 
     //subscribe is used to recieve data asyschronously (returns an Observable)
-    this.userService.getProfile(id).subscribe((profile: any) => {
+    this.userService.getProfile(id!).subscribe((profile: any) => {
       
       // Convert backend comma string → array
       if (typeof profile.skills === 'string') {
@@ -203,7 +203,7 @@ export class UserProfile {
     });
 
     //append ID (as it is not part of the form)
-    formData.append('id', id.toString());
+    formData.append('id', id!.toString());
 
     //updating backend and refreshing the global profile state
     this.userService.updateProfile(formData).subscribe({
@@ -230,7 +230,7 @@ export class UserProfile {
             }, 2500);
        
         //refresh the profile
-        this.userService.getProfile(id).subscribe((fullProfile) => {
+        this.userService.getProfile(id!).subscribe((fullProfile) => {
           this.profile.initProfile(fullProfile);
         });
       },

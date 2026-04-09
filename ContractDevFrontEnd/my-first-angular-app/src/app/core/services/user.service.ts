@@ -132,7 +132,7 @@ export class UserService {
   // ----------------------------------------------------
   // removes your rating from another user
   removeRating(data: FormData): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/UserRatings/RemoveReview`, {
+    return this.http.delete<void>(`${this.apiUrl}/UserRatings/DeleteRating`, {
       body: data,
     });
   }

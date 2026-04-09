@@ -73,8 +73,8 @@ export class ProfileGallery implements OnInit {
     }
     this.userService.getAllProfiles().subscribe(data => {
       this.profiles.set(data);
-      console.log('All Profiles from back end: ', data);
-      console.log('AUTH GUARD RUNNING', this.authorise.isLoggedIn());
+      //console.log('All Profiles from back end: ', data);
+      //console.log('AUTH GUARD RUNNING', this.authorise.isLoggedIn());
     });
   }
 

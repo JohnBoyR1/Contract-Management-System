@@ -77,7 +77,7 @@ export class PasswordRecovery {
         setTimeout(() => {
           this.updatedPassword.set(false);
           this.router.navigate(['/login']);
-        }, 3000);
+        }, 2000);
         
         
       },

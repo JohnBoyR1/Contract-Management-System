@@ -75,7 +75,7 @@ export class ProfileDisplayCard implements OnInit {
 
   
    //Triggers the rating modal by setting the 'selectedProfile' in the global state.
-   
+ 
   openRatingModal(user: Profile) {
     const myId = this.profileState.userId();
     const targetId = user.userId;

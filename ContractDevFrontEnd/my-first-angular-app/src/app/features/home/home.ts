@@ -1,9 +1,7 @@
-import { Component,ViewChild, ElementRef, AfterViewInit, ViewEncapsulation } from '@angular/core';
+import { Component, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { IntroBanner } from '../intro-banner/intro-banner';
 import { signal } from '@angular/core';
 import { MarketingBanner } from "../marketing-banner/marketing-banner";
-
-
 
 
 @Component({
@@ -17,18 +15,10 @@ import { MarketingBanner } from "../marketing-banner/marketing-banner";
 
 export class Home implements AfterViewInit {
 
-  index = signal(0);
-  //learning to create signals and see what can be done(for testing)
-  count = signal(3);
-
-  increase(){
-    this.count.update(value => value +1);
-  }
+  index = signal(0);//tracking which quote is shown
   
-  
-
   ngAfterViewInit() {
-    
+                        //Element Fade In//
     //########################## the small box ###########################
     const elements = document.querySelectorAll('.box');//All returns a node list
 
@@ -36,17 +26,15 @@ export class Home implements AfterViewInit {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('visible');//updating the DOM directly (entry.target)....native browser method (.classList.add) 
-         // this.isVisible.set(true);//this is for individual
+          entry.target.classList.add('visible');//adds class when element enters view 
         } else {
-         // this.isVisible.set(false);
-         entry.target.classList.remove('visible');
+          entry.target.classList.remove('visible');// removes class when element leaves view
         }
           
       });
     }, {
       root: null, //viewport
-      threshold: 0.2, //50% of the element is visible
+      threshold: 0.2, //20% of the element is visible
       rootMargin: "-10% 0px -10% 0px"//this creates a narrow band in the middle of the screen
     });
 
@@ -56,7 +44,7 @@ export class Home implements AfterViewInit {
     const bottomPageVideo = document.querySelector('.bottom-video') as HTMLVideoElement;
 
     bottomPageVideo.addEventListener('loadeddata', () => {
-      bottomPageVideo.play();
+      bottomPageVideo.play();//auto play once video has loaded
     })
 
   }
@@ -77,7 +65,7 @@ export class Home implements AfterViewInit {
  
 
   nextQuote() {
-    this.index.update(i => (i + 1) % this.quotes.length);
+    this.index.update(i => (i + 1) % this.quotes.length);//move to next quote
   }
 
 }

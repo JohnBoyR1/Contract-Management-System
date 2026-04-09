@@ -1,18 +1,17 @@
 <div class="position-relative">
 
-    <!-- image --> 
+    <!-- Intro Video --> 
     
     <div class="intro-banner">
             
         <div class="intro-motion-clip">
        
             <video id="introVideo" #introVideo class="d-block w-100" autoplay muted [src]="currentVideo" (ended)="onVideoEnded()" >
-               <!-- <source   type="video/mp4">src="assets/videos/software_blueprint.mp4"-->
             </video>
       
         </div>
 
-    </div>   
+    </div>  
     
 
     <!-- Overlay Text -->
@@ -22,13 +21,13 @@
         <h5 class="display-6 mb-3">Developers and Clients, Matched in Moments</h5>
         <h5 class="display-6 mb-3">find the talent or project you need</h5>
     
-        
+        <!--Sign up button if not logged in-->
        @if(!authService.isLoggedIn()){
         <a class="btn btn-outline-light btn-lg m-2"
            href="/sign-up" 
            >Sign Up</a>
         }
-
+        <!--Routes to gallery button if logged in-->
        @if(authService.isLoggedIn()){
         <a class="btn btn-outline-light btn-lg m-2"
            href="/profileGallery"  

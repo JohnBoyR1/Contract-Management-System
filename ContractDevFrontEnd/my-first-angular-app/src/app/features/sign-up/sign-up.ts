@@ -7,11 +7,14 @@ import {
   FormGroup,
   FormControl,
   Validators,
+  AbstractControl,
 } from '@angular/forms';
 import { UserService } from '../../core/services/user.service';
 import { ProfileStateService } from '../../core/services/profile-state.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { Router } from '@angular/router';
+
+
 
 @Component({
   selector: 'app-sign-up',
@@ -27,8 +30,6 @@ export class SignUp {
   private authService = inject(AuthService);
   private router = inject(Router);
   private http = inject(HttpClient);
-
-
 
   //Defining the form structure  with build-in validators
   contractForm = new FormGroup(
@@ -52,7 +53,25 @@ export class SignUp {
   isLoading = signal(false);
   signUpError = signal('');
 
-  //password match confirm password validation
+
+  // Password + Confirm Password validation
+  passwordMatchValidator(control: AbstractControl) {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
+
+    // If either field is empty, don't validate yet
+    if (!password || !confirmPassword) {
+      return null;
+    }
+
+    // Return error object if mismatch, otherwise null
+    return password === confirmPassword
+      ? null
+      : { passwordsDontMatch: true };
+  }
+
+
+  /*password match confirm password validation
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
@@ -62,7 +81,7 @@ export class SignUp {
     }
 
     return password === confirmPassword ? null : { passwordsDontMatch: true };
-  }
+  }*/
 
   //handling the submission
   handleFormSubmit() {
@@ -112,17 +131,17 @@ export class SignUp {
           next: () => {
             const userId = this.authService.getCurrentUserId();
 
-            this.userService.getProfile(userId).subscribe((fullProfile) => {
+            this.userService.getProfile(userId!).subscribe((fullProfile) => {
               this.profileState.initProfile(fullProfile);
 
               this.isLoading.set(false);
               this.isSubmitted.set(true); // Shows success message in HTML
               this.contractForm.reset();
 
-              // TIMER: Wait 5 seconds so they see the success message, then redirect
+              // TIMER: Wait 2 seconds so they see the success message, then redirect
               setTimeout(() => {
                 this.router.navigate(['/home']);
-              }, 2500);
+              }, 2000);
             });
           },
         });
@@ -133,12 +152,12 @@ export class SignUp {
         this.signUpError.set(err.message);
         this.isLoading.set(false);
 
-        // TIMER: Wait 2.5 seconds so they see the success message, then redirect
+        // TIMER: Wait 2.5 seconds so they see the failure message, then redirect
         setTimeout(() => {
           this.signUpError.set('');
           // INSTANT RESET on failure as requested
           this.contractForm.reset();
-        }, 5000);
+        }, 2500);
 
         
       }

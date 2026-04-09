@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Carousel } from 'bootstrap';
-import type { CarouselEvent } from 'bootstrap';
 
 @Component({
   selector: 'app-marketing-banner',
@@ -11,29 +10,23 @@ import type { CarouselEvent } from 'bootstrap';
 export class MarketingBanner {
 
 
- 
-  
-
-
    ngAfterViewInit() {
-    
-    const elements = document.querySelectorAll('.marketing-banner');//All returns a node list
+    // Fade in / fade out effect for marketing banner
+    const elements = document.querySelectorAll('.marketing-banner');
 
     //The browser’s built‑in IntersectionObserver system (non-angular)
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.remove('visible');//updating the DOM directly (entry.target)....native browser method (.classList.add) 
-         // this.isVisible.set(true);//this is for individual
+          entry.target.classList.remove('visible');  //element is in view show      
         } else {
-         // this.isVisible.set(false);
-         entry.target.classList.add('visible');
+          entry.target.classList.add('visible'); // out of view hide
         }
           
       });
     }, {
       root: null, //viewport
-      threshold: 0.80, //50% of the element is visible
+      threshold: 0.80, //80% of the element is visible
       rootMargin: "20% 0px 20% 0px"//this creates a narrow band in the middle of the screen
     });
 
@@ -43,7 +36,7 @@ export class MarketingBanner {
     const imgElementLeft = document.querySelector('#marketing-banner-carousel-left');
     if (imgElementLeft) {
       new Carousel(imgElementLeft, {
-        interval: 2500, 
+        interval: 2000, 
         ride: 'carousel'
       });
     }
@@ -53,7 +46,7 @@ export class MarketingBanner {
     const imgElementCenter = document.querySelector('#marketing-banner-carousel-center');
     if (imgElementCenter) {
       new Carousel(imgElementCenter, {
-        interval: 2500, 
+        interval: 2000, 
         ride: 'carousel'
       });
     }
@@ -63,7 +56,7 @@ export class MarketingBanner {
     const imgElementRight = document.querySelector('#marketing-banner-carousel-right');
     if (imgElementRight) {
       new Carousel(imgElementRight, {
-        interval: 2500, 
+        interval: 2000, 
         ride: 'carousel'
       });
     }

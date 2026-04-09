@@ -1,6 +1,6 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, inject } from '@angular/core';
 import { AuthService } from '../../core/auth/auth.service';
-import { inject } from '@angular/core';
+
 
 @Component({
   selector: 'app-intro-banner',
@@ -13,17 +13,17 @@ export class IntroBanner  {
   // isLoggedIn() verify a user logged in or not 
   authService = inject(AuthService);
 
-  // introVideo loading... file path
+  // path to the initial intro video
   public currentVideo = "assets/videos/loading.mp4";
 
-  // no:1 this is to ensure the intro video plays on refresh
+  //  this is to ensure the intro video plays on refresh
   @ViewChild('introVideo') introVideo!: ElementRef<HTMLVideoElement>;
 
 
-  //###################Video (changes video)###################
+  //###################Video (changes to next video)###################
   onVideoEnded() {
     const vid = this.introVideo.nativeElement;
-
+    //when first video ends switch to the next video
     if (this.currentVideo === "assets/videos/loading.mp4") {
       this.currentVideo = "assets/videos/software_blueprint.mp4";
 
@@ -35,20 +35,20 @@ export class IntroBanner  {
 
   
   ngAfterViewInit() {
-    //################### Video Play on Browser refresh ###############
+    //################### Auto play video on Browser refresh ###############
     const vid = this.introVideo.nativeElement;
     
     // Ensure autoplay rules are satisfied
     vid.muted = true;
     vid.playsInline = true;
   
-    // Try to play after Angular hydration
+    // Try to play after Angular finishes rendering
     setTimeout(() => {
       vid.play().catch(() => {});
     }, 0);
     
 
-
+            //Fade in effect//
     //######################## EFFECTs WHEN SCROLLING ######################
     const elements = document.querySelectorAll('.intro');//All returns a node list
 
@@ -56,20 +56,18 @@ export class IntroBanner  {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('visible');//updating the DOM directly (entry.target)....native browser method (.classList.add) 
-         // this.isVisible.set(true);//this is for individual
+          entry.target.classList.add('visible');//fade in when visible    
         } else {
-         // this.isVisible.set(false);
-         entry.target.classList.remove('visible');
+          entry.target.classList.remove('visible');// removes when not visible
         }
           
       });
     }, {
       root: null, //viewport
-      threshold: 0.99, //50% of the element is visible
+      threshold: 0.99, //99% of the element is visible
       rootMargin: "20% 0px 20% 0px"//this creates a narrow band in the middle of the screen
     });
-
+    // watch each .into element
     elements.forEach(element => observer.observe(element));
   }
 }

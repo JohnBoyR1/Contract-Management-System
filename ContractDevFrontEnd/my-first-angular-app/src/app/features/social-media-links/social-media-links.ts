@@ -43,7 +43,7 @@ export class SocialMediaLinks {
 
   ngOnInit() {
    //populate the input fields related to the links with the data from the backend
-    this.userService.getProfile(this.id).subscribe(profile => {
+    this.userService.getProfile(this.id!).subscribe(profile => {
       this.socialForm.patchValue({
         facebookLink: profile.socials["facebook"],
         userSocialEmailLink: profile.socials["Social Email"],
@@ -63,17 +63,17 @@ export class SocialMediaLinks {
     //form data to send to backend
     const formData = new FormData();
 
-    formData.append('Id', this.id.toString());
+    formData.append('Id', this.id?.toString() || '');
 
-    formData.append('FacebookLink', raw.facebookLink);
+    formData.append('FacebookLink', raw.facebookLink || '');
     
-    formData.append('UserSocialEmailLink', raw.userSocialEmailLink);
+    formData.append('UserSocialEmailLink', raw.userSocialEmailLink || '');
     
-    formData.append('XLink', raw.xLink);
+    formData.append('XLink', raw.xLink || '');
   
-    formData.append('GitHubLink', raw.gitHubLink);
+    formData.append('GitHubLink', raw.gitHubLink || '');
     
-    formData.append('LinkedinLink', raw.linkedinLink);
+    formData.append('LinkedinLink', raw.linkedinLink || '');
     
      //updating backend and refreshing the global profile state
     this.userService.updateProfile(formData).subscribe({
@@ -100,7 +100,7 @@ export class SocialMediaLinks {
             }, 2500);
        
         //refresh the profile
-        this.userService.getProfile(this.id).subscribe((fullProfile) => {
+        this.userService.getProfile(this.id!).subscribe((fullProfile) => {
           this.profile.initProfile(fullProfile);
         });
       },

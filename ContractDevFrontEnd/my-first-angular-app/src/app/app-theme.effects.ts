@@ -10,6 +10,6 @@ export function registerThemeEffect() {
     effect(() => {
         const isDark = darkMode();
         document.body.classList.toggle('dark-mode', isDark);
-        console.log("Effect running. darkMode =", darkMode());
+        //console.log("Effect running. darkMode =", darkMode());
     });
 }

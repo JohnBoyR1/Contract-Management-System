@@ -1,10 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLinkActive, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { ProfileStateService } from '../../core/services/profile-state.service';
-import { signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -59,7 +58,7 @@ export class UserProfileSecurity {
   ngOnInit() {
     const userId = this.authService.getCurrentUserId();
     // Load the user's existing security question
-    this.userService.getProfile(userId).subscribe((profile) => {
+    this.userService.getProfile(userId!).subscribe((profile) => {
       this.securityForm.patchValue({
         securityQuestion: profile.securityQuestion,
       });
@@ -69,7 +68,7 @@ export class UserProfileSecurity {
   //displaying the security question that the account holder used on sign up
   displaySecurityQuestion() {
     const userId = this.authService.getCurrentUserId();
-    this.userService.getProfile(userId).subscribe((profile) => {
+    this.userService.getProfile(userId!).subscribe((profile) => {
       return profile.securityQuestion;
     });
   }
@@ -113,18 +112,16 @@ export class UserProfileSecurity {
         setTimeout(() => {
           this.updateSuccess.set(false);
           this.router.navigate(['/profile']);
-        }, 2500)
+        }, 2000)
       },
       error: (err) => {
-        
         //alert('Failed to update security settings.');
-
         this.updateError.set('Failed to update security settings: ' + err.message || 'Failed to update password');
 
         setTimeout(()=> {
           this.updateError.set('');
           this.router.navigate(['/userProfileSecurity']);
-        }, 2500)
+        }, 2000)
       },
     });
   }

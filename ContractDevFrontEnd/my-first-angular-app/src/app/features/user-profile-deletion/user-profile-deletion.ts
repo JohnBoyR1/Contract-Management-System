@@ -7,7 +7,6 @@ import { ProfileStateService } from '../../core/services/profile-state.service';
 import { signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { timeout } from 'rxjs';
 
 @Component({
   selector: 'app-user-profile-deletion',
@@ -16,19 +15,22 @@ import { timeout } from 'rxjs';
   styleUrl: './user-profile-deletion.css',
 })
 export class UserProfileDeletion {
+  //reactive form for deletion inputs
   deletionForm: FormGroup;
 
+  // injected services
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private router = inject(Router);
   public profile = inject(ProfileStateService);
 
-  //signals
+  //signals for UI feedback
   deleteSuccess = signal(false);
   deleteError = signal('');
 
   constructor() {
+    //initialise form
     this.deletionForm = this.fb.group({
       currentPassword: ['', Validators.required],
       securityQuestion: ['', Validators.required],
@@ -38,20 +40,21 @@ export class UserProfileDeletion {
 
   ngOnInit() {}
 
+  //display full name 
   nameDisplay() {
     return `${this.profile.firstName()} ${this.profile.lastName()}`;
   }
 
-  // deletion
+  // deletion handler
   deleteProfile() {
 
-
+    //prevents form submission if form is invalid
     if (this.deletionForm.invalid) return;
 
     const formDataDelete = new FormData();
 
     const rawData = this.deletionForm.value;
-
+    //build api for API
     const deletePayload = {
       Id: this.authService.getCurrentUserId(),
       Password: rawData.currentPassword,
@@ -74,7 +77,7 @@ export class UserProfileDeletion {
         setTimeout(() => {
           this.deleteSuccess.set(false);
           this.router.navigate(['/home']);
-        }, 2500);
+        }, 2000);
         
       },
       error: (err) => {
@@ -85,7 +88,7 @@ export class UserProfileDeletion {
         setTimeout(() => {
           this.deleteError.set('');
           this.router.navigate(['/userProfileDeletion']);
-        }, 2500);
+        }, 2000);
       },
     });
   }
