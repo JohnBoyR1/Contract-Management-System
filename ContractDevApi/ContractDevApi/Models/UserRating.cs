@@ -12,7 +12,7 @@ namespace ContractDevApi.Models
         public int ReviewerId { get; set; }
 
         [Required]
-        public int UserAccountId { get; set; }
+        public int RevieweeId { get; set; }
 
         [Required]
         [Range(1, 5)]
@@ -38,7 +38,7 @@ namespace ContractDevApi.Models
         public UserAccount? ReviewerAccount { get; set; }
 
 
-        [ForeignKey(nameof(UserAccountId))]
+        [ForeignKey(nameof(RevieweeId))]
         public UserAccount? RevieweeAccount { get; set; }
 
     }

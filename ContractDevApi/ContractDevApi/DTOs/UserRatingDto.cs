@@ -31,6 +31,6 @@ namespace ContractDevApi.DTOs
 
         [Required]
         [Range(1,5)]
-        public int RecomendationScore { get; set; }
+        public int RecommendationScore { get; set; }
     }
 }
