@@ -1,14 +1,12 @@
 import { Component, computed } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { ProfileStateService } from '../../core/shared/profile-state.service';
-
+import { ProfileStateService } from '../../core/services/profile-state.service';
 import { ProfileSkillsModal } from '../../core/shared/components/profile-skills-modal/profile-skills-modal';
-//importing signals
-
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-profile-card',
-  imports: [RouterLink, RouterLinkActive, ProfileSkillsModal],
+  imports: [RouterLink, RouterLinkActive, ProfileSkillsModal, MatTooltipModule],
   templateUrl: './profile-card.html',
   styleUrl: './profile-card.css',
 })
@@ -17,74 +15,91 @@ export class ProfileCard {
   constructor(
     public profile: ProfileStateService,
     private router: Router,
-    
-  ){}
+  ) {}
 
-  
-  
-  //put firstName and lastName together
+  // Combine first + last name into a single computed signal
   fullName = computed(() => `${this.profile.firstName()} ${this.profile.lastName()}`);
-  
 
-  //what colour will be displayed wether working/offering work or both
+  
+  //Determines the user's work status.
   workStatus() {
-    if (this.profile.offeringWork() && this.profile.availableForWork()){
-      return "both";
-    }else if (this.profile.offeringWork()){
-      return "offering";
-    }else if (this.profile.availableForWork()){
-      return "available";
-    }else if (!this.profile.offeringWork() && !this.profile.availableForWork()){
-      return "none";
+    if (this.profile.offeringWork() && this.profile.availableForWork()) {
+      return "both";          // Hiring + looking for work
+    } else if (this.profile.offeringWork()) {
+      return "offering";      // Hiring only
+    } else if (this.profile.availableForWork()) {
+      return "available";     // Looking for work only
+    } else {
+      return "none";          // Neither
     }
   }
 
-  ngOnInit() {
-    console.log("ProfileCard image:", this.profile.profileImageUrl());
+  /*
+    Tooltip text for the profile picture.
+    Maps the workStatus() string to a readable label.
+   */
+  workStatusTooltip(): string {
+    const status = this.workStatus();
+
+    switch (status) {
+      case 'both':
+        return 'Both hiring and looking for work';
+      case 'available':
+        return 'Looking for work';
+      case 'offering':
+        return 'Hiring';
+      default:
+        return 'Status not set';
+    }
   }
+
+  // Returns the full profile object.
+  getProfile() {
+    return this.profile.profile();
+  }
+
   
-  //display phone number
-  isPhoneDisplay(){
-    if(this.profile.hidePhoneNumber()){
-      return 'User Hidden';  
-    }else{
-      return this.profile.phoneNumber();
-    }
+  //Phone number display logic.
+  //If user hides phone number show placeholder text instead 
+  isPhoneDisplay() {
+    return this.profile.hidePhoneNumber()
+      ? 'User Hidden'
+      : this.profile.phoneNumber();
   }
 
-  // display name 
+  
+  //Display either username or full name depending on user preference.
   isdisplayUserName() {
-    //inline if statement
-    return this.profile.displayUserName() ? this.profile.username() : this.fullName();
-    
+    return this.profile.displayUserName()
+      ? this.profile.username()
+      : this.fullName();
   }
-  
-  // display bio
+
+  // Bio text
   displayBio() {
     return this.profile.bio();
   }
 
-  // display email
+  // Email text
   displayEmail() {
     return this.profile.email();
   }
 
-  //a click handler
+  
+  // Opens an external social link in a new tab.
+  // Accepts a URL string from the template.
   openLink(url: string) {
     if (!url) return;
+    console.log(url + " _blank");
     window.open(url, '_blank');
   }
 
-
+  /*
+    Opens the chat popup outlet.
+   Uses Angular's named router outlets.
+  */
   openChat() {
-    console.log("Button clicked! Attempting to open popup...");
-    console.log(this.profile);
-    console.log(this.profile.facebookLink);
-    console.log(this.profile.facebookLink());
-    console.log(JSON.stringify(this.profile.facebookLink()));
-    this.router.navigate(
-      [{ outlets: { popup: ['chat'] }}]
-    );   
+    console.log("Opening chat popup...");
+    this.router.navigate([{ outlets: { popup: ['chat'] }}]);
   }
 }
-

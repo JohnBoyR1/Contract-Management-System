@@ -1,5 +1,16 @@
+@if(uiService.isSearching()){
+  <div class="container mt-5">
+  <div class="row g-3">
+    @for (u of filteredProfiles(); track u.userId) {
+      <div class="col-md-6">
+        <app-profile-display-card [user]="u"></app-profile-display-card>
+      </div>
+    } 
+     </div>
+  </div>
 
-<div class="container mt-5">
+}@else{
+  <div class="container mt-5">
   <div class="row g-3">
 
     @for (u of profiles(); track u.userId) {
@@ -10,3 +21,5 @@
 
   </div>
 </div>
+}
+

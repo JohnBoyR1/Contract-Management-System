@@ -16,9 +16,9 @@
  box-shadow: 
     0 0 7px #fff,               /* Sharp white core for intensity */
     0 0 10px #fff,              /* Slight blur for bloom */
-    0 0 21px #af00fa,               /* Main luminous color (e.g., Neon Green #0fa) */
+    0 0 21px #af00fa,               /* Main luminous color  */
     0 0 42px #af00fa,               /* Wider glow */
-    0 0 72px #af00fa;               /* Distant environmental glow #0fa, */
+    0 0 72px #af00fa;               /* Distant environmental glow  */
     
   border-radius: 10px;           /* Softens the edges of the glow */
   border: 1px solid  #af00fa        /* Optional: thin border to define the edge */

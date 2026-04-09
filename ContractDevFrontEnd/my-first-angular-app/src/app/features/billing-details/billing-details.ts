@@ -1,6 +1,7 @@
+// NOT USED FOR FUTURE USE //
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { ProfileStateService } from '../../core/shared/profile-state.service';
+import { ProfileStateService } from '../../core/services/profile-state.service';
 
 @Component({
   selector: 'app-billing-details',

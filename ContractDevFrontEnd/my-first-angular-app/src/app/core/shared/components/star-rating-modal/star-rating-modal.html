@@ -1,0 +1,101 @@
+<!--<div class="modal fade" id="ratingModal" tabindex="-1">-->
+  <div class="modal fade" [id]="'rating-modal-' + user?.userId" tabindex="-1">
+
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Rate {{ user?.username }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body rating-section">
+       
+        <!-- Time Management -->
+        <div class="rating-row">
+          <label>Time Management</label>
+          <div class="stars">
+            @for (s of [1,2,3,4,5]; track s) {
+              <i class="bi"
+                 [ngClass]="s <= (hover.tm || model.time_management_score) ? 'bi-star-fill' : 'bi-star'"
+                 (mouseenter)="setHover('tm', s)"
+                 (mouseleave)="clearHover('tm')"
+                 (click)="setRating('time_management_score', s)">
+              </i>
+            }
+          </div>
+        </div>
+
+        <!-- Payment Reliability -->
+        <div class="rating-row">
+          <label>Payment Reliability</label>
+          <div class="stars">
+            @for (s of [1,2,3,4,5]; track s) {
+              <i class="bi"
+                 [ngClass]="s <= (hover.pr || model.payment_reliability_score) ? 'bi-star-fill' : 'bi-star'"
+                 (mouseenter)="setHover('pr', s)"
+                 (mouseleave)="clearHover('pr')"
+                 (click)="setRating('payment_reliability_score', s)">
+              </i>
+            }
+          </div>
+        </div>
+
+        <!-- Communication -->
+        <div class="rating-row">
+          <label>Communication</label>
+          <div class="stars">
+            @for (s of [1,2,3,4,5]; track s) {
+              <i class="bi"
+                 [ngClass]="s <= (hover.com || model.communication_score) ? 'bi-star-fill' : 'bi-star'"
+                 (mouseenter)="setHover('com', s)"
+                 (mouseleave)="clearHover('com')"
+                 (click)="setRating('communication_score', s)">
+              </i>
+            }
+          </div>
+        </div>
+
+        <!-- Collaboration -->
+        <div class="rating-row">
+          <label>Collaboration</label>
+          <div class="stars">
+            @for (s of [1,2,3,4,5]; track s) {
+              <i class="bi"
+                 [ngClass]="s <= (hover.col || model.collaboration_score) ? 'bi-star-fill' : 'bi-star'"
+                 (mouseenter)="setHover('col', s)"
+                 (mouseleave)="clearHover('col')"
+                 (click)="setRating('collaboration_score', s)">
+              </i>
+            }
+          </div>
+        </div>
+
+        <!-- Recommendation -->
+        <div class="rating-row">
+          <label>Recommendation</label>
+          <div class="stars">
+            @for (s of [1,2,3,4,5]; track s) {
+              <i class="bi"
+                 [ngClass]="s <= (hover.rec || model.recommendation_score) ? 'bi-star-fill' : 'bi-star'"
+                 (mouseenter)="setHover('rec', s)"
+                 (mouseleave)="clearHover('rec')"
+                 (click)="setRating('recommendation_score', s)">
+              </i>
+            }
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger" (click)="remove()">
+          Remove My Rating
+        </button>
+        <button class="btn btn-primary" (click)="submit()" data-bs-dismiss="modal">Submit Rating</button>
+      </div>
+
+    </div>
+  </div>
+</div>

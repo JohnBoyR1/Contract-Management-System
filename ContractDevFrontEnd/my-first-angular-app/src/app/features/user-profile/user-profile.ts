@@ -1,34 +1,36 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-//input signals
-import { ProfileStateService } from '../../core/shared/profile-state.service';
+import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
+import { ProfileStateService } from '../../core/services/profile-state.service';
 import { UserService } from '../../core/services/user.service';
-import { Profile } from '../../core/models/profile.models';
 import { inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, ReactiveFormsModule],
+  imports: [RouterLink, RouterLinkActive, ReactiveFormsModule, MatTooltipModule],
   templateUrl: './user-profile.html',
   styleUrl: './user-profile.css',
 })
-export class UserProfile {
-  profileForm: FormGroup; //?
 
+export class UserProfile {
+
+  profileForm: FormGroup;
+  
   private userService = inject(UserService);
   private authService = inject(AuthService);
 
-  // 2. Inject the Router in the constructor
-  constructor(
-    private http: HttpClient,
+  //signals
+  updateError = signal('');
+  updateSuccess = signal(false);
+ 
+ 
 
+  //Inject the Router in the constructor
+  constructor(
     private router: Router,
     private fb: FormBuilder, //FormBuilder is a built in angular ?
     public profile: ProfileStateService, //then I can use {{ profile.firstName() }} etc.
@@ -39,8 +41,18 @@ export class UserProfile {
       firstName: [''],
       lastName: [''],
       username: [''],
-      phoneNumber: [''],
-      email: [''],
+      phoneNumber: ['', 
+        [
+          Validators.required,
+          Validators.pattern(/^[0-9]{7,15}$/) // only digits, length 7–15
+        ]
+      ],
+      email: ['',
+        [
+          Validators.required,
+          Validators.email
+        ]
+      ],
       country: [''],
       description: [''],
       bio: [''],
@@ -62,7 +74,8 @@ export class UserProfile {
       selectedSkills: this.fb.control<string[]>([]),// backend expects List<String>
     });
   }
-  //skill set in drop down menu
+
+   //skill set in drop down menu
   get skillsControl() {
     return this.profileForm.get('skills') as FormControl<string>;
   }
@@ -101,21 +114,22 @@ export class UserProfile {
     'Web Developer',
   ]);
 
-  // Get the list of skills that are NOT in the selected array
+   // Get the list of skills that are NOT in the selected array
   get availableSkills() {
     const selected = this.selectedSkillsControl.value ?? [];
     return this.skillsList().filter((skill) => !selected.includes(skill));
   }
 
-  // Check if skill has been selected
+  // Check if skill has been selected?????
   isSkillDisabled(skill: string): boolean {
     return (this.selectedSkillsControl.value ?? []).includes(skill);
   }
 
   ngOnInit() {
+   
     //handle the selection
     this.skillsControl.valueChanges.subscribe((skill) => {
-      if (!skill || skill.trim() == '') return;
+      if (!skill || skill == '') return;
 
       const current = this.selectedSkillsControl.value ?? [];
 
@@ -131,8 +145,20 @@ export class UserProfile {
     const id = this.authService.getCurrentUserId();
 
     //subscribe is used to recieve data asyschronously (returns an Observable)
-    this.userService.getProfile(id).subscribe((profile) => {
+    this.userService.getProfile(id!).subscribe((profile: any) => {
+      
+      // Convert backend comma string → array
+      if (typeof profile.skills === 'string') {
+        profile.skills = profile.skills
+          .split(',')
+          .map((s: string) => s.trim())
+          .filter((s: string) => s.length > 0);
+      }
+      
       this.profileForm.patchValue(profile);
+
+      // Ensure selectedSkills is an array
+      this.selectedSkillsControl.setValue(profile.skills ?? []);
 
       //updating global profile state
       this.profile.initProfile(profile);
@@ -148,7 +174,7 @@ export class UserProfile {
     return `${this.profile.userTitle()}`;
   }
 
-  // 3. Handle Skill removal
+  //Handle Skill removal
   removeSkill(skillToRemove: string) {
     const current = this.selectedSkillsControl.value ?? [];
     this.selectedSkillsControl.setValue(current.filter((s) => s !== skillToRemove));
@@ -177,20 +203,62 @@ export class UserProfile {
     });
 
     //append ID (as it is not part of the form)
-    formData.append('id', id.toString());
+    formData.append('id', id!.toString());
 
     //updating backend and refreshing the global profile state
-    this.userService.updateProfile(formData).subscribe(() => {
-      this.userService.getProfile(id).subscribe((fullProfile) => {
-        this.profile.initProfile(fullProfile);
-      });
+    this.userService.updateProfile(formData).subscribe({
+      next: (response: any) => {
+
+        //check if any changes if not inform user no changes
+        if(!response?.updated){
+          this.updateError.set("No changes were made.");
+          //display message and then reset page
+          setTimeout(() => {
+              this.updateError.set('');
+              //navigate to the home page
+              this.router.navigate(['/user-profile']);
+            }, 2500);
+            
+        }else{
+
+          this.updateSuccess.set(true);
+          //display message and then reset page
+          setTimeout(() => {
+                this.updateSuccess.set(false);
+                //navigate to the home page
+                this.router.navigate(['/user-profile']);
+              }, 2000);
+        }   
+        //refresh the profile
+        this.userService.getProfile(id!).subscribe((fullProfile) => {
+          this.profile.initProfile(fullProfile);
+        });
+      },
+      error: (err) => {
+        this.updateError.set("Update failed: " + err.message || 'Failed to update profile');
+        console.error("Update failed:", err);
+      }  
     });
-    console.log('--- FORM DATA SENT TO BACKEND ---');
-    for (const pair of formData.entries()) {
-      console.log(pair[0] + ':', pair[1]);
-    }
-    console.log('---------------------------------');
-
-
   }
 }
+
+     
+        
+  
+
+   
+
+
+
+
+
+  
+ 
+  
+
+ 
+
+  
+
+
+  

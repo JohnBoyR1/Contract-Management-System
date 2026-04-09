@@ -1,9 +1,7 @@
-import { Component,ViewChild, ElementRef, AfterViewInit, ViewEncapsulation } from '@angular/core';
+import { Component, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { IntroBanner } from '../intro-banner/intro-banner';
 import { signal } from '@angular/core';
 import { MarketingBanner } from "../marketing-banner/marketing-banner";
-
-
 
 
 @Component({
@@ -17,18 +15,10 @@ import { MarketingBanner } from "../marketing-banner/marketing-banner";
 
 export class Home implements AfterViewInit {
 
-
-  //learning to create signals and see what can be done(for testing)
-  count = signal(3);
-
-  increase(){
-    this.count.update(value => value +1);
-  }
+  index = signal(0);//tracking which quote is shown
   
-  
-
   ngAfterViewInit() {
-    
+                        //Element Fade In//
     //########################## the small box ###########################
     const elements = document.querySelectorAll('.box');//All returns a node list
 
@@ -36,17 +26,15 @@ export class Home implements AfterViewInit {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('visible');//updating the DOM directly (entry.target)....native browser method (.classList.add) 
-         // this.isVisible.set(true);//this is for individual
+          entry.target.classList.add('visible');//adds class when element enters view 
         } else {
-         // this.isVisible.set(false);
-         entry.target.classList.remove('visible');
+          entry.target.classList.remove('visible');// removes class when element leaves view
         }
           
       });
     }, {
       root: null, //viewport
-      threshold: 0.2, //50% of the element is visible
+      threshold: 0.2, //20% of the element is visible
       rootMargin: "-10% 0px -10% 0px"//this creates a narrow band in the middle of the screen
     });
 
@@ -56,10 +44,30 @@ export class Home implements AfterViewInit {
     const bottomPageVideo = document.querySelector('.bottom-video') as HTMLVideoElement;
 
     bottomPageVideo.addEventListener('loadeddata', () => {
-      bottomPageVideo.play();
+      bottomPageVideo.play();//auto play once video has loaded
     })
 
   }
+
+  quotes = [
+    "Every great piece of technology started as someone’s small, stubborn idea.",
+    "Code is proof that even the most complex problems can be solved one line at a time.",
+    "Innovation begins the moment you stop asking ‘Can I?’ and start asking ‘How do I?’",
+    "In tech, progress isn’t about perfection — it’s about iteration.",
+    "The future belongs to those who stay curious long after others stop asking questions.",
+    "Every bug fixed is a reminder that persistence beats complexity.",
+    "Technology moves fast, but belief in yourself moves faster.",
+    "Behind every breakthrough is someone who refused to accept the first error message.",
+    "You don’t need to know everything — just enough to start, learn, and keep going.",
+    "The best developers aren’t the ones who know the most, but the ones who never stop learning."
+  ];
+
+ 
+
+  nextQuote() {
+    this.index.update(i => (i + 1) % this.quotes.length);//move to next quote
+  }
+
 }
 
 

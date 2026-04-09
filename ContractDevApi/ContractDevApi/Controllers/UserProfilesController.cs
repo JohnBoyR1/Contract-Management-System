@@ -63,6 +63,7 @@ namespace ContractDevApi.Controllers
             if (dto.Email != null && user.UserSignupEmail != dto.Email.ToLower()) { user.UserSignupEmail = dto.Email.ToLower(); hasChanges = true; }
             if (dto.PhoneNumber != null && profile.PhoneNumber != dto.PhoneNumber) { profile.PhoneNumber = dto.PhoneNumber; hasChanges = true; }
             if (dto.Country != null && profile.Country != dto.Country) { profile.Country = dto.Country; hasChanges = true; }
+            if (dto.UserTitle != null && profile.UserTitle != dto.UserTitle) { profile.UserTitle = dto.UserTitle; hasChanges = true; }
             if (dto.Bio != null && profile.Bio != dto.Bio) { profile.Bio = dto.Bio; hasChanges = true; }
             if (dto.AvailableForWork.HasValue && profile.AvailableForWork != dto.AvailableForWork) { profile.AvailableForWork = dto.AvailableForWork; hasChanges = true; }
             if (dto.OfferingWork.HasValue && profile.OfferingWork != dto.OfferingWork) { profile.OfferingWork = dto.OfferingWork; hasChanges = true; }
@@ -103,7 +104,7 @@ namespace ContractDevApi.Controllers
             //Final check for changes
             if (!hasChanges)
             {
-                return BadRequest(new { Message = "No changes detected in profile update" });
+                return Ok(new { updated = false, Message = "No changes detected in profile update" });
             }
 
             //Try to update database -- if unsuccessful return error
@@ -114,7 +115,7 @@ namespace ContractDevApi.Controllers
             }
 
 
-            return Ok(new { message = "Profile updated successfully" });
+            return Ok(new { updated = true, message = "Profile updated successfully" });
         }
 
         //-----------------------

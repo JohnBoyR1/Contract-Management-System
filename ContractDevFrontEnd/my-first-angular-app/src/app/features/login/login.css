@@ -1,3 +1,4 @@
+/* form over laps the image on the right*/
 .cascading-right {
   margin-right: -50px;
 }
@@ -8,38 +9,30 @@
   }
 }
 
-.card,
-#login-img {
+/*login form card*/
+.card-login {
   backdrop-filter: blur(30px);
   border-radius: 20px;
+  box-shadow: 20px 20px 20px rgb(0, 0, 0, 0.5) !important;
 }
+
 /*image behind and to right of the log in form*/
 .login-img {
   border-radius: 20px;
   box-shadow: 20px 20px 20px rgb(0, 0, 0, 0.5) !important;
 }
 
-.card {
-  box-shadow: 20px 20px 20px rgb(0, 0, 0, 0.5) !important;
-}
-
-.entire {
+/*ensures space below the navbar*/
+.entire-login {
   margin-top: 90px;
 }
 
-.hidden {
-  display: none !important;
-}
-
-.login-btn {
+/*login and reset password buttons*/
+.login-btn, .login-reset-password-btn {
   background-color: rgb(183, 113, 248);
 }
 
-.login-btn:hover {
+.login-btn:hover, .login-reset-password-btn:hover {
   background-color: blueviolet;
-  transform: scale(1.02);
-}
-/* I cant seem too seperate the buttons but must fix asap
-.reset-password-btn {
-  margin-left: 20px !important;
+  transform: scale(1.05);
 }

@@ -4,9 +4,7 @@
       <!-- Profile Header -->
       <div class="col-12 mb-4">
         <div class="profile-header position-relative mb-4">
-          <div class="position-absolute top-0 end-0 p-3">
-            <button class="btn btn-light"><i class="fas fa-edit me-2"></i>Edit Cover</button>
-          </div>
+          
         </div>
         <div class="text-center">
           <div class="position-relative d-inline-block">
@@ -15,18 +13,21 @@
               class="rounded-circle profile-pic"
               alt="Profile Picture"
             />
-            <!--<button class="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle">
-              <i class="fas fa-camera"></i>
-            </button>-->
           </div>
           <h3 class="mt-3 mb-1">{{ nameDisplay() }}</h3>
           <p class="text-muted mb-3">{{ this.profile.userTitle() }}</p>
-          <div class="d-flex justify-content-center gap-2 mb-4">
-            <button class="btn btn-outline-primary">
+           <div class="d-flex justify-content-center gap-2 mb-4">
+            <button class="btn btn-outline-primary"
+            matTooltip="Send a direct message" 
+            matTooltipPosition="below"
+            >
               <i class="fas fa-envelope me-2"></i>Message
             </button>
-            <button class="btn btn-primary">
-              <i class="fas fa-user-plus me-2"></i>Add Favourite
+            <button class="btn btn-primary"
+            matTooltip="Ratings, 'experience with user'" 
+            matTooltipPosition="below"
+            >
+              <i class="bi bi-stars"></i>Add Ratings
             </button>
           </div>
         </div>
@@ -41,23 +42,43 @@
               <div class="col-lg-3 border-end">
                 <div class="p-4">
                   <div class="navbar-nav flex-column nav-pills">
-                    <a class="nav-link" routerLink="/user-profile" routerLinkActive="active">
+                    <a class="nav-link" 
+                    routerLink="/user-profile" 
+                    routerLinkActive="active"
+                    matTooltip="View personal details"
+                    matTooltipPosition="below"
+                    >
                       <i class="fas fa-user me-2"></i>Personal Info
                     </a>
 
-                    <a class="nav-link" routerLink="/userProfileSecurity" routerLinkActive="active">
+                    <a class="nav-link" 
+                    routerLink="/userProfileSecurity" 
+                    routerLinkActive="active"
+                    matTooltip="Password reset and account deletion" 
+                    matTooltipPosition="below"
+                    >
                       <i class="fas fa-lock me-2"></i>Security
                     </a>
 
-                    <a class="nav-link" routerLink="/social-media-links" routerLinkActive="active">
+                    <a class="nav-link" 
+                    routerLink="/social-media-links" 
+                    routerLinkActive="active"
+                    matTooltip="Manage your social links" 
+                    matTooltipPosition="below"
+                    >
                       <i class="fas fa-bell me-2"></i>Social Media Links
                     </a>
 
-                    <a class="nav-link" routerLink="/billing-details" routerLinkActive="active">
+                    <!--<a class="nav-link" routerLink="/billing-details" routerLinkActive="active">
                       <i class="fas fa-credit-card me-2"></i>Billing
-                    </a>
+                    </a> for future use-->
 
-                    <a class="nav-link" routerLink="/profile-card" routerLinkActive="active">
+                    <a class="nav-link" 
+                    routerLink="/profile-card" 
+                    routerLinkActive="active"
+                    matTooltip="View your public profile card" 
+                    matTooltipPosition="below"
+                    >
                       <i class="fas fa-chart-line me-2"></i>Profile Card
                     </a>
                   </div>
@@ -72,6 +93,19 @@
                     <!-- Personal Information -->
                     <div class="mb-4">
                       <h5 class="mb-4">Security Information</h5>
+                      <!--verify a valid form has been sent banner pop up-->
+                      @if (updateSuccess()) {
+                        <div class="alert alert-success mt-3">
+                          <strong>Success!</strong> Password Updated....
+                        </div>
+                      }
+                      <!--if update fail-->
+                      @if (updateError()) {
+                        <div class="alert alert-danger mt-3 mb-4 animate__animated animate__fadeIn" role="alert">
+                          <i class="fas fa-exclamation-circle me-2"></i>
+                          {{ updateError() }}
+                        </div>
+                      }
                       <div class="row g-3">
                         <div class="col-md-6">
                           <label class="form-label">Current Password</label>
@@ -80,7 +114,15 @@
                             type="password"
                             class="form-control"
                             value=""
+                            matTooltip="Current Password required to update password" 
+                            matTooltipPosition="below"
                           />
+                          @if (
+                            securityForm.get('currentPassword')?.touched &&
+                            securityForm.get('currentPassword')?.hasError('required')
+                          ) {
+                            <div class="text-danger">Current Password is required.</div>
+                          }     
                         </div>
                         <div class="col-md-6">
                           <label class="form-label">New Password</label>
@@ -89,7 +131,15 @@
                             type="password"
                             class="form-control"
                             value=""
+                            matTooltip="Enter a new password" 
+                            matTooltipPosition="below"
                           />
+                          @if (
+                            securityForm.get('newPassword')?.touched &&
+                            securityForm.get('newPassword')?.hasError('required')
+                          ) {
+                            <div class="text-danger">Current Password is required.</div>
+                          }     
                         </div>
                         <div class="col-md-6">
                           <label class="form-label">Confirm New Password</label>
@@ -98,11 +148,28 @@
                             type="password"
                             class="form-control"
                             value=""
+                            matTooltip="Re-enter new password, Must Match!"
+                            matTooltipPosition="below"
                           />
+                          @if (securityForm.get('confirmNewPassword')?.touched &&
+                              securityForm.get('confirmNewPassword')?.hasError('required')) {
+                            <div class="text-danger">Confirmation Password is required.</div>
+                          }
+
+                          @if (securityForm.hasError('passwordsDontMatch') &&
+                              securityForm.get('confirmNewPassword')?.touched) {
+                            <div class="text-danger">Passwords do not match.</div>
+                          }
+
                         </div>
                         <div class="col-md-6">
                           <label class="form-label">Security Question: </label>
-                          <input class="form-control"  type="text" formControlName="securityQuestion" value=""  readonly/>
+                          <input class="form-control"
+                            type="text"
+                            formControlName="securityQuestion" 
+                            value=""  readonly
+                            matTooltip="The security question of choice on sign up" 
+                            matTooltipPosition="below"/>
                         </div>
                         <div class="col-md-6">
                           <label class="form-label">Security Questions: Answer</label>
@@ -111,12 +178,18 @@
                             type="text"
                             class="form-control"
                             value=""
+                            matTooltip="Enter answer to the security question above" 
+                            matTooltipPosition="below"
                           />
+                           @if (securityForm.get('securityAnswer')?.touched &&
+                              securityForm.get('securityAnswer')?.hasError('required')) {
+                            <div class="text-danger">Answer to security question is required.</div>
+                          }
                         </div>
                       </div>
                     </div>
 
-                    <!-- Settings Cards -->
+                    <!-- Delete and Save buttons-->
                     <div class="row g-4 mb-4">
                       <div class="col-md-6">
                         <div class="settings-card card">
@@ -125,7 +198,7 @@
                               <div>
                                 <h6 class="mb-1">Delete User Account</h6>
                                 <p class="text-muted mb-0 small">
-                                  Only if you want to delete your account
+                                  Only use to delete your account
                                 </p>
                               </div>
                               <div>
@@ -133,6 +206,8 @@
                                   type="button"
                                   class="btn btn-danger"
                                   routerLink="/userProfileDeletion"
+                                  matTooltip="Permanently Delete Account, proceed with caution" 
+                                  matTooltipPosition="below"
                                 >
                                   Delete
                                 </button>
@@ -150,7 +225,12 @@
                                 <p class="text-muted mb-0 small">Only if you made changes</p>
                               </div>
                               <div>
-                                <button type="button" class="btn btn-outline-primary" type="submit">
+                                <button type="button" 
+                                class="btn 
+                                btn-outline-primary" 
+                                type="submit"  
+                                matTooltip="Save Changes" 
+                                matTooltipPosition="below">
                                   Save
                                 </button>
                               </div>

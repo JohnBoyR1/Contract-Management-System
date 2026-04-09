@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MessageInput } from './message-input';
 
 describe('MessageInput', () => {

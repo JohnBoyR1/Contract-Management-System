@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import {
@@ -7,13 +7,14 @@ import {
   FormGroup,
   FormControl,
   Validators,
+  AbstractControl,
 } from '@angular/forms';
-
 import { UserService } from '../../core/services/user.service';
-
-import { ProfileStateService } from '../../core/shared/profile-state.service';
-
+import { ProfileStateService } from '../../core/services/profile-state.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { Router } from '@angular/router';
+
+
 
 @Component({
   selector: 'app-sign-up',
@@ -22,18 +23,15 @@ import { AuthService } from '../../core/auth/auth.service';
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.css',
 })
-export class SignUp implements OnInit {
+export class SignUp {
   // injecting DataService
   private userService = inject(UserService);
-
   private profileState = inject(ProfileStateService);
-
   private authService = inject(AuthService);
-
+  private router = inject(Router);
   private http = inject(HttpClient);
-  //Todo validation on input(angular built in)
 
-  //Defining the form structure
+  //Defining the form structure  with build-in validators
   contractForm = new FormGroup(
     {
       firstName: new FormControl('', [Validators.required]),
@@ -49,10 +47,31 @@ export class SignUp implements OnInit {
     },
     { validators: this.passwordMatchValidator.bind(this) }, //this is now bound to the FormGroup body
   );
+
+  //signal states
   isSubmitted = signal(false);
   isLoading = signal(false);
+  signUpError = signal('');
 
-  //password match confirm password validation
+
+  // Password + Confirm Password validation
+  passwordMatchValidator(control: AbstractControl) {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
+
+    // If either field is empty, don't validate yet
+    if (!password || !confirmPassword) {
+      return null;
+    }
+
+    // Return error object if mismatch, otherwise null
+    return password === confirmPassword
+      ? null
+      : { passwordsDontMatch: true };
+  }
+
+
+  /*password match confirm password validation
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
@@ -62,73 +81,88 @@ export class SignUp implements OnInit {
     }
 
     return password === confirmPassword ? null : { passwordsDontMatch: true };
-  }
+  }*/
 
   //handling the submission
   handleFormSubmit() {
-    if (this.contractForm.valid) {
-      this.isLoading.set(true); //start loading
+    //force all validation messages to show up 
+    this.contractForm.markAllAsTouched();
+    this.contractForm.updateValueAndValidity();
+   
+    if(this.contractForm.invalid) return;
 
-      const formData = new FormData();
+  
+    this.isLoading.set(true); //start loading
+    this.signUpError.set(''); //clear previous errors
 
-      console.log('Form Data for Backend: ', this.contractForm.value);
-      //raw data is preferred choice in sign up forms
-      const rawValue = this.contractForm.getRawValue();
+    //raw data is preferred choice in sign up forms
+    const rawValue = this.contractForm.getRawValue();
+    const formData = new FormData();
 
-      //Transform the payload to match what the API expects(this is the data sent to the back end)
-      const payload = {
-        firstName: rawValue.firstName,
-        lastName: rawValue.lastName,
-        username: rawValue.username,
-        country: rawValue.country,
-        description: rawValue.description,
-        email: rawValue.email,
-        password: rawValue.password,
-        confirmPassword: rawValue.confirmPassword,
-        securityQuestion: rawValue.securityQuestion,
-        securityAnswer: rawValue.securityAnswer,
-      };
+    //Transform the payload to match what the API expects(this is the data sent to the back end)
+    const payload = {
+      firstName: rawValue.firstName,
+      lastName: rawValue.lastName,
+      username: rawValue.username,
+      country: rawValue.country,
+      description: rawValue.description,
+      email: rawValue.email,
+      password: rawValue.password,
+      confirmPassword: rawValue.confirmPassword,
+      securityQuestion: rawValue.securityQuestion,
+      securityAnswer: rawValue.securityAnswer,
+    };
 
-      Object.entries(payload).forEach(([key, value]) => {
-        if (value !== null && value !== '') {
-          formData.append(key, value as any);
-        }
-      });
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value !== null && value !== '') {
+        formData.append(key, value as any);
+      }
+    });
 
-      //Calling Service...
-      this.userService.signup(formData).subscribe({
-        next: (user) => {
-          console.log('Signup success!', user);
-          //login in
-          const loginData = new FormData();
-          loginData.append('email', rawValue.email!);
-          loginData.append('password', rawValue.password!);
+    //Calling Service...
+    this.userService.signup(formData).subscribe({
+      next: (user) => {
+        //login in automatically
+        const loginData = new FormData();
+        loginData.append('email', rawValue.email!);
+        loginData.append('password', rawValue.password!);
 
-          this.authService.login(loginData).subscribe({
-            next: () => {
-              const userId = this.authService.getCurrentUserId();
+        this.authService.login(loginData).subscribe({
+          next: () => {
+            const userId = this.authService.getCurrentUserId();
 
-              this.userService.getProfile(userId).subscribe((fullProfile) => {
-                this.profileState.initProfile(fullProfile);
-                this.isSubmitted.set(true);
-                this.contractForm.reset();
-              });
-            },
-          });
+            this.userService.getProfile(userId!).subscribe((fullProfile) => {
+              this.profileState.initProfile(fullProfile);
 
-          /* Fetch full profile using returned userId
-          const userId = this.authService.getCurrentUserId();
+              this.isLoading.set(false);
+              this.isSubmitted.set(true); // Shows success message in HTML
+              this.contractForm.reset();
 
-          this.userService.getProfile(userId).subscribe(fullProfile => {
-            this.profileState.initProfile(fullProfile);
+              // TIMER: Wait 2 seconds so they see the success message, then redirect
+              setTimeout(() => {
+                this.router.navigate(['/home']);
+              }, 2000);
+            });
+          },
+        });
 
-            this.isSubmitted.set(true);
-            this.contractForm.reset();
-          });*/
-        },
-        error: (err) => alert('API Error: ' + err.message),
-      });
-    }
+      },
+      error: (err) => {
+        //interceptor: error handling
+        this.signUpError.set(err.message);
+        this.isLoading.set(false);
+
+        // TIMER: Wait 2.5 seconds so they see the failure message, then redirect
+        setTimeout(() => {
+          this.signUpError.set('');
+          // INSTANT RESET on failure as requested
+          this.contractForm.reset();
+        }, 2500);
+
+        
+      }
+    });
+    
   }
 
   //reset the fields in the form
@@ -139,15 +173,7 @@ export class SignUp implements OnInit {
     this.isSubmitted.set(false);
   }
 
-  ngOnInit() {
-    // if you want to test GET requests:
-    //this.userService.signup().subscribe(...);
-    // this.http.get(`https://localhost:7256/api`).subscribe((fullProfile) => {
-    //   console.log('FULL PROFILE FROM BACKEND:', fullProfile);
-    // });
-  }
-  //https://localhost:7256/api/UserAccounts
-
+  //dropdown 
   securityQuestions = signal([
     'What is your mother’s maiden name?',
     'What was the name of your first pet?',

@@ -16,10 +16,16 @@
                 <form class="col-xl-6" [formGroup]="contractForm" (ngSubmit)="handleFormSubmit()">
                   <div class="card-body p-md-5 text-black">
                     <h3 class="mb-5 text-uppercase">Registration Form</h3>
-                    <!--verify a valid form has been sent banner pop up-->
+
+                    @if (signUpError()) {
+                      <div class="alert alert-danger animate-shake">
+                        {{ signUpError() }}
+                      </div>
+                    }
+
                     @if (isSubmitted()) {
-                      <div class="alert alert-success mt-3">
-                        <strong>Success!</strong> Your registration has been seen to the server.
+                      <div class="alert alert-success">
+                        Account created! Redirecting to your dashboard in 5 seconds...
                       </div>
                     }
 
@@ -54,7 +60,7 @@
                             contractForm.get('lastName')?.touched &&
                             contractForm.get('lastName')?.hasError('required')
                           ) {
-                            <div class="text-danger">First name is required.</div>
+                            <div class="text-danger">Last name is required.</div>
                           }
                         </div>
                       </div>
@@ -69,10 +75,10 @@
                       />
                       <label class="form-label" for="form3Example8">Username</label>
                       @if (
-                        contractForm.get('Username')?.touched &&
-                        contractForm.get('Username')?.hasError('required')
+                        contractForm.get('username')?.touched &&
+                        contractForm.get('username')?.hasError('required')
                       ) {
-                        <div class="text-danger">First name is required.</div>
+                        <div class="text-danger">Username is required.</div>
                       }
                     </div>
                     <!--Town/City Input-->
@@ -89,7 +95,7 @@
                           contractForm.get('country')?.touched &&
                           contractForm.get('country')?.hasError('required')
                         ) {
-                          <div class="text-danger">First name is required.</div>
+                          <div class="text-danger">Country is required.</div>
                         }
                       </div>
                     </div>
@@ -107,6 +113,7 @@
                           value="developer"
                         />
                         <label class="form-check-label" for="developer">Developer</label>
+                        
                       </div>
 
                       <div class="form-check form-check-inline mb-0 me-4">
@@ -136,7 +143,7 @@
                         contractForm.get('description')?.touched &&
                         contractForm.get('description')?.hasError('required')
                       ) {
-                        <div class="text-danger">First name is required.</div>
+                        <div class="text-danger">Description is required.</div>
                       }
                     </div>
 
@@ -187,7 +194,7 @@
                           <div class="text-danger">Confirm password is required.</div>
                         }
 
-                        @if (contractForm.hasError('passwordsMismatch')) {
+                        @if (contractForm.hasError('passwordsDontMatch')) {
                           <div class="text-danger">Passwords do not match.</div>
                         }
                       }
@@ -240,7 +247,7 @@
                       </button>
                       <button
                         type="submit"
-                        [disabled]="contractForm.invalid || isLoading()"
+                        [disabled]="isLoading()"
                         data-mdb-button-init
                         data-mdb-ripple-init
                         class="btn btn-warning btn-lg ms-2 submit"

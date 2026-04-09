@@ -1,17 +1,22 @@
-<!-- Section: Design Block -->
-<section class="entire text-center text-lg-start">
-  <!-- Jumbotron -->
+<section class="entire-login text-center text-lg-start">
   <div class="container py-4">
     <div class="row g-0 align-items-center">
       <div class="col-lg-6 mb-5 mb-lg-0">
-        <div class="card cascading-right bg-body-tertiary">
+        <div class="card-login cascading-right bg-body-tertiary">
           <div class="card-body p-5 shadow-5 text-center">
             <h2 class="fw-bold mb-5">Log In</h2>
             <form [formGroup]="loginForm" (ngSubmit)="handleLogin()">
               <!--verify a valid form has been sent banner pop up-->
               @if (loggedIn()) {
                 <div class="alert alert-success mt-3">
-                  <strong>Success!</strong> You are logged in.
+                  <strong>Success!</strong> Logged In, directing to home page....
+                </div>
+              }
+              <!--if login fail-->
+              @if (loginError()) {
+                <div class="alert alert-danger mt-3 mb-4 animate__animated animate__fadeIn" role="alert">
+                  <i class="fas fa-exclamation-circle me-2"></i>
+                  {{ loginError() }}
                 </div>
               }
               <!-- Email input -->
@@ -21,8 +26,16 @@
                   type="email"
                   id="form3Example3"
                   class="form-control"
+                  matTooltip="Enter valid email associated with your account" 
+                  matTooltipPosition="below"
                 />
                 <label class="form-label" for="form3Example3">Email address</label>
+                @if (
+                      loginForm.get('email')?.touched &&
+                      loginForm.get('email')?.hasError('required')
+                    ) {
+                      <div class="text-danger">Email address is required.</div>
+                    }      
               </div>
 
               <!-- Password input -->
@@ -32,92 +45,50 @@
                   type="password"
                   id="form3Example4"
                   class="form-control"
+                  matTooltip="Enter valid current password" 
+                  matTooltipPosition="below"
                 />
                 <label class="form-label" for="form3Example4">Password</label>
+                @if (
+                      loginForm.get('password')?.touched &&
+                      loginForm.get('password')?.hasError('required')
+                    ) {
+                      <div class="text-danger">Password is required.</div>
+                    }      
               </div>
-
-              <!-- Checkbox -->
-              <div class="form-check d-flex justify-content-center mb-4">
-                <input
-                  class="form-check-input me-2"
-                  type="checkbox"
-                  value=""
-                  id="form2Example33"
-                  checked
-                />
-                <label class="form-check-label" for="form2Example33">
-                  Subscribe to our newsletter
-                </label>
-              </div>
-
-              <!-- Submit button -->
-              <button
-                type="submit"
-                data-mdb-button-init
-                data-mdb-ripple-init
-                class="login-btn btn btn-primary btn-block mb-4"
-              >
-                Log In
-              </button>
-
-              <!-- Reset password button -->
-              <button
-                type="button"
-                data-mdb-button-init
-                data-mdb-ripple-init
-                class="reset-password-btn btn btn-primary btn-block mb-4"
-                routerLink="/password-recovery"
-              >
-                Reset Password
-              </button>
-
-              <!-- Register buttons -->
-              <div class="text-center">
-                <p>or log in with:</p>
+              
+              <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mb-4">
+                <!-- Submit button -->
                 <button
-                  type="button"
-                  data-mdb-button-init
-                  data-mdb-ripple-init
-                  class="btn btn-link btn-floating mx-1"
+                  type="submit"
+                  class="login-btn btn btn-primary btn-block mb-4"
+                  matTooltip="Login Button" 
+                  matTooltipPosition="below"
                 >
-                  <i class="fab fa-facebook-f"></i>
+                  Log In
                 </button>
 
+                <!-- Reset password button -->
                 <button
                   type="button"
-                  data-mdb-button-init
-                  data-mdb-ripple-init
-                  class="btn btn-link btn-floating mx-1"
+                  class="login-reset-password-btn btn btn-primary btn-block mb-4"
+                  routerLink="/password-recovery"
+                  matTooltip="'forgot your password?', reset" 
+                  matTooltipPosition="below"
                 >
-                  <i class="fab fa-google"></i>
-                </button>
-
-                <button
-                  type="button"
-                  data-mdb-button-init
-                  data-mdb-ripple-init
-                  class="btn btn-link btn-floating mx-1"
-                >
-                  <i class="fab fa-twitter"></i>
-                </button>
-
-                <button
-                  type="button"
-                  data-mdb-button-init
-                  data-mdb-ripple-init
-                  class="btn btn-link btn-floating mx-1"
-                >
-                  <i class="fab fa-github"></i>
+                  Reset Password
                 </button>
               </div>
             </form>
           </div>
         </div>
       </div>
-
+      <!--image to the right-->
       <div class="col-lg-6 mb-5 mb-lg-0">
         <img src="assets/images/rocket_computer.png" class="w-100 shadow-4 login-img" alt="" />
       </div>
-    </div>
+    </div>   
   </div>
 </section>
+
+

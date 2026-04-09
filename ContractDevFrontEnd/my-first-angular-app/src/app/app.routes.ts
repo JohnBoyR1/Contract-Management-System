@@ -16,6 +16,13 @@ import { UserProfileDeletion } from './features/user-profile-deletion/user-profi
 import { UserProfileUploadImage } from './features/user-profile-upload-image/user-profile-upload-image';
 import { PasswordRecovery } from './features/password-recovery/password-recovery';
 import { SocialMediaLinks } from './features/social-media-links/social-media-links';
+import { StarRatingModal } from './core/shared/components/star-rating-modal/star-rating-modal';
+
+/*
+  Defines all navigation paths in the Angular application
+  Each route maps a URL path to a component
+  Protected routes use the authGuard to block access unless the user is logged in
+*/
 
 export const routes: Routes = [
   //public routes
@@ -31,13 +38,13 @@ export const routes: Routes = [
   { path: 'userProfileUploadImage', component: UserProfileUploadImage },
   { path: 'password-recovery', component: PasswordRecovery },
   { path: 'social-media-links', component: SocialMediaLinks},
+  { path: 'star-rating', component: StarRatingModal},
 
   //protectd routes (locked by auth.guard.ts)
   { path: 'user-profile', component: UserProfile, canActivate: [authGuard] },
   { path: 'billing-details', component: BillingDetails, canActivate: [authGuard] },
-  { path: 'chat', component: Chat, outlet: 'popup', canActivate: [authGuard] }, //this prevents it from replacing the main content
+  { path: 'chat', component: Chat, outlet: 'popup', canActivate: [authGuard] }, //This allows the chat window to appear as a 'popup' without replacing the main page content
   { path: 'profile-card', component: ProfileCard, canActivate: [authGuard] },
   //fallback too
-
   { path: '**', redirectTo: '' },
 ];

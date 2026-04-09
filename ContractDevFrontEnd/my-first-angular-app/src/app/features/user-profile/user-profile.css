@@ -76,3 +76,17 @@
     left: -7px;
     top: 5px;
 }
+
+/*skills display*/
+.skill-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  font-size: 14px;
+}
